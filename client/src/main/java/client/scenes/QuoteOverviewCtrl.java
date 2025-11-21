@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,6 +30,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+/**
+ * Controller for the Quote Overview scene.
+ * Manages the display of quotes in a table and navigation to the add scene.
+ */
 public class QuoteOverviewCtrl implements Initializable {
 
     private final ServerUtils server;
@@ -46,23 +50,45 @@ public class QuoteOverviewCtrl implements Initializable {
     @FXML
     private TableColumn<Quote, String> colQuote;
 
+    /**
+     * Constructs a new QuoteOverviewCtrl.
+     *
+     * @param server   the server utility for network operations
+     * @param mainCtrl the main controller for scene navigation
+     */
     @Inject
     public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * Initializes the controller class.
+     * Sets up the table columns to display quote properties.
+     *
+     * @param location  the location used to resolve relative paths for the root object
+     * @param resources the resources used to localize the root object
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        colFirstName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.firstName));
-        colLastName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.lastName));
-        colQuote.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().quote));
+        colFirstName.setCellValueFactory(q ->
+                new SimpleStringProperty(q.getValue().person.firstName));
+        colLastName.setCellValueFactory(q ->
+                new SimpleStringProperty(q.getValue().person.lastName));
+        colQuote.setCellValueFactory(q ->
+                new SimpleStringProperty(q.getValue().quote));
     }
 
+    /**
+     * Navigates to the "Add Quote" scene.
+     */
     public void addQuote() {
         mainCtrl.showAdd();
     }
 
+    /**
+     * Refreshes the table data by fetching the latest quotes from the server.
+     */
     public void refresh() {
         var quotes = server.getQuotes();
         data = FXCollections.observableList(quotes);

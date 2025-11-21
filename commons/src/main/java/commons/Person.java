@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,38 +26,76 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+/**
+ * Entity representing a person with a first and last name.
+ */
 @Entity
 public class Person {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long id;
+    /**
+     * Unique identifier for the person.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long id;
 
-	public String firstName;
-	public String lastName;
+    /**
+     * The first name of the person.
+     */
+    public String firstName;
 
-	@SuppressWarnings("unused")
-	private Person() {
-		// for object mapper
-	}
+    /**
+     * The last name of the person.
+     */
+    public String lastName;
 
-	public Person(String firstName, String lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+    /**
+     * Default constructor required by JPA and Object Mappers.
+     */
+    @SuppressWarnings("unused")
+    private Person() {
+        // for object mapper
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
-	}
+    /**
+     * Constructs a new Person with the specified names.
+     *
+     * @param firstName the first name of the person
+     * @param lastName  the last name of the person
+     */
+    public Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
-	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
-	}
+    /**
+     * Checks if this Person is equal to another object.
+     *
+     * @param obj the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
-	}
+    /**
+     * Generates a hash code for this Person.
+     *
+     * @return the integer hash code
+     */
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    /**
+     * Generates a string representation of this Person.
+     *
+     * @return a multi-line string describing the person
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+    }
 }

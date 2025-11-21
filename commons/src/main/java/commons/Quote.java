@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,39 +28,77 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 
+/**
+ * Entity representing a quote associated with a specific person.
+ */
 @Entity
 public class Quote {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public long id;
+    /**
+     * Unique identifier for the quote.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long id;
 
-	@OneToOne(cascade = CascadeType.PERSIST)
-	public Person person;
-	public String quote;
+    /**
+     * The person who is attributed to this quote.
+     */
+    @OneToOne(cascade = CascadeType.PERSIST)
+    public Person person;
 
-	@SuppressWarnings("unused")
-	private Quote() {
-		// for object mappers
-	}
+    /**
+     * The actual text content of the quote.
+     */
+    public String quote;
 
-	public Quote(Person person, String quote) {
-		this.person = person;
-		this.quote = quote;
-	}
+    /**
+     * Default constructor for object mappers (JPA).
+     */
+    @SuppressWarnings("unused")
+    private Quote() {
+        // for object mappers
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
-	}
+    /**
+     * Constructs a new Quote object.
+     *
+     * @param person the person who said the quote
+     * @param quote  the text of the quote
+     */
+    public Quote(Person person, String quote) {
+        this.person = person;
+        this.quote = quote;
+    }
 
-	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
-	}
+    /**
+     * Checks if this Quote is equal to another object.
+     *
+     * @param obj the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
-	}
+    /**
+     * Generates a hash code for this Quote.
+     *
+     * @return the integer hash code
+     */
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    /**
+     * Generates a string representation of this Quote.
+     *
+     * @return a multi-line string describing the quote entity
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+    }
 }
