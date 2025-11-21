@@ -13,7 +13,7 @@
 
     <property name="fileExtensions" value="java"/>
     <module name="BeforeExecutionExclusionFileFilter">
-        <property name="fileNamePattern" value=".*TestClass\.java$"/>
+        <property name="fileNamePattern" value=".*Test\.java$"/>
     </module>
 
     <module name="TreeWalker">
