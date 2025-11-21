@@ -1,11 +1,11 @@
 | Key          | Value          |
 | ------------ | -------------  |
-| Date :       | 21-11-2024     |
+| Date :       | 21-11-2025     |
 | Time :       | 13:45          |
 | Location :   | DW Hall 2      |
 | Chair        | Szymon Strzałek|
 | Minute Taker | Anando Hirschau|
-| Attendees :  | 6              |
+| Attendees :  | expected 6     |
 
 Agenda Items :
 
