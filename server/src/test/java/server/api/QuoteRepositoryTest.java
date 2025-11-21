@@ -29,7 +29,7 @@ import org.springframework.data.repository.query.FluentQuery.FetchableFluentQuer
 import commons.Quote;
 import server.database.QuoteRepository;
 
-public class TestQuoteRepository implements QuoteRepository {
+public class QuoteRepositoryTest implements QuoteRepository {
 
     public final List<Quote> quotes = new ArrayList<>();
     public final List<String> calledMethods = new ArrayList<>();
