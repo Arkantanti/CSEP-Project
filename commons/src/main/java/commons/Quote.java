@@ -34,26 +34,19 @@ import jakarta.persistence.OneToOne;
 @Entity
 public class Quote {
 
-    /**
-     * Unique identifier for the quote.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
+    private long id;
 
-    /**
-     * The person who is attributed to this quote.
-     */
     @OneToOne(cascade = CascadeType.PERSIST)
-    public Person person;
+    private Person person;
+
+    private String quote;
 
     /**
-     * The actual text content of the quote.
-     */
-    public String quote;
-
-    /**
-     * Default constructor for object mappers (JPA).
+     * Default constructor required by JPA and object mappers.
+     * <p>
+     * This constructor is private because it is not intended for direct usage.
      */
     @SuppressWarnings("unused")
     private Quote() {
@@ -68,6 +61,60 @@ public class Quote {
      */
     public Quote(Person person, String quote) {
         this.person = person;
+        this.quote = quote;
+    }
+
+    /**
+     * Gets the unique identifier.
+     *
+     * @return the quote ID
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the unique identifier.
+     *
+     * @param id the new ID
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    /**
+     * Gets the person associated with this quote.
+     *
+     * @return the Person object
+     */
+    public Person getPerson() {
+        return person;
+    }
+
+    /**
+     * Sets the person associated with this quote.
+     *
+     * @param person the new Person object
+     */
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    /**
+     * Gets the text of the quote.
+     *
+     * @return the quote string
+     */
+    public String getQuote() {
+        return quote;
+    }
+
+    /**
+     * Sets the text of the quote.
+     *
+     * @param quote the new quote string
+     */
+    public void setQuote(String quote) {
         this.quote = quote;
     }
 

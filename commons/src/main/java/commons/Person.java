@@ -32,68 +32,59 @@ import jakarta.persistence.Id;
 @Entity
 public class Person {
 
-    /**
-     * Unique identifier for the person.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
+    private long id;
+
+    private String firstName;
+    private String lastName;
 
     /**
-     * The first name of the person.
+     * Default constructor required by JPA and object mappers.
      */
-    public String firstName;
-
-    /**
-     * The last name of the person.
-     */
-    public String lastName;
-
-    /**
-     * Default constructor required by JPA and Object Mappers.
-     */
-    @SuppressWarnings("unused")
-    private Person() {
+    protected Person() {
         // for object mapper
     }
-
     /**
-     * Constructs a new Person with the specified names.
-     *
-     * @param firstName the first name of the person
-     * @param lastName  the last name of the person
+     * Constructs a new Person.
+     * @param firstName the first name
+     * @param lastName the last name
      */
     public Person(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    /**
-     * Checks if this Person is equal to another object.
-     *
-     * @param obj the object to compare with
-     * @return true if the objects are equal, false otherwise
-     */
+    public long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+    @SuppressWarnings("unused")
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+    @SuppressWarnings("unused")
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
-    /**
-     * Generates a hash code for this Person.
-     *
-     * @return the integer hash code
-     */
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    /**
-     * Generates a string representation of this Person.
-     *
-     * @return a multi-line string describing the person
-     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
