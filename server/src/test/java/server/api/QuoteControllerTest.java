@@ -31,14 +31,14 @@ public class QuoteControllerTest {
 
     public int nextInt;
     private MyRandom random;
-    private TestQuoteRepository repo;
+    private QuoteRepositoryTest repo;
 
     private QuoteController sut;
 
     @BeforeEach
     public void setup() {
         random = new MyRandom();
-        repo = new TestQuoteRepository();
+        repo = new QuoteRepositoryTest();
         sut = new QuoteController(random, repo);
     }
 
@@ -56,7 +56,7 @@ public class QuoteControllerTest {
         var actual = sut.getRandom();
 
         assertTrue(random.wasCalled);
-        assertEquals("q2", actual.getBody().quote);
+        assertEquals("q2", actual.getBody().getQuote());
     }
 
     @Test

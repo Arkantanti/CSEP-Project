@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,29 +29,46 @@ import client.utils.ServerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+/**
+ * Main entry point for the client-side application.
+ */
 public class Main extends Application {
 
-	private static final Injector INJECTOR = createInjector(new MyModule());
-	private static final MyFXML FXML = new MyFXML(INJECTOR);
+    private static final Injector INJECTOR = createInjector(new MyModule());
+    private static final MyFXML FXML = new MyFXML(INJECTOR);
 
-	public static void main(String[] args) throws URISyntaxException, IOException {
-		launch();
-	}
+    /**
+     * Main method to launch the application.
+     *
+     * @param args command line arguments
+     * @throws URISyntaxException if there is an error with URI syntax
+     * @throws IOException        if an I/O error occurs
+     */
+    public static void main(String[] args) throws URISyntaxException, IOException {
+        launch();
+    }
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+    /**
+     * Starts the JavaFX application stage.
+     *
+     * @param primaryStage the primary stage for this application
+     * @throws Exception if an error occurs during startup
+     */
+    @Override
+    public void start(Stage primaryStage) throws Exception {
 
-		var serverUtils = INJECTOR.getInstance(ServerUtils.class);
-		if (!serverUtils.isServerAvailable()) {
-			var msg = "Server needs to be started before the client, but it does not seem to be available. Shutting down.";
-			System.err.println(msg);
-			return;
-		}
+        var serverUtils = INJECTOR.getInstance(ServerUtils.class);
+        if (!serverUtils.isServerAvailable()) {
+            var msg = "Server needs to be started before the client, "
+                    + "but it does not seem to be available. Shutting down.";
+            System.err.println(msg);
+            return;
+        }
 
-		var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-		var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
+        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
 
-		var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-		mainCtrl.initialize(primaryStage, overview, add);
-	}
+        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl.initialize(primaryStage, overview, add);
+    }
 }
