@@ -58,6 +58,19 @@ public class RecipeIngredientRepositoryTest implements RecipeIngredientRepositor
         recipeIngredients.removeIf(ri -> ri.getId() == id);
     }
 
+    @Override
+    public List<RecipeIngredient> findByRecipeId(long recipeId) {
+        call("findByRecipeId");
+
+        List<RecipeIngredient> result = new ArrayList<>();
+        for (RecipeIngredient ri : recipeIngredients) {
+            if (ri.getRecipe() != null && ri.getRecipe().getId() == recipeId) {
+                result.add(ri);
+            }
+        }
+        return result;
+    }
+
     // --- Boilerplate ---
     @Override public List<RecipeIngredient> findAll(Sort sort) { return null; }
     @Override public List<RecipeIngredient> findAllById(Iterable<Long> ids) { return null; }
@@ -83,8 +96,5 @@ public class RecipeIngredientRepositoryTest implements RecipeIngredientRepositor
     @Override public <S extends RecipeIngredient> long count(Example<S> example) { return 0; }
     @Override public <S extends RecipeIngredient> boolean exists(Example<S> example) { return false; }
     @Override public <S extends RecipeIngredient, R> R findBy(Example<S> example, Function<FetchableFluentQuery<S>, R> queryFunction) { return null; }
-    @Override
-    public List<RecipeIngredient> findByRecipeId(long recipeId) {
-        return List.of();
-    }
+
 }
