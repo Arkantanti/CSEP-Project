@@ -4,6 +4,7 @@ import commons.Ingredient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.IngredientRepository;
+import server.database.RecipeRepository;
 
 import java.util.List;
 
@@ -23,6 +24,11 @@ public class IngredientController {
 
     private final IngredientRepository repo;
 
+    /**
+     * Constructs a new {@code RecipeController} with the given repository.
+     *
+     * @param repo the {@link RecipeRepository} used for database operations
+     */
     public IngredientController(IngredientRepository repo){
         this.repo = repo;
     }
