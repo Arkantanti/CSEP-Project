@@ -85,7 +85,7 @@ public class QuoteOverviewCtrl implements Initializable {
      * Navigates to the "Add Quote" scene.
      */
     public void addQuote() {
-        mainCtrl.showAdd();
+//        mainCtrl.showAdd();
     }
 
     /**

@@ -27,49 +27,32 @@ public class MainCtrl {
 
     private Stage primaryStage;
 
-    private QuoteOverviewCtrl overviewCtrl;
+    private RecipeOverviewCtrl overviewCtrl;
     private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
 
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
      * @param primaryStage the primary stage of the application
      * @param overview     the pair containing the controller and parent for the overview scene
-     * @param add          the pair containing the controller and parent for the add quote scene
      */
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add) {
+    public void initialize(Stage primaryStage, Pair<RecipeOverviewCtrl, Parent> overview) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
 
         showOverview();
         primaryStage.show();
     }
 
     /**
-     * Displays the quote overview scene.
+     * Displays the recipe overview scene.
      * Sets the title and refreshes the data in the overview controller.
      */
     public void showOverview() {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
-        overviewCtrl.refresh();
-    }
-
-    /**
-     * Displays the add quote scene.
-     * Sets the title and attaches the key event listener.
-     */
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+//        overviewCtrl.refresh();
     }
 }
