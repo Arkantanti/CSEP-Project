@@ -83,4 +83,8 @@ public class RecipeIngredientRepositoryTest implements RecipeIngredientRepositor
     @Override public <S extends RecipeIngredient> long count(Example<S> example) { return 0; }
     @Override public <S extends RecipeIngredient> boolean exists(Example<S> example) { return false; }
     @Override public <S extends RecipeIngredient, R> R findBy(Example<S> example, Function<FetchableFluentQuery<S>, R> queryFunction) { return null; }
+    @Override
+    public List<RecipeIngredient> findByRecipeId(long recipeId) {
+        return List.of();
+    }
 }
