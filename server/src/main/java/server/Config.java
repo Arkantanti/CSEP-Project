@@ -38,7 +38,8 @@ public class Config {
      * Seeds the database with test data on startup.
      */
     @Bean
-    public CommandLineRunner demoData(RecipeRepository recipeRepo, IngredientRepository ingredientRepo) {
+    public CommandLineRunner demoData(RecipeRepository recipeRepo,
+                                      IngredientRepository ingredientRepo) {
         return args -> {
             // 1. Create Ingredients
             Ingredient flour = ingredientRepo.save(new Ingredient("Flour", 1.0, 10.0, 76.0));
@@ -46,7 +47,8 @@ public class Config {
             Ingredient egg = ingredientRepo.save(new Ingredient("Egg", 11.0, 13.0, 1.1));
 
             // 2. Create Recipe
-            Recipe pancake = new Recipe("Pancakes", 4, List.of("Mix ingredients", "Fry in pan", "Serve hot"));
+            Recipe pancake = new Recipe("Pancakes", 4,
+                    List.of("Mix ingredients", "Fry in pan", "Serve hot"));
 
             // For a simple test, just saving the Recipe name is enough to prove the list works:
             recipeRepo.save(pancake);
