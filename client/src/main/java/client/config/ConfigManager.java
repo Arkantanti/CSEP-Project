@@ -20,12 +20,12 @@ public class ConfigManager {
     public static Path getConfigPath(String[] args) {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--cfg") && i + 1 < args.length) {
-                return Path.of("client",args[i + 1]);
+                return Path.of(args[i + 1]);
             }
         }
 
         // Default if not provided
-        return Path.of("client","client-config.json");
+        return Path.of("client-config.json");
     }
 
 
