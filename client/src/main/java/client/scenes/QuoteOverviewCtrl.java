@@ -88,12 +88,5 @@ public class QuoteOverviewCtrl implements Initializable {
 //        mainCtrl.showAdd();
     }
 
-    /**
-     * Refreshes the table data by fetching the latest quotes from the server.
-     */
-    public void refresh() {
-        var quotes = server.getQuotes();
-        data = FXCollections.observableList(quotes);
-        table.setItems(data);
-    }
+
 }

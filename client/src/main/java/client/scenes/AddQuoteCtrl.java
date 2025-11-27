@@ -61,24 +61,7 @@ public class AddQuoteCtrl {
         mainCtrl.showOverview();
     }
 
-    /**
-     * Persists the new quote to the server and returns to the overview.
-     * Shows an error alert if the server communication fails.
-     */
-    public void ok() {
-        try {
-            server.addQuote(getQuote());
-        } catch (WebApplicationException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            return;
-        }
 
-        clearFields();
-        mainCtrl.showOverview();
-    }
 
     /**
      * Helper method to construct a Quote object from the text fields.
@@ -100,21 +83,5 @@ public class AddQuoteCtrl {
         quote.clear();
     }
 
-    /**
-     * Handles key presses for global shortcuts (Enter to submit, Escape to cancel).
-     *
-     * @param e the KeyEvent triggered by the user
-     */
-    public void keyPressed(KeyEvent e) {
-        switch (e.getCode()) {
-            case ENTER:
-                ok();
-                break;
-            case ESCAPE:
-                cancel();
-                break;
-            default:
-                break;
-        }
-    }
+
 }
