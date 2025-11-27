@@ -15,6 +15,7 @@
  */
 package client;
 
+import client.config.Config;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -24,9 +25,16 @@ import client.scenes.RecipeOverviewCtrl;
 
 public class MyModule implements Module {
 
+    private static Config config;
+
+    public static void setConfig(Config cfg) {
+        config = cfg;
+    }
+
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(RecipeOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(Config.class).toInstance(config);
     }
 }

@@ -20,12 +20,12 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import commons.Recipe;
+import client.config.Config;
+import com.google.inject.Inject;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -39,20 +39,16 @@ import jakarta.ws.rs.core.GenericType;
  */
 public class ServerUtils {
 
-    /**
-     * Retrieves a list of all recipes from the server.
-     *
-     * @return a list of Recipe objects
-     */
-    public List<Recipe> getRecipes() {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/recipes/") // Note: Your controller uses a trailing slash
-                .request(APPLICATION_JSON)
-                .get(new GenericType<List<Recipe>>() {
-                });
-    }
+    private final String serverURL;
 
-    private static final String SERVER = "http://localhost:8080/";
+    /**
+     * Constructor for the ServerUtils class.
+     * @param cfg Client config object. Injected with Guice.
+     */
+    @Inject
+    public ServerUtils(Config cfg) {
+        serverURL = cfg.getServerUrl();
+    }
 
     /**
      * Retrieves quotes using standard Java IO streams instead of a REST client.
@@ -62,7 +58,7 @@ public class ServerUtils {
      * @throws URISyntaxException if the URL string is not formatted correctly
      */
     public void getQuotesTheHardWay() throws IOException, URISyntaxException {
-        var url = new URI("http://localhost:8080/api/quotes").toURL();
+        var url = new URI(serverURL + "api/quotes").toURL();
         var is = url.openConnection().getInputStream();
         var br = new BufferedReader(new InputStreamReader(is));
         String line;
@@ -78,7 +74,7 @@ public class ServerUtils {
      */
     public List<Quote> getQuotes() {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/quotes")
+                .target(serverURL).path("api/quotes")
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<Quote>>() {
                 });
@@ -92,7 +88,7 @@ public class ServerUtils {
      */
     public Quote addQuote(Quote quote) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/quotes")
+                .target(serverURL).path("api/quotes")
                 .request(APPLICATION_JSON)
                 .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
     }
@@ -105,13 +101,11 @@ public class ServerUtils {
     public boolean isServerAvailable() {
         try {
             ClientBuilder.newClient(new ClientConfig())
-                    .target(SERVER)
+                    .target(serverURL)
                     .request(APPLICATION_JSON)
                     .get();
         } catch (ProcessingException e) {
-            if (e.getCause() instanceof ConnectException) {
-                return false;
-            }
+            return false;
         }
         return true;
     }

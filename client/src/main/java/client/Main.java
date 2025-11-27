@@ -19,7 +19,10 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 
+import client.config.Config;
+import client.config.ConfigManager;
 import client.scenes.RecipeOverviewCtrl;
 import com.google.inject.Injector;
 
@@ -33,8 +36,8 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    private static final Injector INJECTOR = createInjector(new MyModule());
-    private static final MyFXML FXML = new MyFXML(INJECTOR);
+    private static Injector injector;
+    private static MyFXML fxml;
 
     /**
      * Main method to launch the application.
@@ -44,6 +47,13 @@ public class Main extends Application {
      * @throws IOException        if an I/O error occurs
      */
     public static void main(String[] args) throws URISyntaxException, IOException {
+        Path cfgPath = ConfigManager.getConfigPath(args);
+        Config config = ConfigManager.loadOrCreate(cfgPath);
+
+        MyModule.setConfig(config);
+
+        injector = createInjector(new MyModule());
+        fxml = new MyFXML(injector);
         launch();
     }
 
@@ -56,18 +66,17 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        var serverUtils = INJECTOR.getInstance(ServerUtils.class);
+        var serverUtils = injector.getInstance(ServerUtils.class);
         if (!serverUtils.isServerAvailable()) {
-            var msg = "Server needs to be started before the client, "
-                    + "but it does not seem to be available. Shutting down.";
+            var msg = "The server URL is incorrect or the server is unavailable. Shutting down.";
             System.err.println(msg);
             return;
         }
 
-        var overview = FXML.load(RecipeOverviewCtrl.class,
+        var overview = fxml.load(RecipeOverviewCtrl.class,
                 "client", "scenes", "RecipeOverview.fxml");
 
-        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        var mainCtrl = injector.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, overview);
     }
 }

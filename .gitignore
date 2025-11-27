@@ -12,6 +12,8 @@ build/
 /coverage/*
 **/*.swp
 
+**/client-config.json
+
 ### STS ###
 .apt_generated
 **/.classpath
