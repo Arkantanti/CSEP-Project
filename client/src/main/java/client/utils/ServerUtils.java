@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import commons.Recipe;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -37,6 +38,19 @@ import jakarta.ws.rs.core.GenericType;
  * Utility class for communicating with the server via REST.
  */
 public class ServerUtils {
+
+    /**
+     * Retrieves a list of all recipes from the server.
+     *
+     * @return a list of Recipe objects
+     */
+    public List<Recipe> getRecipes() {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/recipes/") // Note: Your controller uses a trailing slash
+                .request(APPLICATION_JSON)
+                .get(new GenericType<List<Recipe>>() {
+                });
+    }
 
     private static final String SERVER = "http://localhost:8080/";
 
