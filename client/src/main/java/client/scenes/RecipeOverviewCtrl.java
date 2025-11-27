@@ -4,14 +4,17 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Recipe;
 import commons.RecipeIngredient;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class RecipeOverviewCtrl implements Initializable {
@@ -31,11 +34,11 @@ public class RecipeOverviewCtrl implements Initializable {
     @FXML
     private ListView<String> preparationStepList;
 
-
     /**
-     * Constructs a new RecipeOverviewCtrl
-     * @param server   the server utility for network operations
-     * @param mainCtrl the main controller for scene navigation
+     * Constructs a new RecipeOverviewCtrl with the necessary dependencies.
+     *
+     * @param server   the server utility used for network communication
+     * @param mainCtrl the main controller used for scene navigation
      */
     @Inject
     public RecipeOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -43,102 +46,106 @@ public class RecipeOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Recipe testRecipe = new Recipe("Recipe0", 2, new ArrayList<>());
-        Recipe testRecipe2 = new Recipe("Recipe1", 2, new ArrayList<>());
-        Recipe testRecipe3 = new Recipe("Recipe3", 2, new ArrayList<>());
-
-        // example usage
-        recipeList.getItems().addAll(testRecipe, testRecipe2, testRecipe3,
-                new Recipe("Recipe4", 2, new ArrayList<>()),
-                new Recipe("Recipe5", 2, new ArrayList<>()),
-                new Recipe("Recipe6", 2, new ArrayList<>()),
-                new Recipe("Recipe7", 2, new ArrayList<>()),
-                new Recipe("Recipe8", 2, new ArrayList<>()),
-                new Recipe("Recipe9", 2, new ArrayList<>()),
-                new Recipe("Recipe10", 2, new ArrayList<>()),
-                new Recipe("Recipe11", 2, new ArrayList<>()),
-                new Recipe("Recipe12", 2, new ArrayList<>()),
-                new Recipe("Recipe13", 2, new ArrayList<>()),
-                new Recipe("Recipe14", 2, new ArrayList<>()),
-                new Recipe("Recipe15", 2, new ArrayList<>()),
-                new Recipe("Recipe16", 2, new ArrayList<>()),
-                new Recipe("Recipe17", 2, new ArrayList<>()),
-                new Recipe("Recipe18", 2, new ArrayList<>()),
-                new Recipe("Recipe19", 2, new ArrayList<>()),
-                new Recipe("Recipe20", 2, new ArrayList<>()),
-                new Recipe("Recipe21", 2, new ArrayList<>()),
-                new Recipe("Recipe22", 2, new ArrayList<>()),
-                new Recipe("Recipe23", 2, new ArrayList<>()),
-                new Recipe("Recipe24", 2, new ArrayList<>()),
-                new Recipe("Recipe25", 2, new ArrayList<>()),
-                new Recipe("Recipe26", 2, new ArrayList<>()),
-                new Recipe("Recipe27", 2, new ArrayList<>())
-        );
-
-        // detecting clicks in the listview
-        recipeList.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
-            if (newValue != null) {
-                openRecipe(newValue);
-            }
-        });
-
-        // setting up the listview to inform it what to show (IE just the list name)
-        recipeList.setCellFactory(list -> new ListCell<Recipe>() {
+        // 1. Setup the List for Recipes (Show only name)
+        recipeList.setCellFactory(list -> new ListCell<>() {
             @Override
-            protected void updateItem(Recipe item, boolean empty){
+            protected void updateItem(Recipe item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                }
-                else {
-                    setText(item.getName());
-                }
+                setText((empty || item == null) ? null : item.getName());
             }
         });
 
-        // simple implementation, will have to be expanded to be able to add new ingredients.
+        // 2. Setup the Listener (When clicked, open details)
+        recipeList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                openRecipe(newVal);
+            }
+        });
+
+        // 3. Setup the List for Ingredients (Show name and amount)
         ingredientList.setCellFactory(list -> new ListCell<>() {
             @Override
             protected void updateItem(RecipeIngredient item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
-                }
-                else{
-                    setText(item.getIngredient().getName());
+                } else {
+                    // Formats as: "Potato (500 GRAM)"
+                    String text = item.getIngredient().getName();
+                    if (item.getAmount() > 0) {
+                        text += " (" + item.getAmount() + " "
+                                + (item.getUnit() != null ? item.getUnit() : "") + ")";
+                    }
+                    setText(text);
                 }
             }
         });
+
+        // 4. Initial Load
+        loadRecipes();
     }
 
     /**
-     * Opens a recipe onto the typing area
-     * @param recipe the recipe to open
+     * Populates the detail view (Title, Ingredients, Steps) with data from the selected recipe.
+     * Clears the list views if the recipe data is null.
+     *
+     * @param recipe the recipe to display
      */
     private void openRecipe(Recipe recipe) {
-        // TODO: Implement recipe opening
-        System.out.println("Selected " + recipe.getName());
+        // Update the UI fields with the selected recipe's data
+        recipeTitle.setText(recipe.getName());
+
+        // Populate Ingredients
+        if (recipe.getIngredients() != null) {
+            ingredientList.setItems(FXCollections.observableArrayList(recipe.getIngredients()));
+        } else {
+            ingredientList.getItems().clear();
+        }
+
+        // Populate Steps
+        if (recipe.getPreparationSteps() != null) {
+            preparationStepList.setItems(FXCollections
+                    .observableArrayList(recipe.getPreparationSteps()));
+        } else {
+            preparationStepList.getItems().clear();
+        }
     }
 
     /**
-     * creates a new recipe (both locally and on the server), and opens it for the user to edit
+     * Handles the creation of a new recipe.
+     * This method is triggered when the "Add" button is clicked.
      */
     public void createNewRecipe() {
-        // TODO: implement recipe adding
+        // TODO: Implement recipe adding logic
+        System.out.println("Add button clicked");
     }
 
     /**
-     * fetches all recipes from the server and displays them in the listview
-     * should probably also reopen the currently open recipe
-     * Also used by the refresh button
+     * Fetches the complete list of recipes from the server and updates the recipe ListView.
+     * <p>
+     * This method runs asynchronously to avoid blocking the UI thread. If the server
+     * is unreachable, an error alert is displayed to the user.
      */
     public void loadRecipes() {
-        // TODO: implement recipe loading
-        // set title
-        // load ingredients
-        // load steps
+        try {
+            // Fetch from server
+            List<Recipe> recipes = server.getRecipes();
+
+            // Update UI on JavaFX Application Thread
+            Platform.runLater(() -> {
+                recipeList.setItems(FXCollections.observableArrayList(recipes));
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Connection Error");
+                alert.setHeaderText("Could not load recipes");
+                alert.setContentText("Check if the server is running.");
+                alert.showAndWait();
+            });
+        }
     }
 }

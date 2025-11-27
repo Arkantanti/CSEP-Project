@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Quote;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -88,12 +87,5 @@ public class QuoteOverviewCtrl implements Initializable {
 //        mainCtrl.showAdd();
     }
 
-    /**
-     * Refreshes the table data by fetching the latest quotes from the server.
-     */
-    public void refresh() {
-        var quotes = server.getQuotes();
-        data = FXCollections.observableList(quotes);
-        table.setItems(data);
-    }
+
 }

@@ -82,7 +82,8 @@ public class RecipeIngredientController {
      *         otherwise {@code 200 OK} with the updated entry
      */
     @PutMapping("{id}")
-    public ResponseEntity<RecipeIngredient> update(@PathVariable long id, @RequestBody RecipeIngredient ri) {
+    public ResponseEntity<RecipeIngredient> update(@PathVariable long id,
+                                                   @RequestBody RecipeIngredient ri) {
         if (id < 0) {
             return ResponseEntity.badRequest().build();
         }

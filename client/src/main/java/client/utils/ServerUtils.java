@@ -17,21 +17,18 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
+
 import java.util.List;
 
 import client.config.Config;
 import com.google.inject.Inject;
+import commons.Recipe; // <--- DON'T FORGET THIS IMPORT
 import org.glassfish.jersey.client.ClientConfig;
 
-import commons.Quote;
+
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
+
 import jakarta.ws.rs.core.GenericType;
 
 /**
@@ -51,47 +48,19 @@ public class ServerUtils {
     }
 
     /**
-     * Retrieves quotes using standard Java IO streams instead of a REST client.
-     * This is a demonstration of the "hard way" to fetch data.
+     * Retrieves a list of all recipes from the server.
      *
-     * @throws IOException        if an I/O error occurs during the connection
-     * @throws URISyntaxException if the URL string is not formatted correctly
+     * @return a list of Recipe objects
      */
-    public void getQuotesTheHardWay() throws IOException, URISyntaxException {
-        var url = new URI(serverURL + "api/quotes").toURL();
-        var is = url.openConnection().getInputStream();
-        var br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-    }
-
-    /**
-     * Retrieves a list of all quotes from the server using JAX-RS.
-     *
-     * @return a list of Quote objects
-     */
-    public List<Quote> getQuotes() {
+    public List<Recipe> getRecipes() {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(serverURL).path("api/quotes")
+                .target(serverURL).path("api/recipes/")
                 .request(APPLICATION_JSON)
-                .get(new GenericType<List<Quote>>() {
+                .get(new GenericType<List<Recipe>>() {
                 });
     }
 
-    /**
-     * Persists a new quote to the server.
-     *
-     * @param quote the Quote object to add
-     * @return the saved Quote object returned by the server
-     */
-    public Quote addQuote(Quote quote) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(serverURL).path("api/quotes")
-                .request(APPLICATION_JSON)
-                .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-    }
+    // ... (Keep the Quote methods if you still need them, or delete them) ...
 
     /**
      * Checks if the server is currently reachable.
