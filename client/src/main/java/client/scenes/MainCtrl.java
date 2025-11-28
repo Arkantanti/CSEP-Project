@@ -17,8 +17,12 @@ package client.scenes;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.io.File;
+import java.nio.file.Path;
 
 /**
  * The Main Controller that manages the execution flow and scene switching.
@@ -54,5 +58,26 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
 //        overviewCtrl.refresh();
+    }
+
+    /**
+     * Opens the FileChooser windows and returns the path of the file chosen by the user.
+     * The user is forced to choose a Markdown file.
+     * @return {@link Path} chosen by the user
+     */
+    public Path showFileChooser() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choose Markdown Save Location");
+
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Markdown Files", "*.md")
+        );
+        File file = chooser.showSaveDialog(primaryStage);
+
+        if (file != null) {
+            return file.toPath();
+        }
+
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.RecipePrinter;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Recipe;
@@ -13,7 +14,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -144,6 +147,28 @@ public class RecipeOverviewCtrl implements Initializable {
                 alert.setTitle("Connection Error");
                 alert.setHeaderText("Could not load recipes");
                 alert.setContentText("Check if the server is running.");
+                alert.showAndWait();
+            });
+        }
+    }
+
+    /**
+     * Saves the currently selected recipe as a markdown file in a location specified by the user.
+     */
+    public void recipePrint() {
+        Recipe recipe = recipeList.getSelectionModel().getSelectedItem();
+        Path path = mainCtrl.showFileChooser();
+        if(recipe==null || path==null) {
+            return;
+        }
+        try {
+            RecipePrinter.recipePrint(path, recipe);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Saving error");
+                alert.setHeaderText("Could not save the recipe");
                 alert.showAndWait();
             });
         }
