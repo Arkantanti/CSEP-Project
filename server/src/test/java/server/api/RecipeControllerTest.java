@@ -31,8 +31,6 @@ class RecipeControllerTest {
         repo.save(r2);
     }
 
-    // -----------------------------------------------------
-
     @Test
     void getRecipeById_ValidId_ReturnsRecipe() {
         ResponseEntity<Recipe> result = controller.getById(r1.getId());
@@ -48,8 +46,6 @@ class RecipeControllerTest {
         assertEquals(404, result.getStatusCodeValue());
     }
 
-    // -----------------------------------------------------
-
     @Test
     void addRecipe_ValidRecipe_ReturnsSaved() {
         Recipe r3 = new Recipe("Salad", 2, List.of(""));
@@ -59,8 +55,6 @@ class RecipeControllerTest {
         assertEquals(200, result.getStatusCodeValue());
         assertTrue(repo.existsById(result.getBody().getId()));
     }
-
-    // -----------------------------------------------------
 
     @Test
     void updateRecipe_Valid() {
@@ -87,8 +81,6 @@ class RecipeControllerTest {
 
         assertEquals(400, result.getStatusCodeValue());
     }
-
-    // -----------------------------------------------------
 
     @Test
     void deleteRecipe_Success() {
