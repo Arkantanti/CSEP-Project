@@ -5,7 +5,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.beans.BeanProperty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +71,10 @@ public class Recipe {
         return ingredients;
     }
 
+    /**
+     * This function adds a new ingredient to the database of the recipe.
+     * @param recipeIngredient
+     */
     public void addIngredient(RecipeIngredient recipeIngredient){
         this.ingredients.add(recipeIngredient);
     }
@@ -84,6 +87,11 @@ public class Recipe {
         this.preparationSteps = preparationSteps;
     }
 
+    /**
+     * This function updates the recipe ingredients in the ingredient array of the recipe.
+     * @param num is the number of where we need to update in the array.
+     * @param recipeIngredient is what we are gonna replace it with.
+     */
     public void updateRecipeIngredient(int num, RecipeIngredient recipeIngredient){
         try{
             this.ingredients.get(num).setIngredient(recipeIngredient.getIngredient());

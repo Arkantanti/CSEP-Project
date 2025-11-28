@@ -2,12 +2,9 @@ package server.api;
 
 import commons.Recipe;
 import commons.RecipeIngredient;
-import commons.Unit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.database.InMemoryRecipeRepository;
 import server.database.RecipeRepository;
-
 import java.util.List;
 
 /**
@@ -35,8 +32,8 @@ public class RecipeController {
     }
 
     //This under here is to test my function.
-//    private final InMemoryRecipeRepository repo; // <--- use concrete class
-//
+//    private final InMemoryRecipeRepository repo;
+// <--- use concrete class
 //    public RecipeController(InMemoryRecipeRepository repo) {
 //        this.repo = repo;
 //    } //to test if my repositories work
@@ -170,7 +167,7 @@ public class RecipeController {
      * @return {@code 400 Bad Request} if validation fails,
      *         otherwise {@code 200 OK} containing the saved recipe
      */
-    @PostMapping("{id}/recipeingredient")
+    @PostMapping("{id}/recipe-ingredient")
     public ResponseEntity<Recipe> addRecipeIngredient(@PathVariable long id,
                                                       @RequestBody RecipeIngredient recipeIngredient) {
 
@@ -218,7 +215,7 @@ public class RecipeController {
      *         {@code 404 Not Found} if the recipeIngredient is invalid in any way,
      *         otherwise {@code 200 OK} with the updated recipeIngredient
      */
-    @PutMapping("{recipeId}/recipeingredient/{num}")
+    @PutMapping("{recipeId}/recipe-ingredient/{num}")
     public ResponseEntity<Recipe> updateRecipeIngredient(@PathVariable long recipeId,
                                                          @PathVariable int num,
                                                          @RequestBody RecipeIngredient recipeIngredient) {
@@ -265,7 +262,7 @@ public class RecipeController {
      *         {@code 404 Not Found} if no recipe with the given ID exists,
      *         otherwise {@code 204 No Content} when deletion succeeds
      */
-    @DeleteMapping("{recipeId}/recipeingredients/{num}")
+    @DeleteMapping("{recipeId}/recipe-ingredients/{num}")
     public ResponseEntity<Recipe> deleteRecipeIngredient(@PathVariable long recipeId,
                                                        @PathVariable int num) {
         if (recipeId < 0) {
