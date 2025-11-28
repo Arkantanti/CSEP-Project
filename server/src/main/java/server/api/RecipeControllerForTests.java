@@ -4,6 +4,7 @@ import commons.Recipe;
 import commons.RecipeIngredient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import server.database.InMemoryRecipeRepository;
 import server.database.RecipeRepository;
 import java.util.List;
 
@@ -19,17 +20,20 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/recipes/")
-public class RecipeController {
-    private final RecipeRepository repo;
+public class RecipeControllerForTests {
+
+    //This under here is to test my function.
+
+    private final InMemoryRecipeRepository repo;
 
     /**
      * Constructs a new {@code RecipeController} with the given repository.
      *
      * @param repo the {@link RecipeRepository} used for database operations
      */
-    public RecipeController(RecipeRepository repo){
+    public RecipeControllerForTests(InMemoryRecipeRepository repo) {
         this.repo = repo;
-    }
+    } //to test if my repositories work
 
 
     /**
@@ -174,15 +178,15 @@ public class RecipeController {
 
         if(
                 recipeIngredient.getIngredient().getName() == null ||
-                recipeIngredient.getIngredient().getName().isBlank() ||
-                recipeIngredient.getIngredient().getFat() < 0 ||
-                recipeIngredient.getIngredient().getProtein() < 0 ||
-                recipeIngredient.getIngredient().getCarbs() < 0 ||
-                recipeIngredient.getInformalUnit() == null ||
-                recipeIngredient.getInformalUnit().isBlank() ||
-                recipeIngredient.getAmount() <= 0 ||
-                recipeIngredient.getUnit() == null
-            ){
+                        recipeIngredient.getIngredient().getName().isBlank() ||
+                        recipeIngredient.getIngredient().getFat() < 0 ||
+                        recipeIngredient.getIngredient().getProtein() < 0 ||
+                        recipeIngredient.getIngredient().getCarbs() < 0 ||
+                        recipeIngredient.getInformalUnit() == null ||
+                        recipeIngredient.getInformalUnit().isBlank() ||
+                        recipeIngredient.getAmount() <= 0 ||
+                        recipeIngredient.getUnit() == null
+        ){
             return ResponseEntity.badRequest().build();
         }
 
@@ -257,7 +261,7 @@ public class RecipeController {
      */
     @DeleteMapping("{recipeId}/recipe-ingredients/{num}")
     public ResponseEntity<Recipe> deleteRecipeIngredient(@PathVariable long recipeId,
-                                                       @PathVariable int num) {
+                                                         @PathVariable int num) {
         if (recipeId < 0) {
             return ResponseEntity.badRequest().build();
         }
