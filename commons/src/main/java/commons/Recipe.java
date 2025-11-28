@@ -73,7 +73,7 @@ public class Recipe {
 
     /**
      * This function adds a new ingredient to the database of the recipe.
-     * @param recipeIngredient
+     * @param recipeIngredient the ingredient it needs to add.
      */
     public void addIngredient(RecipeIngredient recipeIngredient){
         this.ingredients.add(recipeIngredient);
@@ -104,6 +104,10 @@ public class Recipe {
 
     }
 
+    /**
+     * function to remove a specific ingredient in the list.
+     * @param num the place in the array where it needs to remove.
+     */
     public void removeRecipeIngredient(int num){
         try{
             this.ingredients.remove(num);
