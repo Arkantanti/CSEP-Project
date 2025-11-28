@@ -25,11 +25,6 @@ import java.util.List;
 public class RecipeController {
     private final RecipeRepository repo;
 
-//    private final InMemoryRecipeRepository repo; // <--- use concrete class
-//
-//    public RecipeController(InMemoryRecipeRepository repo) {
-//        this.repo = repo;
-//    } to test if my repositories work
     /**
      * Constructs a new {@code RecipeController} with the given repository.
      *
@@ -38,6 +33,14 @@ public class RecipeController {
     public RecipeController(RecipeRepository repo){
         this.repo = repo;
     }
+
+    //This under here is to test my function.
+//    private final InMemoryRecipeRepository repo; // <--- use concrete class
+//
+//    public RecipeController(InMemoryRecipeRepository repo) {
+//        this.repo = repo;
+//    } //to test if my repositories work
+
 
     /**
      * Retrieves all recipes stored on the server.

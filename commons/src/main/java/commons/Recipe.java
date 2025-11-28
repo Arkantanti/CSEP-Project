@@ -85,14 +85,24 @@ public class Recipe {
     }
 
     public void updateRecipeIngredient(int num, RecipeIngredient recipeIngredient){
-        this.ingredients.get(num).setIngredient(recipeIngredient.getIngredient());
-        this.ingredients.get(num).setInformalUnit(recipeIngredient.getInformalUnit());
-        this.ingredients.get(num).setAmount(recipeIngredient.getAmount());
-        this.ingredients.get(num).setUnit(recipeIngredient.getUnit());
+        try{
+            this.ingredients.get(num).setIngredient(recipeIngredient.getIngredient());
+            this.ingredients.get(num).setInformalUnit(recipeIngredient.getInformalUnit());
+            this.ingredients.get(num).setAmount(recipeIngredient.getAmount());
+            this.ingredients.get(num).setUnit(recipeIngredient.getUnit());
+        } catch(IndexOutOfBoundsException e){
+            System.out.println("There are no problems");
+        }
+
     }
 
     public void removeRecipeIngredient(int num){
-        this.ingredients.remove(num);
+        try{
+            this.ingredients.remove(num);
+        } catch(IndexOutOfBoundsException e){
+            System.out.println("There was nothing to delete here.");
+        }
+
     };
 
 
