@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import server.database.RecipeRepository;
-import server.database.InMemoryRecipeRepository;
 
 import java.util.List;
 
