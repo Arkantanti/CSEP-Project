@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.beans.BeanProperty;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
@@ -44,6 +46,7 @@ public class Recipe {
     public Recipe(String name,
                   int servings,
                   List<String> preparationSteps) {
+        this.ingredients = new ArrayList<RecipeIngredient>();
         this.name = name;
         this.servings = servings;
         this.preparationSteps = preparationSteps;
@@ -68,6 +71,30 @@ public class Recipe {
     public List<RecipeIngredient> getIngredients() {
         return ingredients;
     }
+
+    public void addIngredient(RecipeIngredient recipeIngredient){
+        this.ingredients.add(recipeIngredient);
+    }
+
+    public void setName(String name){ this.name = name;}
+
+    public void setServings(int servings){ this.servings = servings; }
+
+    public void setPreparationSteps(List<String> preparationSteps) {
+        this.preparationSteps = preparationSteps;
+    }
+
+    public void updateRecipeIngredient(int num, RecipeIngredient recipeIngredient){
+        this.ingredients.get(num).setIngredient(recipeIngredient.getIngredient());
+        this.ingredients.get(num).setInformalUnit(recipeIngredient.getInformalUnit());
+        this.ingredients.get(num).setAmount(recipeIngredient.getAmount());
+        this.ingredients.get(num).setUnit(recipeIngredient.getUnit());
+    }
+
+    public void removeRecipeIngredient(int num){
+        this.ingredients.remove(num);
+    };
+
 
     @Override
     public boolean equals(Object obj) {

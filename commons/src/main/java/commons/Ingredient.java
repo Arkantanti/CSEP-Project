@@ -71,6 +71,29 @@ public class Ingredient {
         return carbs;
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setFat(double fat){
+        this.fat = fat;
+    }
+
+    public void setProtein(double protein){
+        this.protein = protein;
+    }
+
+    public void setCarbs(double carbs){
+        this.carbs = carbs;
+    }
+
+    public void changeIngredient(String name, double fat, double protein, double carbs){
+        this.setName(name);
+        this.setFat(fat);
+        this.setProtein(protein);
+        this.setCarbs(carbs);
+    }
+
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
