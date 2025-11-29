@@ -16,6 +16,7 @@
 package client;
 
 import client.config.Config;
+import client.utils.Printer;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -36,5 +37,6 @@ public class MyModule implements Module {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(RecipeOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(Config.class).toInstance(config);
+        binder.bind(Printer.class).in(Scopes.SINGLETON);
     }
 }

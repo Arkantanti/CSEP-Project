@@ -1,6 +1,6 @@
 package client.scenes;
 
-import client.utils.RecipePrinter;
+import client.utils.Printer;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Recipe;
@@ -24,6 +24,7 @@ public class RecipeOverviewCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final Printer printer;
 
     @FXML
     private ListView<Recipe> recipeList;
@@ -44,9 +45,10 @@ public class RecipeOverviewCtrl implements Initializable {
      * @param mainCtrl the main controller used for scene navigation
      */
     @Inject
-    public RecipeOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public RecipeOverviewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.printer = printer;
     }
 
     @Override
@@ -157,12 +159,13 @@ public class RecipeOverviewCtrl implements Initializable {
      */
     public void recipePrint() {
         Recipe recipe = recipeList.getSelectionModel().getSelectedItem();
-        Path path = mainCtrl.showFileChooser();
+        Path path = mainCtrl.showFileChooser("Recipe.pdf");
         if(recipe==null || path==null) {
             return;
         }
         try {
-            RecipePrinter.recipePrint(path, recipe);
+            String markdown = printer.recipePrint(recipe);
+            printer.markdownToPDF(path, markdown);
         } catch (IOException e) {
             e.printStackTrace();
             Platform.runLater(() -> {

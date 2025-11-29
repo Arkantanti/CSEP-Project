@@ -65,12 +65,13 @@ public class MainCtrl {
      * The user is forced to choose a Markdown file.
      * @return {@link Path} chosen by the user
      */
-    public Path showFileChooser() {
+    public Path showFileChooser(String placeholder) {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Choose Markdown Save Location");
+        chooser.setInitialFileName(placeholder);
 
         chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Markdown Files", "*.md")
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
         );
         File file = chooser.showSaveDialog(primaryStage);
 
