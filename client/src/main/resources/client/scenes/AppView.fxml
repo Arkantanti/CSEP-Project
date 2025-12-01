@@ -29,7 +29,7 @@
       </ToolBar>
    </top>
    <left>
-      <VBox prefHeight="438.0" prefWidth="187.0" styleClass="sidebar-root" stylesheets="@../../styles/sidebar.css" BorderPane.alignment="CENTER">
+      <VBox prefHeight="438.0" prefWidth="187.0" styleClass="sidebar-root" stylesheets="/styles/sidebar.css" BorderPane.alignment="CENTER">
          <children>
             <HBox prefHeight="47.0" prefWidth="170.0" spacing="5.0" styleClass="sidebar-actions">
                <children>

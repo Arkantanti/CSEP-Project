@@ -13,23 +13,29 @@
    <content>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0" spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
          <children>
-            <HBox prefHeight="45.0" maxWidth="1.7976931348623157E308" styleClass="recipe-title-section">
+            <HBox maxWidth="1.7976931348623157E308" prefHeight="32.0" prefWidth="520.0" styleClass="recipe-title-section">
                <children>
-                   <Label fx:id="nameLabel" styleClass="recipe-title" text="Pizza Dough">
+                   <Label fx:id="nameLabel" prefHeight="35.0" prefWidth="312.0" styleClass="recipe-title" text="Pizza Dough">
                      <font>
                         <Font size="24.0" />
                      </font>
                      <HBox.margin>
                         <Insets left="10.0" top="5.0" />
                      </HBox.margin></Label>
-                   <TextField fx:id="nameTextField" promptText="Edit title" visible="false" />
-                  <Button fx:id="titleEditButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" minHeight="35.0" minWidth="35.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✏" textFill="#1e00ff">
+                   <TextField fx:id="nameTextField" managed="false" prefHeight="35.0" promptText="Edit title" style="-fx-font-size: 24px;" visible="false">
+                     <HBox.margin>
+                        <Insets left="10.0" top="5.0" />
+                     </HBox.margin></TextField>
+                  <Button fx:id="titleEditButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" onAction="#onEditClicked" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✏" textFill="#1e00ff">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="22.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="5.0" top="5.0" />
+                        <Insets top="2.0" />
                      </HBox.margin>
+                     <padding>
+                        <Insets bottom="1.0" />
+                     </padding>
                   </Button>
                </children>
             </HBox>
@@ -46,7 +52,7 @@
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
             </VBox>
-            <Button fx:id="ingredientAddButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" minHeight="35.0" minWidth="40.0" styleClass="add-button" text="+">
+            <Button fx:id="ingredientAddButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="+">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -67,7 +73,7 @@
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
             </VBox>
-            <Button fx:id="preparationAddButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" minHeight="35.0" minWidth="40.0" styleClass="add-button" text="+">
+            <Button fx:id="preparationAddButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onAddClicked" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="+">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

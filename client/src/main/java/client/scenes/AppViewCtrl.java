@@ -25,7 +25,7 @@ public class AppViewCtrl implements Initializable {
     private final MainCtrl mainCtrl;
 
     @FXML
-    public StackPane contentRoot;
+    private StackPane contentRoot;
 
     @FXML
     private ListView<Showable> itemsList;
@@ -67,12 +67,12 @@ public class AppViewCtrl implements Initializable {
             }
         });
 
-        itemsList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+        itemsList.getSelectionModel().selectedItemProperty().addListener((
+                obs, oldVal, newVal) -> {
             if (newVal != null && newVal instanceof Recipe) {
                 mainCtrl.showRecipe((Recipe) newVal);
             }
         });
-        
         loadRecipes();
     }
 

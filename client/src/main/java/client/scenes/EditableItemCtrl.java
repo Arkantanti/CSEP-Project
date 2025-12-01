@@ -24,6 +24,9 @@ public class EditableItemCtrl {
     private boolean editing = false;
     private String labelText;
 
+    /**
+     * Internally run method that initializes an EditableItem component
+     */
     @FXML
     public void initialize() {
         // default state is label with text
@@ -32,13 +35,13 @@ public class EditableItemCtrl {
 
         textField.setMinWidth(Region.USE_PREF_SIZE);
         textField.setMaxWidth(Region.USE_PREF_SIZE);
-
-        // Set text if it was already set before initialize
-        if (labelText != null) {
-            textLabel.setText(labelText);
-        }
     }
 
+    /**
+     * Sets the text for the {@code textLabel}
+     *
+     * @param text the text which will be set to the {@code textLabel}
+     */
     public void setText(String text) {
         labelText = text;
         if (textLabel != null) {
@@ -50,6 +53,12 @@ public class EditableItemCtrl {
         return labelText;
     }
 
+    /**
+     * The onAction method for when the {@code editButton is clicked}
+     * When button is not in edit mode the {@code textLabel} turns into a {@code textField}
+     * and the editButton turns into a green check button. When the button is
+     * in edit mode the {@code textField} turns into {@code textLabel}
+     */
     @FXML
     private void onEditClicked() {
         if (!editing) {
@@ -59,14 +68,20 @@ public class EditableItemCtrl {
         }
     }
 
+    /**
+     * Turns {@code textLabel} into {@code textField} and set {@code editButton}
+     *  into a check character instead of edit character.
+     */
     private void startEditing() {
         editing = true;
         textField.setText(textLabel.getText());
         
         textLabel.setVisible(false);
         textLabel.setManaged(false);
+
         deleteButton.setVisible(false);
         deleteButton.setManaged(false);
+
         textField.setVisible(true);
         textField.setManaged(true);
 
@@ -77,6 +92,10 @@ public class EditableItemCtrl {
         editButton.setTextFill(Color.GREEN);
     }
 
+    /**
+     * Turns {@code textField} into {@code textLabel} and set {@code editButton}
+     *  into an edit character instead of check character
+     *  */
     private void finishEditing() {
         editing = false;
 

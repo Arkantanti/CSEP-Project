@@ -59,10 +59,7 @@ public class RecipeIngredientController {
     @PostMapping("")
     public ResponseEntity<RecipeIngredient> add(@RequestBody RecipeIngredient ri) {
 
-        if (ri == null
-                || ri.getRecipe() == null
-                || ri.getIngredient() == null
-                || ri.getAmount() < 0) {
+        if (ri == null || !isValidRecipeIngredient(ri)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -88,10 +85,7 @@ public class RecipeIngredientController {
             return ResponseEntity.badRequest().build();
         }
 
-        if (ri == null
-                || ri.getRecipe() == null
-                || ri.getIngredient() == null
-                || ri.getAmount() < 0) {
+        if (ri == null || !isValidRecipeIngredient(ri)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -123,6 +117,30 @@ public class RecipeIngredientController {
 
         repo.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Checks whether The following validation rules apply to a RecipeIngredient:
+     *      *     ID must be non-negative
+     *      *     The incoming recipe must not be {@code null}
+     *      *     The recipe must have a valid name and serving size
+     *      *     The preparation steps must not be {@code null}
+     *      *     A recipe with the given ID must already exist
+     * @param recipeIngredient the recipe ingredient to validate
+     * @return boolean value whether {@code recipeIngredient} is valid
+     */
+    private boolean isValidRecipeIngredient(RecipeIngredient recipeIngredient) {
+        if (recipeIngredient == null || recipeIngredient.getRecipe() == null ||
+            recipeIngredient.getIngredient() == null) {
+            return false;
+        }
+        return recipeIngredient.getIngredient().getName() != null &&
+                !recipeIngredient.getIngredient().getName().isBlank() &&
+                !(recipeIngredient.getIngredient().getFat() < 0) &&
+                !(recipeIngredient.getIngredient().getProtein() < 0) &&
+                !(recipeIngredient.getIngredient().getCarbs() < 0) &&
+                !(recipeIngredient.getAmount() <= 0) &&
+                recipeIngredient.getUnit() != null;
     }
 }
 

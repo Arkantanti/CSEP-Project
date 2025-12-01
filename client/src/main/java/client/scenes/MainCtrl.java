@@ -37,8 +37,8 @@ public class MainCtrl {
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
      * @param primaryStage the primary stage of the application
-     * @param overview     the pair containing the controller and parent for the overview scene
-     * @param fxml         the FXML loader for loading views
+     * @param appView the pair containing the controller and parent for the overview scene
+     * @param fxml the FXML loader for loading views
      */
     public void initialize(Stage primaryStage, Pair<AppViewCtrl, Parent> appView, MyFXML fxml) {
         this.primaryStage = primaryStage;
@@ -57,7 +57,6 @@ public class MainCtrl {
     public void showAppView() {
         primaryStage.setTitle("FoodPal");
         primaryStage.setScene(appView);
-//        overviewCtrl.refresh();
     }
 
     /**
