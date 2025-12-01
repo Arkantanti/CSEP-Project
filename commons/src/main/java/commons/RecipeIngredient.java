@@ -1,6 +1,7 @@
 package commons;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -80,6 +81,14 @@ public class RecipeIngredient {
     public Unit getUnit() {
         return unit;
     }
+
+    public void setIngredient(Ingredient ingredient){ this.ingredient = ingredient; }
+
+    public void setInformalUnit(String informalUnit){ this.informalUnit = informalUnit; }
+
+    public void setAmount(double amount){ this.amount = amount; }
+
+    public void setUnit(Unit unit){ this.unit = unit; }
 
     @Override
     public boolean equals(Object obj) {
