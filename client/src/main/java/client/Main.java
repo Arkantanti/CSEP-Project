@@ -23,7 +23,7 @@ import java.nio.file.Path;
 
 import client.config.Config;
 import client.config.ConfigManager;
-import client.scenes.RecipeOverviewCtrl;
+import client.scenes.AppViewCtrl;
 import com.google.inject.Injector;
 
 import client.scenes.MainCtrl;
@@ -73,10 +73,10 @@ public class Main extends Application {
             return;
         }
 
-        var overview = fxml.load(RecipeOverviewCtrl.class,
-                "client", "scenes", "RecipeOverview.fxml");
+        var overview = fxml.load(AppViewCtrl.class,
+                "client", "scenes", "AppView.fxml");
 
         var mainCtrl = injector.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview);
+        mainCtrl.initialize(primaryStage, overview, fxml);
     }
 }

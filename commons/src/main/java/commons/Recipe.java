@@ -10,7 +10,7 @@ import java.util.List;
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 @Entity
-public class Recipe {
+public class Recipe implements Showable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

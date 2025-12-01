@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 @Entity
-public class Ingredient {
+public class Ingredient implements Showable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

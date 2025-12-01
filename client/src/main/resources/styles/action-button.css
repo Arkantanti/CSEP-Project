@@ -1,0 +1,11 @@
+.action-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 2;
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 3;
+}

@@ -56,7 +56,7 @@ public class AddQuoteCtrl {
      */
     public void cancel() {
         clearFields();
-        mainCtrl.showOverview();
+        //mainCtrl.showOverview();
     }
 
 
