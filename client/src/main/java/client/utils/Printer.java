@@ -28,7 +28,7 @@ public class Printer {
         output.append("\n\n**Ingredients:**");
         for(RecipeIngredient ing : recipe.getIngredients()) {
             output.append("\n - ").append(ing.getIngredient().getName());
-            output.append(" - ").append(ing.getAmount()!=0 ? ing.getAmount() : "");
+            output.append(" - ").append(ing.getAmount()!=0 ? ing.getAmount() : "").append(" ");
             output.append(ing.getUnit()==Unit.CUSTOM ? ing.getInformalUnit() : ing.getUnit());
         }
         output.append("\n\n**Preparation steps:**");
@@ -73,6 +73,8 @@ public class Printer {
                         """
                         </body>
                         </html>""";
+
+        Files.createDirectories(path.getParent());
 
         try (OutputStream os = Files.newOutputStream(path)) {
             PdfRendererBuilder builder = new PdfRendererBuilder();
