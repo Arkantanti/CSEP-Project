@@ -1,0 +1,48 @@
+.sidebar-root {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 0 1 0 0;
+    -fx-spacing: 4;
+    -fx-padding: 4 8 4 8;
+}
+
+.sidebar-toggle {
+    -fx-background-color: #f4f4f4;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-padding: 4 12;
+    -fx-font-size: 10px;
+}
+
+.sidebar-toggle:hover {
+    -fx-background-color: #e6e6e6;
+}
+
+.sidebar-toggle:pressed {
+    -fx-background-color: #dcdcdc;
+}
+
+.sidebar-actions {
+    -fx-spacing: 6;
+    -fx-alignment: center;
+    -fx-padding: 2 0 2 0;
+}
+
+.sidebar-action-button {
+    -fx-background-color: #f4f4f4;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #c3c3c3;
+    -fx-border-width: 1;
+    -fx-font-weight: bold;
+}
+
+.sidebar-action-button:hover {
+    -fx-background-color: #e6e6e6;
+}
+
+.sidebar-action-button:pressed {
+    -fx-background-color: #d8d8d8;
+}

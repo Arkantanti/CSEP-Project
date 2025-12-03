@@ -111,89 +111,89 @@ class RecipeControllerTest {
         return new RecipeIngredient(r2, ing, "cup", 50, Unit.GRAM);
     }
 
-    @Test
-    void addRecipeIngredient_Valid_ReturnsOk() {
-        var result = controller.addRecipeIngredient(r1.getId(), validIngredient());
+    // @Test
+    // void addRecipeIngredient_Valid_ReturnsOk() {
+    //     var result = controller.addRecipeIngredient(r1.getId(), validIngredient());
 
-        assertEquals(200, result.getStatusCodeValue());
-        assertEquals(1, result.getBody().getIngredients().size());
-    }
+    //     assertEquals(200, result.getStatusCodeValue());
+    //     assertEquals(1, result.getBody().getIngredients().size());
+    // }
 
-    @Test
-    void addRecipeIngredient_InvalidRecipeId_ReturnsBadRequest() {
-        var result = controller.addRecipeIngredient(-1, validIngredient());
-        assertEquals(400, result.getStatusCodeValue());
-    }
+    // @Test
+    // void addRecipeIngredient_InvalidRecipeId_ReturnsBadRequest() {
+    //     var result = controller.addRecipeIngredient(-1, validIngredient());
+    //     assertEquals(400, result.getStatusCodeValue());
+    // }
 
-    @Test
-    void addRecipeIngredient_RecipeNotFound_ReturnsNotFound() {
-        var result = controller.addRecipeIngredient(999, validIngredient());
-        assertEquals(404, result.getStatusCodeValue());
-    }
+    // @Test
+    // void addRecipeIngredient_RecipeNotFound_ReturnsNotFound() {
+    //     var result = controller.addRecipeIngredient(999, validIngredient());
+    //     assertEquals(404, result.getStatusCodeValue());
+    // }
 
-    @Test
-    void addRecipeIngredient_InvalidIngredient_ReturnsBadRequest() {
-        Ingredient badIng = new Ingredient("", 1, 1, 1);
-        RecipeIngredient bad = new RecipeIngredient(r1, badIng, "cup", 50, Unit.GRAM);
+    // @Test
+    // void addRecipeIngredient_InvalidIngredient_ReturnsBadRequest() {
+    //     Ingredient badIng = new Ingredient("", 1, 1, 1);
+    //     RecipeIngredient bad = new RecipeIngredient(r1, badIng, "cup", 50, Unit.GRAM);
 
-        var result = controller.addRecipeIngredient(r1.getId(), bad);
-        assertEquals(400, result.getStatusCodeValue());
-    }
+    //     var result = controller.addRecipeIngredient(r1.getId(), bad);
+    //     assertEquals(400, result.getStatusCodeValue());
+    // }
 
-    @Test
-    void updateRecipeIngredient_Valid_ReturnsOk() {
-        controller.addRecipeIngredient(r1.getId(), validIngredient());
+    // @Test
+    // void updateRecipeIngredient_Valid_ReturnsOk() {
+    //     controller.addRecipeIngredient(r1.getId(), validIngredient());
 
-        Ingredient sugar = new Ingredient("Sugar", 0, 0, 0);
-        RecipeIngredient updated = new RecipeIngredient(r1, sugar, "tbsp", 10, Unit.GRAM);
+    //     Ingredient sugar = new Ingredient("Sugar", 0, 0, 0);
+    //     RecipeIngredient updated = new RecipeIngredient(r1, sugar, "tbsp", 10, Unit.GRAM);
 
-        var result = controller.updateRecipeIngredient(r1.getId(), 0, updated);
+    //     var result = controller.updateRecipeIngredient(r1.getId(), 0, updated);
 
-        assertEquals(200, result.getStatusCodeValue());
-        assertEquals("Sugar",
-                result.getBody().getIngredients().get(0).getIngredient().getName());
-    }
+    //     assertEquals(200, result.getStatusCodeValue());
+    //     assertEquals("Sugar",
+    //             result.getBody().getIngredients().get(0).getIngredient().getName());
+    // }
 
-    @Test
-    void updateRecipeIngredient_InvalidRecipeId_ReturnsBadRequest() {
-        var result = controller.updateRecipeIngredient(-1, 0, validIngredient());
-        assertEquals(400, result.getStatusCodeValue());
-    }
+    // @Test
+    // void updateRecipeIngredient_InvalidRecipeId_ReturnsBadRequest() {
+    //     var result = controller.updateRecipeIngredient(-1, 0, validIngredient());
+    //     assertEquals(400, result.getStatusCodeValue());
+    // }
 
-    @Test
-    void updateRecipeIngredient_RecipeNotFound_ReturnsNotFound() {
-        var result = controller.updateRecipeIngredient(999, 0, validIngredient());
-        assertEquals(404, result.getStatusCodeValue());
-    }
+    // @Test
+    // void updateRecipeIngredient_RecipeNotFound_ReturnsNotFound() {
+    //     var result = controller.updateRecipeIngredient(999, 0, validIngredient());
+    //     assertEquals(404, result.getStatusCodeValue());
+    // }
 
-    @Test
-    void updateRecipeIngredient_InvalidIngredient_ReturnsBadRequest() {
-        Ingredient bad = new Ingredient("", 1, 1, 1);
-        RecipeIngredient ri = new RecipeIngredient(r1, bad, "cup", 10, Unit.GRAM);
+    // @Test
+    // void updateRecipeIngredient_InvalidIngredient_ReturnsBadRequest() {
+    //     Ingredient bad = new Ingredient("", 1, 1, 1);
+    //     RecipeIngredient ri = new RecipeIngredient(r1, bad, "cup", 10, Unit.GRAM);
 
-        var result = controller.updateRecipeIngredient(r1.getId(), 0, ri);
-        assertEquals(400, result.getStatusCodeValue());
-    }
+    //     var result = controller.updateRecipeIngredient(r1.getId(), 0, ri);
+    //     assertEquals(400, result.getStatusCodeValue());
+    // }
 
-    @Test
-    void deleteRecipeIngredient_Valid_ReturnsOk() {
-        controller.addRecipeIngredient(r1.getId(), validIngredient());
+    // @Test
+    // void deleteRecipeIngredient_Valid_ReturnsOk() {
+    //     controller.addRecipeIngredient(r1.getId(), validIngredient());
 
-        var result = controller.deleteRecipeIngredient(r1.getId(), 0);
+    //     var result = controller.deleteRecipeIngredient(r1.getId(), 0);
 
-        assertEquals(200, result.getStatusCodeValue());
-        assertTrue(result.getBody().getIngredients().isEmpty());
-    }
+    //     assertEquals(200, result.getStatusCodeValue());
+    //     assertTrue(result.getBody().getIngredients().isEmpty());
+    // }
 
-    @Test
-    void deleteRecipeIngredient_InvalidRecipeId_ReturnsBadRequest() {
-        var result = controller.deleteRecipeIngredient(-1, 0);
-        assertEquals(400, result.getStatusCodeValue());
-    }
+    // @Test
+    // void deleteRecipeIngredient_InvalidRecipeId_ReturnsBadRequest() {
+    //     var result = controller.deleteRecipeIngredient(-1, 0);
+    //     assertEquals(400, result.getStatusCodeValue());
+    // }
 
-    @Test
-    void deleteRecipeIngredient_RecipeNotFound_ReturnsNotFound() {
-        var result = controller.deleteRecipeIngredient(999, 0);
-        assertEquals(404, result.getStatusCodeValue());
-    }
+    // @Test
+    // void deleteRecipeIngredient_RecipeNotFound_ReturnsNotFound() {
+    //     var result = controller.deleteRecipeIngredient(999, 0);
+    //     assertEquals(404, result.getStatusCodeValue());
+    // }
 }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.RecipeViewCtrl">
+   <content>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0" spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
+         <children>
+            <HBox maxWidth="1.7976931348623157E308" prefHeight="32.0" prefWidth="520.0" styleClass="recipe-title-section">
+               <children>
+                   <Label fx:id="nameLabel" prefHeight="35.0" prefWidth="312.0" styleClass="recipe-title" text="Pizza Dough">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" top="5.0" />
+                     </HBox.margin></Label>
+                   <TextField fx:id="nameTextField" managed="false" prefHeight="35.0" promptText="Edit title" style="-fx-font-size: 24px;" visible="false">
+                     <HBox.margin>
+                        <Insets left="10.0" top="5.0" />
+                     </HBox.margin></TextField>
+                  <Button fx:id="titleEditButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" onAction="#onEditClicked" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✏" textFill="#1e00ff">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="1.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="printButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" onAction="#recipePrint" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="@../../styles/action-button.css" text="🖶">
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="1.0" />
+                     </padding></Button>
+               </children>
+            </HBox>
+            <Label prefHeight="28.0" prefWidth="113.0" text="Ingredients:">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+            </Label>
+            <VBox fx:id="ingredientsContainer" maxHeight="1.7976931348623157E308" styleClass="items-container">
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </VBox>
+            <Button fx:id="ingredientAddButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="+">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" top="5.0" />
+               </VBox.margin>
+            </Button>
+            <Label prefHeight="28.0" prefWidth="113.0" text="Preparation:">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+            </Label>
+            <VBox fx:id="preparationsContainer" maxHeight="1.7976931348623157E308" styleClass="items-container">
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </VBox>
+            <Button fx:id="preparationAddButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onAddClicked" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="+">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" top="5.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

@@ -1,0 +1,13 @@
+.recipe-line {
+    -fx-alignment: center-left;
+    -fx-spacing: 5;
+}
+
+.recipe-line .label {
+    -fx-alignment: center-left;
+}
+
+.recipe-line .text-field {
+    -fx-alignment: center-left;
+}
+
