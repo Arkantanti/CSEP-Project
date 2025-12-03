@@ -21,6 +21,7 @@ class PrinterTest {
 
     private Recipe recipe;
     private Printer printer;
+    private List<RecipeIngredient> recipeIngredients;
 
     @BeforeEach
     public void setup() {
@@ -31,9 +32,7 @@ class PrinterTest {
         RecipeIngredient ri1 = new RecipeIngredient(recipe,i1,null,70, Unit.GRAM);
         RecipeIngredient ri2 = new RecipeIngredient(recipe,i2,"pinches",2, Unit.CUSTOM);
         RecipeIngredient ri3 = new RecipeIngredient(recipe,i3,"just a bit",0, Unit.CUSTOM);
-        recipe.addIngredient(ri1);
-        recipe.addIngredient(ri2);
-        recipe.addIngredient(ri3);
+        recipeIngredients = Arrays.asList(ri1,ri2,ri3);
         printer = new Printer();
     }
 
@@ -46,8 +45,8 @@ class PrinterTest {
                 **Servings:** 4
                 
                 **Ingredients:**
-                 - Butter - 70.0 GRAM
-                 - Bread - 2.0 pinches
+                 - Butter - 70 grams
+                 - Bread - 2 pinches
                  - Cheese -  just a bit
                 
                 **Preparation steps:**
@@ -56,12 +55,12 @@ class PrinterTest {
                 3. step3
                 
                 HAVE A GOOD MEAL!!""";
-        assertEquals(expected,printer.recipePrint(recipe));
+        assertEquals(expected,printer.recipePrint(recipe, recipeIngredients));
     }
 
     @Test
     void markdownToPDF(){
-        String markdown = printer.recipePrint(recipe);
+        String markdown = printer.recipePrint(recipe, recipeIngredients);
         // Get a random path to a temp file
         try {
             Path dir = Files.createTempDirectory("config-test");

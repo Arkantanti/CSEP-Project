@@ -11,8 +11,10 @@ import commons.Unit;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class Printer {
     /**
@@ -21,20 +23,25 @@ public class Printer {
      * @param recipe {@link Recipe} object which is to be saved in markdown
      * @return String with markdown formatted description of the recipe
      */
-    public String recipePrint(Recipe recipe) {
+    public String recipePrint(Recipe recipe, List<RecipeIngredient> recipeIngredients) {
         StringBuilder output = new StringBuilder();
         output.append("## ").append(recipe.getName()).append("\n\n");
         output.append("\n**Servings:** ").append(recipe.getServings());
         output.append("\n\n**Ingredients:**");
-        for(RecipeIngredient ing : recipe.getIngredients()) {
+        for(RecipeIngredient ing : recipeIngredients) {
             output.append("\n - ").append(ing.getIngredient().getName());
-            output.append(" - ").append(ing.getAmount()!=0 ? ing.getAmount() : "").append(" ");
-            output.append(ing.getUnit()==Unit.CUSTOM ? ing.getInformalUnit() : ing.getUnit());
+            String amount = new BigDecimal(Double.toString(ing.getAmount()))
+                    .stripTrailingZeros()
+                    .toPlainString();
+            output.append(" - ").append(amount.equals("0") ? "" : amount).append(" ");
+            String unit =
+                    ing.getUnit()==Unit.CUSTOM ? ing.getInformalUnit() : ing.getUnit().toString();
+            output.append(unit==null ? "" : unit);
         }
         output.append("\n\n**Preparation steps:**");
         for(int i=1; i<=recipe.getPreparationSteps().size(); i++) {
             output.append("\n").append(i).append(". ");
-            output.append(recipe.getPreparationSteps().get(i-1));             // Add auto line-breaks
+            output.append(recipe.getPreparationSteps().get(i-1));    // Add auto line-breaks
         }
         output.append("\n\nHAVE A GOOD MEAL!!");
 

@@ -46,6 +46,7 @@ public class RecipeViewCtrl {
     private final MainCtrl mainCtrl;
     private final Printer printer;
     private Recipe recipe;
+    private List<RecipeIngredient> ingredients;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -147,6 +148,7 @@ public class RecipeViewCtrl {
      */
     private void loadIngredients(List<RecipeIngredient> ingredients) {
         ingredientsContainer.getChildren().clear();
+        this.ingredients = ingredients;
         if (ingredients == null || fxml == null) {
             return;
         }
@@ -221,7 +223,7 @@ public class RecipeViewCtrl {
             return;
         }
         try {
-            String markdown = printer.recipePrint(recipe);
+            String markdown = printer.recipePrint(recipe, ingredients);
             printer.markdownToPDF(path, markdown);
         } catch (IOException e) {
             e.printStackTrace();
