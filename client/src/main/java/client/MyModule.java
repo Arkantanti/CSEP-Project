@@ -16,12 +16,12 @@
 package client;
 
 import client.config.Config;
+import client.scenes.AppViewCtrl;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
 
 import client.scenes.MainCtrl;
-import client.scenes.RecipeOverviewCtrl;
 
 public class MyModule implements Module {
 
@@ -34,7 +34,7 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(RecipeOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AppViewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(Config.class).toInstance(config);
     }
 }

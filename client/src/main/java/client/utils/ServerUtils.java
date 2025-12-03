@@ -22,7 +22,8 @@ import java.util.List;
 
 import client.config.Config;
 import com.google.inject.Inject;
-import commons.Recipe; // <--- DON'T FORGET THIS IMPORT
+import commons.Recipe;
+import commons.RecipeIngredient;
 import org.glassfish.jersey.client.ClientConfig;
 
 
@@ -60,7 +61,19 @@ public class ServerUtils {
                 });
     }
 
-    // ... (Keep the Quote methods if you still need them, or delete them) ...
+    /**
+     * Retrieves all recipe ingredients for a specific recipe from the server.
+     *
+     * @param recipeId the ID of the recipe
+     * @return a list of RecipeIngredient objects
+     */
+    public List<RecipeIngredient> getRecipeIngredients(long recipeId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(serverURL).path("api/recipeingredients/by-recipe/" + recipeId)
+                .request(APPLICATION_JSON)
+                .get(new GenericType<List<RecipeIngredient>>() {
+                });
+    }
 
     /**
      * Checks if the server is currently reachable.

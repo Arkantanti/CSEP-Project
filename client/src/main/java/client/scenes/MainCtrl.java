@@ -15,6 +15,8 @@
  */
 package client.scenes;
 
+import client.MyFXML;
+import commons.Recipe;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -27,22 +29,24 @@ public class MainCtrl {
 
     private Stage primaryStage;
 
-    private RecipeOverviewCtrl overviewCtrl;
-    private Scene overview;
+    private AppViewCtrl appViewCtrl;
+    private Scene appView;
+    private MyFXML fxml;
 
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
      * @param primaryStage the primary stage of the application
-     * @param overview     the pair containing the controller and parent for the overview scene
+     * @param appView the pair containing the controller and parent for the overview scene
+     * @param fxml the FXML loader for loading views
      */
-    public void initialize(Stage primaryStage, Pair<RecipeOverviewCtrl, Parent> overview) {
+    public void initialize(Stage primaryStage, Pair<AppViewCtrl, Parent> appView, MyFXML fxml) {
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
+        this.appViewCtrl = appView.getKey();
+        this.appView = new Scene(appView.getValue());
+        this.fxml = fxml;
 
-
-        showOverview();
+        showAppView();
         primaryStage.show();
     }
 
@@ -50,9 +54,23 @@ public class MainCtrl {
      * Displays the recipe overview scene.
      * Sets the title and refreshes the data in the overview controller.
      */
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-//        overviewCtrl.refresh();
+    public void showAppView() {
+        primaryStage.setTitle("FoodPal");
+        primaryStage.setScene(appView);
+    }
+
+    /**
+     * Opens the recipe view for the selected recipe in the AppView content area.
+     *
+     * @param recipe the recipe to display
+     */
+    public void showRecipe(Recipe recipe) {
+        if (fxml == null || appViewCtrl == null) {
+            throw new IllegalStateException("FXML or AppViewCtrl are null");
+        }
+        Pair<RecipeViewCtrl, Parent> recipeView = fxml.load(RecipeViewCtrl.class,
+                "client", "scenes", "RecipeView.fxml");
+        recipeView.getKey().setRecipe(recipe, fxml);
+        appViewCtrl.setContent(recipeView.getValue());
     }
 }

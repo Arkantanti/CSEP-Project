@@ -1,7 +1,6 @@
 package commons;
 
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -34,11 +33,11 @@ public class RecipeIngredient {
     protected RecipeIngredient() {
         // for object mapping
     }
-
+    
     /**
      * Creates a new RecipeIngredient object that links a Recipe to a
-     * Ingredient, with either a structured amount and unit or optional
-     * informal unit.
+     * Ingredient, with either a formal amount and unit or an
+     * informal amount.
      * @param recipe       the recipe this ingredient is part of
      * @param ingredient   the ingredient used in the recipe
      * @param informalUnit a String description of the informal amount (e.g. "a pinch",
@@ -80,6 +79,10 @@ public class RecipeIngredient {
 
     public Unit getUnit() {
         return unit;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     public void setIngredient(Ingredient ingredient){ this.ingredient = ingredient; }
