@@ -76,6 +76,14 @@
                         <Insets left="10.0" top="5.0" />
                     </VBox.margin>
                 </Button>
+                <Button fx:id="cancelButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="✓">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets left="10.0" top="5.0" />
+                    </VBox.margin>
+                </Button>
             </children>
         </VBox>
     </content>

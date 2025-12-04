@@ -128,7 +128,19 @@ public class ServerUtils {
      */
     public Recipe add(Recipe recipe){
         return ClientBuilder.newClient(new ClientConfig())
-                .target(serverURL).path("/api/recipes")
+                .target(serverURL).path("/api/recipes/")
+                .request(APPLICATION_JSON)
+                .post(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
+    }
+
+    /**
+     * this function is to clone the recipe
+     * @param recipe the recipe that will be cloned
+     * @return return the new recipe
+     */
+    public Recipe clone(Recipe recipe){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(serverURL).path("/api/recipes/clone")
                 .request(APPLICATION_JSON)
                 .post(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
     }

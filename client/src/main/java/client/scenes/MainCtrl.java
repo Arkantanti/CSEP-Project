@@ -79,7 +79,7 @@ public class MainCtrl {
     }
 
     /**
-     * gne
+     * The function to show the addRecipe fxml file
      */
     public void showAddRecipe() {
         Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class,

@@ -304,10 +304,32 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * gne
+     * This function will be implemented for adding recipes
      */
     public void cloneRecipe(){
-        server.add(this.recipe);
+        try {
+            Recipe recipeNew = new Recipe(this.recipe.getName(), this.recipe.getServings(), this.recipe.getPreparationSteps());
+            Recipe savedRecipe = server.add(recipeNew);
+
+            mainCtrl.showRecipe(savedRecipe);
+            server.clone(savedRecipe);
+
+        } catch (Exception e) {
+            showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
+        }
+    }
+
+    /**
+     * To show an error for if something goes wrong
+     * @param header The head text of the error
+     * @param content The main text of the error
+     */
+    private void showError(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
 

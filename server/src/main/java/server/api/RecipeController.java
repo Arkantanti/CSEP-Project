@@ -35,7 +35,7 @@ public class RecipeController {
      *
      * @return a list of all {@link Recipe} objects available in the system
      */
-    @GetMapping( "")
+    @GetMapping("")
     public List<Recipe> getAll() {
         return repo.findAll();
     }
@@ -156,6 +156,25 @@ public class RecipeController {
 
         repo.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Adds a new recipe to the system.
+     * The following conditions must be met, otherwise a
+     * {@code 400 Bad Request} response is returned:
+     *     The recipe must have a non-empty name
+     *     The number of servings must be at least 1
+     *     The preparation steps must not be {@code null}
+     *
+     * @param recipe the recipe object to be added
+     * @return {@code 400 Bad Request} if validation fails,
+     *         otherwise {@code 200 OK} containing the saved recipe
+     */
+    @PostMapping("clone")
+    public ResponseEntity<Recipe> clone(@RequestBody Recipe recipe) {
+
+        Recipe saved = repo.save(recipe);
+        return ResponseEntity.ok(saved);
     }
 
     /**

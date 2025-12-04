@@ -117,15 +117,4 @@ public class AppViewCtrl implements Initializable {
             });
         }
     }
-
-    /**
-     * gne
-     */
-    public void addRecipes(){
-        String name = "food";
-        int servings = 2;
-        List<String> preparationList = List.of("hello", "teo");
-        Recipe recipe = new Recipe(name, servings, preparationList);
-        server.add(recipe);
-    }
 }

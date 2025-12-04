@@ -2,10 +2,7 @@ package client.scenes;
 
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
-import com.sun.javafx.scene.control.IntegerField;
-import commons.Ingredient;
 import commons.Recipe;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -15,23 +12,15 @@ import java.util.List;
 
 public class AddRecipeCtrl {
     @FXML
-    private Button titleEditButton;
-    @FXML
     private Label nameLabel;
     @FXML
     private VBox ingredientsContainer;
     @FXML
     private Button ingredientAddButton;
     @FXML
-    private VBox preparationsContainer;
-    @FXML
     private Button saveButton;
-    /**
-     * gne
-     */
     @FXML
-    public void initialize() {
-    }
+    private Button cancelButton;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -45,9 +34,8 @@ public class AddRecipeCtrl {
     private TextArea preparationsArea;
 
     /**
-     *  gne
-     * @param server gne
-     * @param mainCtrl gne
+     *  The constructor for the add recipeController
+     * @param server the server it is linked to
      */
     @Inject
     public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -56,7 +44,7 @@ public class AddRecipeCtrl {
     }
 
     /**
-     *  gne
+     * The function to save the recipes
      */
     @FXML
     public void onSaveRecipe() {
@@ -75,7 +63,7 @@ public class AddRecipeCtrl {
                 return;
             }
 
-            if (name.isBlank() || preparationSteps.isEmpty() || servings < 0) {
+            if (name.isBlank() || preparationSteps.isEmpty()) {
                 showError("Input was invalid", "Please fill all fields correctly.");
                 return;
             }
@@ -91,7 +79,7 @@ public class AddRecipeCtrl {
     }
 
     /**
-     *  gne
+     *  cancel function for the adding recipes
      */
     @FXML
     public void onCancel() {
@@ -100,7 +88,7 @@ public class AddRecipeCtrl {
     }
 
     /**
-     * gne
+     * clearing the fields in the input place
      */
     private void clearFields() {
         nameTextField.clear();
@@ -108,9 +96,9 @@ public class AddRecipeCtrl {
     }
 
     /**
-     * gne
-     * @param header gne
-     * @param content gne
+     * To show an error for if something goes wrong
+     * @param header The head text of the error
+     * @param content The main text of the error
      */
     private void showError(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
