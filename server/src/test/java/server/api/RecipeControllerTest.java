@@ -21,6 +21,29 @@ class RecipeControllerTest {
     private Recipe r1;
     private Recipe r2;
 
+    @Test
+    void searchRecipes_ValidQuery_ReturnsMatches() {
+        // Setup: Add a specific recipe to search for
+        Recipe applePie = new Recipe("Apple Pie", 4, List.of("Bake"));
+        repo.save(applePie);
+
+        // Test: Search for "Apple"
+        ResponseEntity<List<Recipe>> result = controller.searchRecipes("Apple");
+
+        // Verify
+        assertEquals(200, result.getStatusCodeValue());
+        assertFalse(result.getBody().isEmpty());
+        assertEquals("Apple Pie", result.getBody().get(0).getName());
+    }
+
+    @Test
+    void searchRecipes_EmptyQuery_ReturnsBadRequest() {
+        // Test: Search with empty string or null
+        ResponseEntity<List<Recipe>> result = controller.searchRecipes("");
+
+        assertEquals(400, result.getStatusCodeValue());
+    }
+
     @BeforeEach
     void setUp() {
         repo = new RecipeRepositoryTest();
