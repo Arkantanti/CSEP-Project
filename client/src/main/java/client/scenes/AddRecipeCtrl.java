@@ -26,8 +26,6 @@ public class AddRecipeCtrl {
     private VBox preparationsContainer;
     @FXML
     private Button saveButton;
-    
-    private ActionEvent ae;
     /**
      * gne
      */
@@ -63,23 +61,32 @@ public class AddRecipeCtrl {
     @FXML
     public void onSaveRecipe() {
         try {
-
+            List<String> preparationSteps = Arrays.asList(preparationsArea.getText().split("\\r?\\n"));
             String name = nameTextField.getText().trim();
-            int servings = Integer.parseInt(servingsArea.getText().trim());
-            List<String> preperationSteps = Arrays.asList(preparationsArea.getText().split("\\r?\\n"));
-
-            if (name.isBlank() || preperationSteps.isEmpty() || servings < 0) {
-                showError("Invalid input", "Please fill all fields correctly.");
+            int servings;
+            try {
+                servings = Integer.parseInt(servingsArea.getText().trim());
+                if (servings < 1) {
+                    showError("Input Error", "Servings must be at least 1.");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                showError("Input Error", "Servings must be a number.");
                 return;
             }
 
-            Recipe recipe = new Recipe(name, servings, preperationSteps);
+            if (name.isBlank() || preparationSteps.isEmpty() || servings < 0) {
+                showError("Input was invalid", "Please fill all fields correctly.");
+                return;
+            }
+
+            Recipe recipe = new Recipe(name, servings, preparationSteps);
             Recipe savedRecipe = server.add(recipe);
 
             clearFields();
             mainCtrl.showRecipe(savedRecipe);
         } catch (Exception e) {
-            showError("Error", "Could not save recipe. Check your input or server connection.");
+            showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
         }
     }
 
