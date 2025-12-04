@@ -1,7 +1,6 @@
-package server.api;
+package server.database;
 
 import commons.Recipe;
-import server.database.RecipeRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,10 +41,12 @@ public class RecipeRepositoryTest implements RecipeRepository {
     @Override
     public <S extends Recipe> S save(S entity) {
         call("save");
-        // Simple manual ID generation
-        // Note: In a real app, you might need reflection to set the private ID field
-        // or add a setId() method to your Entity for testing purposes.
-        // For now, we just add it to the list.
+        if(entity.getId()==0 ||
+                recipes.stream().noneMatch(q -> q.getId() == entity.getId())) {
+            entity.setId(recipes.stream().mapToLong(Recipe::getId).max().orElse(0) + 1);
+        } else {
+            recipes.removeIf(q -> q.getId() == entity.getId());
+        }
         recipes.add(entity);
         return entity;
     }

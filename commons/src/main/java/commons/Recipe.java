@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
+
 @Entity
 public class Recipe implements Showable{
 
@@ -63,6 +64,8 @@ public class Recipe implements Showable{
     }
 
     public void setName(String name){ this.name = name;}
+
+    public void setId(Long id){ this.id = id;}
 
     public void setServings(int servings){ this.servings = servings; }
 
