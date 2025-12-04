@@ -122,19 +122,6 @@ public class RecipeController {
         return ResponseEntity.ok(saved);
     }
 
-    /**
-     * Searches for recipes containing the given name (case-insensitive).
-     *
-     * @param name the search string
-     * @return a list of matching recipes
-     */
-    @GetMapping("search")
-    public ResponseEntity<List<Recipe>> searchRecipes(@RequestParam String name) {
-        if (isNullOrEmpty(name)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.findByNameContainingIgnoreCase(name));
-    }
 
     /**
      * Deletes the recipe with the specified ID.
@@ -167,5 +154,23 @@ public class RecipeController {
      */
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
+    }
+
+    /**
+     * Searches for recipes based on a flexible query string.
+     * The search is case-insensitive and checks against recipe names,
+     * ingredient names, and preparation steps.
+     *
+     * @param name the search query string (can be a partial name, ingredient, or step keyword)
+     * @return {@code 400 Bad Request} if the query string is {@code null} or blank,
+     * otherwise {@code 200 OK} with a list of matching {@link Recipe} objects
+     */
+    @GetMapping("search")
+    public ResponseEntity<List<Recipe>> searchRecipes(@RequestParam String name) {
+        if (name == null || name.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        // Changed from findByNameContainingIgnoreCase to search
+        return ResponseEntity.ok(repo.search(name));
     }
 }

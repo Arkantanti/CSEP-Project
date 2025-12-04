@@ -23,6 +23,17 @@ public class Recipe implements Showable{
     @ElementCollection
     private List<String> preparationSteps;
 
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeIngredient> ingredients;
+
+    public List<RecipeIngredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<RecipeIngredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
     /**
      * No argument constructor used by JPA for Recipe instantiation.
      * should not be used directly in code.
@@ -46,6 +57,8 @@ public class Recipe implements Showable{
         this.servings = servings;
         this.preparationSteps = preparationSteps;
     }
+
+
 
     public long getId() {
         return id;
