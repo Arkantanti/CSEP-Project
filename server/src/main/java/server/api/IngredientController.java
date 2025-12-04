@@ -144,6 +144,15 @@ public class IngredientController {
     }
 
     /**
+     * Returns all ingredients sorted alphabetically by name.
+     * * @return a sorted list of Ingredient objects
+     */
+    @GetMapping("sorted")
+    public List<Ingredient> getSortedIngredients() {
+        return repo.findAllByOrderByNameAsc();
+    }
+
+    /**
      * Checks whether a string is null or empty.
      *
      * @param s the string to check

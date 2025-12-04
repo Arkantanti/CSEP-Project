@@ -19,8 +19,12 @@ import client.MyFXML;
 import commons.Recipe;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.io.File;
+import java.nio.file.Path;
 
 /**
  * The Main Controller that manages the execution flow and scene switching.
@@ -72,5 +76,27 @@ public class MainCtrl {
                 "client", "scenes", "RecipeView.fxml");
         recipeView.getKey().setRecipe(recipe, fxml);
         appViewCtrl.setContent(recipeView.getValue());
+    }
+
+    /**
+     * Opens the FileChooser windows and returns the path of the file chosen by the user.
+     * The user is forced to choose a Markdown file.
+     * @return {@link Path} chosen by the user
+     */
+    public Path showFileChooser(String placeholder) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choose Markdown Save Location");
+        chooser.setInitialFileName(placeholder);
+
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
+        File file = chooser.showSaveDialog(primaryStage);
+
+        if (file != null) {
+            return file.toPath();
+        }
+
+        return null;
     }
 }

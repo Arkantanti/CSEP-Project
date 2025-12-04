@@ -123,6 +123,20 @@ public class RecipeController {
     }
 
     /**
+     * Searches for recipes containing the given name (case-insensitive).
+     *
+     * @param name the search string
+     * @return a list of matching recipes
+     */
+    @GetMapping("search")
+    public ResponseEntity<List<Recipe>> searchRecipes(@RequestParam String name) {
+        if (isNullOrEmpty(name)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(repo.findByNameContainingIgnoreCase(name));
+    }
+
+    /**
      * Deletes the recipe with the specified ID.
      *
      * @param id the ID of the recipe to delete
