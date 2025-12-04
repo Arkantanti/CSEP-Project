@@ -25,8 +25,6 @@ public class AddRecipeCtrl {
     @FXML
     private VBox preparationsContainer;
     @FXML
-    private Button preparationAddButton;
-    @FXML
     private Button saveButton;
     
     private ActionEvent ae;
@@ -35,12 +33,10 @@ public class AddRecipeCtrl {
      */
     @FXML
     public void initialize() {
-        preparationAddButton.setOnAction(e -> recipeViewCtrl.onAddClicked(ae));
     }
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private final RecipeViewCtrl recipeViewCtrl;
 
     @FXML
     private TextField nameTextField;
@@ -48,7 +44,7 @@ public class AddRecipeCtrl {
     private TextField servingsArea;
 
     @FXML
-    private TextArea preperationsArea;
+    private TextArea preparationsArea;
 
     /**
      *  gne
@@ -56,10 +52,9 @@ public class AddRecipeCtrl {
      * @param mainCtrl gne
      */
     @Inject
-    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl, RecipeViewCtrl recipeViewCtrl) {
+    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.recipeViewCtrl = recipeViewCtrl;
     }
 
     /**
@@ -71,7 +66,7 @@ public class AddRecipeCtrl {
 
             String name = nameTextField.getText().trim();
             int servings = Integer.parseInt(servingsArea.getText().trim());
-            List<String> preperationSteps = Arrays.asList(preperationsArea.getText().split("\\r?\\n"));
+            List<String> preperationSteps = Arrays.asList(preparationsArea.getText().split("\\r?\\n"));
 
             if (name.isBlank() || preperationSteps.isEmpty() || servings < 0) {
                 showError("Invalid input", "Please fill all fields correctly.");
