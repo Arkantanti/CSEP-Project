@@ -37,6 +37,16 @@
                         <Insets bottom="1.0" />
                      </padding>
                   </Button>
+                  <Button fx:id="printButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" onAction="#recipePrint" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="🖶" textFill="#1e00ff">
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="1.0" />
+                     </padding>
+                     <font>
+                        <Font size="22.0" />
+                     </font></Button>
                </children>
             </HBox>
             <Label prefHeight="28.0" prefWidth="113.0" text="Ingredients:">

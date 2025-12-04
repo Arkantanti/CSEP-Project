@@ -1,13 +1,16 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.utils.Printer;
 import client.utils.ServerUtils;
 import commons.Recipe;
 import commons.Unit;
 import commons.RecipeIngredient;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -16,6 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import com.google.inject.Inject;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 public class RecipeViewCtrl {
@@ -36,8 +41,12 @@ public class RecipeViewCtrl {
     private Button preparationAddButton;
 
     private MyFXML fxml;
-    private ServerUtils server;
+    private final ServerUtils server;
     private boolean editing = false;
+    private final MainCtrl mainCtrl;
+    private final Printer printer;
+    private Recipe recipe;
+    private List<RecipeIngredient> ingredients;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -45,7 +54,9 @@ public class RecipeViewCtrl {
      * @param server the server utility used for network communication
      */
     @Inject
-    public RecipeViewCtrl(ServerUtils server) {
+    public RecipeViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
+        this.mainCtrl = mainCtrl;
+        this.printer = printer;
         this.server = server;
     }
 
@@ -68,6 +79,7 @@ public class RecipeViewCtrl {
      */
     public void setRecipe(Recipe recipe, MyFXML fxml) {
         this.fxml = fxml;
+        this.recipe = recipe;
         if (recipe != null) {
             nameLabel.setText(recipe.getName());
             List<RecipeIngredient> ingredients = server.getRecipeIngredients(recipe.getId());
@@ -136,6 +148,7 @@ public class RecipeViewCtrl {
      */
     private void loadIngredients(List<RecipeIngredient> ingredients) {
         ingredientsContainer.getChildren().clear();
+        this.ingredients = ingredients;
         if (ingredients == null || fxml == null) {
             return;
         }
@@ -200,4 +213,28 @@ public class RecipeViewCtrl {
         item.getKey().setText("");
         preparationsContainer.getChildren().add(item.getValue());
     }
+
+    /**
+     * Saves the currently selected recipe as a markdown file in a location specified by the user.
+     */
+    public void recipePrint() {
+        Path path = mainCtrl.showFileChooser("Recipe.pdf");
+        if(recipe==null || path==null) {
+            return;
+        }
+        try {
+            String markdown = printer.recipePrint(recipe, ingredients);
+            printer.markdownToPDF(path, markdown);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Saving error");
+                alert.setHeaderText("Could not save the recipe");
+                alert.showAndWait();
+            });
+        }
+    }
 }
+
+
