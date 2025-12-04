@@ -79,6 +79,15 @@ public class MainCtrl {
     }
 
     /**
+     * gne
+     */
+    public void showAddRecipe() {
+        Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class,
+                "client", "scenes", "AddRecipe.fxml");
+        appViewCtrl.setContent(addRecipeView.getValue());
+    }
+
+    /**
      * Opens the FileChooser windows and returns the path of the file chosen by the user.
      * The user is forced to choose a Markdown file.
      * @return {@link Path} chosen by the user
