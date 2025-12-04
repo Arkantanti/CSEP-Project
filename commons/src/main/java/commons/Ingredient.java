@@ -71,6 +71,8 @@ public class Ingredient implements Showable{
         return carbs;
     }
 
+    public void setId(long id) { this.id = id;}
+
     public void setName(String name){
         this.name = name;
     }
@@ -85,20 +87,6 @@ public class Ingredient implements Showable{
 
     public void setCarbs(double carbs){
         this.carbs = carbs;
-    }
-
-    /**
-     * function to choose the values of the ingredient.
-     * @param name the name of the ingredient
-     * @param fat the weight of the amount of fat.
-     * @param protein the weight of the amount of protein.
-     * @param carbs the weight of the amount of carbs.
-     */
-    public void changeIngredient(String name, double fat, double protein, double carbs){
-        this.setName(name);
-        this.setFat(fat);
-        this.setProtein(protein);
-        this.setCarbs(carbs);
     }
 
     @Override

@@ -1,7 +1,7 @@
-package server.api;
+package server.database;
 
+import commons.Ingredient;
 import commons.RecipeIngredient;
-import server.database.RecipeIngredientRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +31,12 @@ public class RecipeIngredientRepositoryTest implements RecipeIngredientRepositor
     @Override
     public <S extends RecipeIngredient> S save(S entity) {
         call("save");
+        if(entity.getId()==0 ||
+                recipeIngredients.stream().noneMatch(q -> q.getId() == entity.getId())) {
+            entity.setId(recipeIngredients.stream().mapToLong(RecipeIngredient::getId).max().orElse(0) + 1);
+        } else {
+            recipeIngredients.removeIf(q -> q.getId() == entity.getId());
+        }
         recipeIngredients.add(entity);
         return entity;
     }
@@ -62,13 +68,8 @@ public class RecipeIngredientRepositoryTest implements RecipeIngredientRepositor
     public List<RecipeIngredient> findByRecipeId(long recipeId) {
         call("findByRecipeId");
 
-        List<RecipeIngredient> result = new ArrayList<>();
-        for (RecipeIngredient ri : recipeIngredients) {
-            if (ri.getRecipe() != null && ri.getRecipe().getId() == recipeId) {
-                result.add(ri);
-            }
-        }
-        return result;
+        return recipeIngredients.stream()
+                .filter(x -> x.getRecipe().getId() == recipeId).toList();
     }
 
     // --- Boilerplate ---

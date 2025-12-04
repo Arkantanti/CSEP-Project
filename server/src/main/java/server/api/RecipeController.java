@@ -74,7 +74,8 @@ public class RecipeController {
     @PostMapping("")
     public ResponseEntity<Recipe> add(@RequestBody Recipe recipe) {
 
-        if (isNullOrEmpty(recipe.getName())
+        if (recipe == null
+                || isNullOrEmpty(recipe.getName())
                 || recipe.getServings() < 1
                 || recipe.getPreparationSteps() == null) {
             return ResponseEntity.badRequest().build();
@@ -114,6 +115,8 @@ public class RecipeController {
         if (!repo.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+
+        recipe.setId(id);
 
         Recipe saved = repo.save(recipe);
         return ResponseEntity.ok(saved);

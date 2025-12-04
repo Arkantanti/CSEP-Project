@@ -92,7 +92,7 @@ public class RecipeIngredientController {
         if (!repo.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-
+        ri.setId(id);
         RecipeIngredient saved = repo.save(ri);
         return ResponseEntity.ok(saved);
     }
@@ -131,15 +131,13 @@ public class RecipeIngredientController {
      */
     private boolean isValidRecipeIngredient(RecipeIngredient recipeIngredient) {
         if (recipeIngredient == null || recipeIngredient.getRecipe() == null ||
-            recipeIngredient.getIngredient() == null) {
-            return false;
-        }
+            recipeIngredient.getIngredient() == null) return false;
         return recipeIngredient.getIngredient().getName() != null &&
                 !recipeIngredient.getIngredient().getName().isBlank() &&
                 !(recipeIngredient.getIngredient().getFat() < 0) &&
                 !(recipeIngredient.getIngredient().getProtein() < 0) &&
                 !(recipeIngredient.getIngredient().getCarbs() < 0) &&
-                !(recipeIngredient.getAmount() <= 0) &&
+                !(recipeIngredient.getAmount() < 0) &&
                 recipeIngredient.getUnit() != null;
     }
 }
