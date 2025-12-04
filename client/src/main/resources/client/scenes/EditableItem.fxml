@@ -7,26 +7,26 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox prefHeight="0.0" maxWidth="1.7976931348623157E308" spacing="5" styleClass="recipe-line" stylesheets="/styles/editable-item.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25" fx:controller="client.scenes.EditableItemCtrl">
+<HBox maxWidth="1.7976931348623157E308" prefHeight="0.0" spacing="5" styleClass="recipe-line" stylesheets="/styles/editable-item.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditableItemCtrl">
 
     <children>
-        <Label fx:id="textLabel" prefHeight="30.0" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" text="- 100g foo ">
+        <Label fx:id="textLabel" maxWidth="1.7976931348623157E308" prefHeight="30.0" text="- 100g foo " HBox.hgrow="ALWAYS">
          <HBox.margin>
-            <Insets left="5.0" top="2.0" right="5.0" />
+            <Insets left="5.0" right="5.0" top="2.0" />
          </HBox.margin></Label>
 
-        <TextField fx:id="textField" prefHeight="30.0" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" promptText="Edit item">
+        <TextField fx:id="textField" maxWidth="1.7976931348623157E308" prefHeight="30.0" promptText="Edit item" HBox.hgrow="ALWAYS">
          <HBox.margin>
-            <Insets top="2.0" right="5.0" />
+            <Insets right="5.0" top="2.0" />
          </HBox.margin></TextField>
-        <Button fx:id="editButton" onAction="#onEditClicked" prefHeight="30.0" prefWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✏" textFill="#2f06ff">
+        <Button fx:id="editButton" minHeight="30.0" minWidth="30.0" onAction="#onEditClicked" prefHeight="30.0" prefWidth="30.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✏" textFill="#2f06ff">
          <font>
             <Font size="16.0" />
          </font>
          <HBox.margin>
-            <Insets top="2.0" right="2.0" />
+            <Insets right="2.0" top="2.0" />
          </HBox.margin></Button>
-        <Button fx:id="deleteButton" prefHeight="30.0" prefWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="❌" textFill="#f70707">
+        <Button fx:id="deleteButton" minHeight="30.0" minWidth="30.0" onAction="#onDeleteClicked" prefHeight="30.0" prefWidth="30.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="❌" textFill="#f70707">
          <font>
             <Font size="16.0" />
          </font>
