@@ -7,22 +7,40 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
+import java.util.List;
+
 public class EditableItemCtrl {
 
     @FXML
     private Label textLabel;
-
     @FXML
     private TextField textField;
-
     @FXML
     private Button editButton;
-
     @FXML
     private Button deleteButton;
 
     private boolean editing = false;
     private String labelText;
+
+    private List<String> parentList;
+    private int listIndex;
+    private Runnable onChange;
+    private boolean newItem = false;
+
+    /**
+     * Called by parent controller after loading the component
+     */
+    public void bindTo(
+            List<String> parentList,
+            int listIndex,
+            Runnable onChange,
+            boolean newItem) {
+        this.parentList = parentList;
+        this.listIndex = listIndex;
+        this.onChange = onChange;
+        this.newItem = newItem;
+    }
 
     /**
      * Internally run method that initializes an EditableItem component
@@ -69,6 +87,21 @@ public class EditableItemCtrl {
     }
 
     /**
+     * The onAction method for when the {@code deleteButton} is clicked
+     * Removes the component from the underlying list and updates the
+     * server using the {@code onChange} runnable.
+     */
+    @FXML
+    private void onDeleteClicked() {
+        if (parentList != null) {
+            parentList.remove(listIndex);
+        }
+        if (onChange != null) {
+            onChange.run();
+        }
+    }
+
+    /**
      * Turns {@code textLabel} into {@code textField} and set {@code editButton}
      *  into a check character instead of edit character.
      */
@@ -94,12 +127,26 @@ public class EditableItemCtrl {
 
     /**
      * Turns {@code textField} into {@code textLabel} and set {@code editButton}
-     *  into an edit character instead of check character
+     *  into an edit character instead of check character.
+     *  Checks whether the new item contains text otherwise the new item is removed
      *  */
     private void finishEditing() {
         editing = false;
-
         labelText = textField.getText();
+
+        // validation logic for new item
+        if (newItem && (labelText == null || labelText.isBlank())) {
+            if (parentList != null && listIndex >= 0 && listIndex < parentList.size()) {
+                parentList.remove(listIndex);
+            }
+            if (onChange != null) onChange.run();
+            return; // return out of method because no or invalid input
+        }
+
+        if (parentList != null && listIndex >= 0 && listIndex < parentList.size()) {
+            parentList.set(listIndex, labelText);
+        }
+
         textLabel.setText(labelText);
 
         textField.setVisible(false);
@@ -113,5 +160,16 @@ public class EditableItemCtrl {
 
         editButton.setText("✏");
         editButton.setTextFill(Color.web("#2f06ff"));
+
+        if (onChange != null) onChange.run();
+    }
+
+    /**
+     * Initiate editing mode from parent controller class
+     */
+    public void startEditingFromCtrl() {
+        if (!editing) {
+            startEditing();
+        }
     }
 }

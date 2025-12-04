@@ -73,6 +73,22 @@ public class Recipe implements Showable{
         this.preparationSteps = preparationSteps;
     }
 
+    /**
+     * Adds a preparation step to {@code preparationSteps} steps of a recipe
+     * @param preparationStep the step to add
+     * @throws IllegalArgumentException if {@code preparationSteps} is null or
+     *  if {@code preparationStep} is null or blank
+     */
+    public void addPreparationStep(String preparationStep) {
+        if (preparationSteps == null) {
+            throw new IllegalArgumentException("Preparation steps array is not initialised");
+        }
+        if (preparationStep == null || preparationStep.isBlank()) {
+            throw new IllegalArgumentException("Preparation step must not be null or blank");
+        }
+        preparationSteps.add(preparationStep);
+    }
+
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);

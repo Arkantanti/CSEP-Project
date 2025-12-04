@@ -24,6 +24,7 @@ import client.config.Config;
 import com.google.inject.Inject;
 import commons.Recipe;
 import commons.RecipeIngredient;
+import jakarta.ws.rs.client.Entity;
 import org.glassfish.jersey.client.ClientConfig;
 
 
@@ -90,5 +91,30 @@ public class ServerUtils {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Updates the specified recipe
+     * @param recipe the recipe to update
+     * @return the updated recipe as returned by the server
+     * @throws IllegalArgumentException if {@code recipe} is null or has invalid ID
+     */
+    public Recipe updateRecipe(Recipe recipe) {
+        if (recipe == null) {
+            throw new IllegalArgumentException("Recipe to update must not be null");
+        }
+        if (recipe.getId() < 0) {
+            throw new IllegalArgumentException("Recipe to update must have a valid ID");
+        }
+
+        try {
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL)
+                    .path("api/recipes/" + recipe.getId())
+                    .request(APPLICATION_JSON)
+                    .put(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
+        } catch (ProcessingException e) {
+            return null;
+        }
     }
 }

@@ -39,6 +39,8 @@ public class RecipeViewCtrl {
     private VBox preparationsContainer;
     @FXML
     private Button preparationAddButton;
+    @FXML
+    private Button printButton;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -119,6 +121,9 @@ public class RecipeViewCtrl {
 
         titleEditButton.setText("✔");
         titleEditButton.setTextFill(Color.GREEN);
+
+        printButton.setVisible(false);
+        printButton.setManaged(false);
     }
 
     /**
@@ -127,9 +132,16 @@ public class RecipeViewCtrl {
      */
     private void finishEditing() {
         editing = false;
-
         String newName = nameTextField.getText();
-        nameLabel.setText(newName);
+
+        if (newName != null && !newName.isBlank()) {
+            nameLabel.setText(newName.trim());
+            // update new title to the server.
+            if (recipe != null) {
+                recipe.setName(newName);
+                server.updateRecipe(recipe);
+            }
+        }
 
         nameTextField.setVisible(false);
         nameTextField.setManaged(false);
@@ -139,6 +151,9 @@ public class RecipeViewCtrl {
 
         titleEditButton.setText("✏");
         titleEditButton.setTextFill(Color.web("#1e00ff"));
+
+        printButton.setVisible(true);
+        printButton.setManaged(true);
     }
 
     /**
@@ -165,7 +180,7 @@ public class RecipeViewCtrl {
      * Formats a RecipeIngredient into a displayable string.
      *
      * @param ri the RecipeIngredient to format and display
-     * @return a string representation of ingredient amount and unit from {@code RecipeIngredient} 
+     * @return a string representation of ingredient amount and unit from {@code RecipeIngredient}
      */
     private String formatIngredient(RecipeIngredient ri) {
         if (ri.getInformalUnit() != null && !ri.getInformalUnit().isEmpty()) {
@@ -193,10 +208,27 @@ public class RecipeViewCtrl {
         if (steps == null || fxml == null) {
             return;
         }
-        for (String step : steps) {
-            Pair<EditableItemCtrl, Parent> item = fxml.load(EditableItemCtrl.class,
-                    "client", "scenes", "EditableItem.fxml");
-            item.getKey().setText(step);
+
+        for (int i = 0; i < steps.size(); i++) {
+            String step = steps.get(i);
+
+            Pair<EditableItemCtrl, Parent> item = fxml.load(
+                    EditableItemCtrl.class,
+                    "client", "scenes", "EditableItem.fxml"
+            );
+
+            EditableItemCtrl ctrl = item.getKey();
+            ctrl.setText(step);
+
+            ctrl.bindTo(
+                    steps,
+                    i,
+                    () -> {
+                        server.updateRecipe(recipe);
+                        loadPreparationSteps(recipe.getPreparationSteps());
+                    },
+                    false
+            );
             preparationsContainer.getChildren().add(item.getValue());
         }
     }
@@ -208,10 +240,35 @@ public class RecipeViewCtrl {
      * @param actionEvent the click action to be handled
      */
     public void onAddClicked(ActionEvent actionEvent) {
+        List<String> steps = recipe.getPreparationSteps();
+
+        if (steps == null) {
+            throw new IllegalStateException("Preparation steps array can " +
+                    "not be null for a recipe");
+        }
+
+        steps.add("");
+        int index = steps.size() - 1;
+
         Pair<EditableItemCtrl, Parent> item = fxml.load(EditableItemCtrl.class,
                 "client", "scenes", "EditableItem.fxml");
-        item.getKey().setText("");
+
+        EditableItemCtrl ctrl = item.getKey();
+        ctrl.setText("");
+
+        ctrl.bindTo(
+                steps,
+                index,
+                () -> {
+                    // Only called for non-blank commit or delete on existing items
+                    server.updateRecipe(recipe);
+                    loadPreparationSteps(recipe.getPreparationSteps());
+                },
+                true // true in this case, because a new item is created
+        );
+
         preparationsContainer.getChildren().add(item.getValue());
+        ctrl.startEditingFromCtrl();
     }
 
     /**
@@ -219,7 +276,7 @@ public class RecipeViewCtrl {
      */
     public void recipePrint() {
         Path path = mainCtrl.showFileChooser("Recipe.pdf");
-        if(recipe==null || path==null) {
+        if (recipe == null || path == null) {
             return;
         }
         try {
