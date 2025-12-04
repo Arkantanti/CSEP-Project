@@ -2,6 +2,8 @@ package client.scenes;
 
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
+import com.sun.javafx.scene.control.IntegerField;
+import commons.Ingredient;
 import commons.Recipe;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,8 +17,6 @@ public class AddRecipeCtrl {
     @FXML
     private Button titleEditButton;
     @FXML
-    private TextField nameTextField;
-    @FXML
     private Label nameLabel;
     @FXML
     private VBox ingredientsContainer;
@@ -26,7 +26,9 @@ public class AddRecipeCtrl {
     private VBox preparationsContainer;
     @FXML
     private Button preparationAddButton;
-
+    @FXML
+    private Button saveButton;
+    
     private ActionEvent ae;
     /**
      * gne
@@ -41,13 +43,12 @@ public class AddRecipeCtrl {
     private final RecipeViewCtrl recipeViewCtrl;
 
     @FXML
-    private TextField recipeNameField;
+    private TextField nameTextField;
+    @FXML
+    private TextField servingsArea;
 
     @FXML
-    private TextArea ingredientsArea;
-
-    @FXML
-    private TextArea instructionsArea;
+    private TextArea preperationsArea;
 
     /**
      *  gne
@@ -67,17 +68,17 @@ public class AddRecipeCtrl {
     @FXML
     public void onSaveRecipe() {
         try {
-            String name = recipeNameField.getText().trim();
-            int servings = 1;
-            List<String> ingredients = Arrays.asList(ingredientsArea.getText().split("\\r?\\n"));
-            List<String> steps = Arrays.asList(instructionsArea.getText().split("\\r?\\n"));
 
-            if (name.isBlank() || ingredients.isEmpty() || steps.isEmpty()) {
+            String name = nameTextField.getText().trim();
+            int servings = Integer.parseInt(servingsArea.getText().trim());
+            List<String> preperationSteps = Arrays.asList(preperationsArea.getText().split("\\r?\\n"));
+
+            if (name.isBlank() || preperationSteps.isEmpty() || servings < 0) {
                 showError("Invalid input", "Please fill all fields correctly.");
                 return;
             }
 
-            Recipe recipe = new Recipe(name, servings, steps);
+            Recipe recipe = new Recipe(name, servings, preperationSteps);
             Recipe savedRecipe = server.add(recipe);
 
             clearFields();
@@ -100,9 +101,8 @@ public class AddRecipeCtrl {
      * gne
      */
     private void clearFields() {
-        recipeNameField.clear();
-        ingredientsArea.clear();
-        instructionsArea.clear();
+        nameTextField.clear();
+        servingsArea.clear();
     }
 
     /**
