@@ -3,18 +3,42 @@ package client.scenes;
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Recipe;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class AddRecipeCtrl {
+    @FXML
+    private Button titleEditButton;
+    @FXML
+    private TextField nameTextField;
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private VBox ingredientsContainer;
+    @FXML
+    private Button ingredientAddButton;
+    @FXML
+    private VBox preparationsContainer;
+    @FXML
+    private Button preparationAddButton;
+
+    private ActionEvent ae;
+    /**
+     * gne
+     */
+    @FXML
+    public void initialize() {
+        preparationAddButton.setOnAction(e -> recipeViewCtrl.onAddClicked(ae));
+    }
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final RecipeViewCtrl recipeViewCtrl;
 
     @FXML
     private TextField recipeNameField;
@@ -31,9 +55,10 @@ public class AddRecipeCtrl {
      * @param mainCtrl gne
      */
     @Inject
-    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl, RecipeViewCtrl recipeViewCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.recipeViewCtrl = recipeViewCtrl;
     }
 
     /**
