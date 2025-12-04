@@ -41,6 +41,8 @@ public class RecipeViewCtrl {
     private Button preparationAddButton;
     @FXML
     private Button printButton;
+    @FXML
+    private Button cloneButton;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -299,6 +301,13 @@ public class RecipeViewCtrl {
                 alert.showAndWait();
             });
         }
+    }
+
+    /**
+     * gne
+     */
+    public void cloneRecipe(){
+        server.addRecipe(this.recipe);
     }
 }
 

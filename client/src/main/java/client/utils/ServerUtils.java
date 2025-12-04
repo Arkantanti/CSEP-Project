@@ -120,6 +120,29 @@ public class ServerUtils {
         }
     }
 
+
+    /**
+     * gne
+     * @param recipe gne
+     * @return gne
+     */
+    public Recipe addRecipe(Recipe recipe){
+        if (recipe == null) {
+            throw new IllegalArgumentException("Recipe to add must not be null");
+        }
+
+        try {
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL)
+                    .path("api/recipes/")
+                    .request(APPLICATION_JSON)
+                    .post(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+
     /**
      * gets all ingredients in the database
      * @return a list of ingredients in the database
@@ -201,4 +224,5 @@ public class ServerUtils {
             return null;
         }
     }
+
 }
