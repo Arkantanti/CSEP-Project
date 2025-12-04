@@ -27,7 +27,7 @@
                                 <Insets left="10.0" top="5.0" />
                             </HBox.margin>
                         </TextField>
-                        <Button fx:id="titleEditButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" onAction="#onEditClicked" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✏" textFill="#1e00ff">
+                        <Button fx:id="titleEditButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✏" textFill="#1e00ff">
                             <font>
                                 <Font size="22.0" />
                             </font>

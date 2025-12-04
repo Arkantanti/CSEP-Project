@@ -73,6 +73,11 @@ public class AppViewCtrl implements Initializable {
                 mainCtrl.showRecipe((Recipe) newVal);
             }
         });
+
+        additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
+
+        refreshButton.setOnAction(e -> loadRecipes());
+        
         loadRecipes();
     }
 
