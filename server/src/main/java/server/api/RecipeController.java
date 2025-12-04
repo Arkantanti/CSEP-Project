@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.RecipeRepository;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Controller responsible for handling all HTTP requests related to {@link Recipe} entities.
@@ -158,19 +159,35 @@ public class RecipeController {
 
     /**
      * Searches for recipes based on a flexible query string.
-     * The search is case-insensitive and checks against recipe names,
-     * ingredient names, and preparation steps.
+     * Supports multiple keywords (e.g., "bread cheese" finds recipes with both).
      *
-     * @param name the search query string (can be a partial name, ingredient, or step keyword)
-     * @return {@code 400 Bad Request} if the query string is {@code null} or blank,
-     * otherwise {@code 200 OK} with a list of matching {@link Recipe} objects
+     * @param name the search query string
+     * @return 400 if blank, otherwise list of matching recipes
      */
     @GetMapping("search")
     public ResponseEntity<List<Recipe>> searchRecipes(@RequestParam String name) {
         if (name == null || name.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
-        // Changed from findByNameContainingIgnoreCase to search
-        return ResponseEntity.ok(repo.search(name));
+
+        // 1. Split query into separate keywords by whitespace
+        String[] terms = name.trim().split("\\s+");
+
+        // 2. Initial search with the first term
+        // Wrap in ArrayList to ensure the list is mutable (modifiable)
+        List<Recipe> results = new ArrayList<>(repo.search(terms[0]));
+
+        // 3. Filter results: Keep only recipes that match ALL subsequent terms
+        for (int i = 1; i < terms.length; i++) {
+            List<Recipe> matches = repo.search(terms[i]);
+            results.retainAll(matches); // Intersection: keeps only items present in both lists
+
+            // Optimization: If results become empty, no need to check further
+            if (results.isEmpty()) {
+                break;
+            }
+        }
+
+        return ResponseEntity.ok(results);
     }
 }

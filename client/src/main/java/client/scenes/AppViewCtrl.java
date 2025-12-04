@@ -25,6 +25,8 @@ public class AppViewCtrl implements Initializable {
     private final MainCtrl mainCtrl;
 
     @FXML
+    private javafx.scene.control.TextField searchField;
+    @FXML
     private StackPane contentRoot;
 
     @FXML
@@ -73,6 +75,15 @@ public class AppViewCtrl implements Initializable {
                 mainCtrl.showRecipe((Recipe) newVal);
             }
         });
+        if (searchField != null) {
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null || newValue.isBlank()) {
+                    loadRecipes(); // Field is empty -> Show all recipes
+                } else {
+                    searchRecipes(newValue); // Field has text -> Search
+                }
+            });
+        }
         loadRecipes();
     }
 
@@ -110,6 +121,21 @@ public class AppViewCtrl implements Initializable {
                 alert.setContentText("Check if the server is running.");
                 alert.showAndWait();
             });
+        }
+    }
+    /**
+     * Searches for recipes via the server and updates the UI list.
+     * @param query The text to search for
+     */
+    private void searchRecipes(String query) {
+        try {
+            List<Recipe> results = server.searchRecipes(query);
+            // JavaFX UI updates must run on the UI thread
+            Platform.runLater(() -> {
+                itemsList.setItems(FXCollections.observableArrayList(results));
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
