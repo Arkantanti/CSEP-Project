@@ -71,6 +71,8 @@ public class Ingredient implements Showable{
         return carbs;
     }
 
+    public void setId(long id) { this.id = id;}
+
     public void setName(String name){
         this.name = name;
     }

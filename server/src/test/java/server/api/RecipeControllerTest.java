@@ -64,7 +64,6 @@ class RecipeControllerTest {
         Recipe r4 = new Recipe("", 2, List.of("step1"));
 
         ResponseEntity<Recipe> result = controller.add(r4);
-        System.out.println(result);
         assertEquals(400, result.getStatusCode().value());
     }
 

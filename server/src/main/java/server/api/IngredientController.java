@@ -115,6 +115,8 @@ public class IngredientController {
             return ResponseEntity.notFound().build();
         }
 
+        ing.setId(id);
+
         Ingredient saved = repo.save(ing);
         return ResponseEntity.ok(saved);
     }

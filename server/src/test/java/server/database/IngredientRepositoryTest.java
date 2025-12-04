@@ -1,6 +1,7 @@
 package server.database;
 
 import commons.Ingredient;
+import commons.Recipe;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +41,12 @@ public class IngredientRepositoryTest implements IngredientRepository {
     @Override
     public <S extends Ingredient> S save(S entity) {
         call("save");
+        if(entity.getId()==0 ||
+                ingredients.stream().noneMatch(q -> q.getId() == entity.getId())) {
+            entity.setId(ingredients.stream().mapToLong(Ingredient::getId).max().orElse(0) + 1);
+        } else {
+            ingredients.removeIf(q -> q.getId() == entity.getId());
+        }
         ingredients.add(entity);
         return entity;
     }
