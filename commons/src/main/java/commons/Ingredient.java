@@ -89,20 +89,6 @@ public class Ingredient implements Showable{
         this.carbs = carbs;
     }
 
-    /**
-     * function to choose the values of the ingredient.
-     * @param name the name of the ingredient
-     * @param fat the weight of the amount of fat.
-     * @param protein the weight of the amount of protein.
-     * @param carbs the weight of the amount of carbs.
-     */
-    public void changeIngredient(String name, double fat, double protein, double carbs){
-        this.setName(name);
-        this.setFat(fat);
-        this.setProtein(protein);
-        this.setCarbs(carbs);
-    }
-
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);

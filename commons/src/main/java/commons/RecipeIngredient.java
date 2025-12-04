@@ -81,6 +81,8 @@ public class RecipeIngredient {
         return unit;
     }
 
+    public void setId(long id) {this.id = id;}
+
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
     }
