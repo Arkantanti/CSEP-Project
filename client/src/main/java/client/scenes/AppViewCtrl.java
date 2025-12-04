@@ -121,6 +121,6 @@ public class AppViewCtrl implements Initializable {
         int servings = 2;
         List<String> preparationList = List.of("hello", "teo");
         Recipe recipe = new Recipe(name, servings, preparationList);
-        server.addRecipe(recipe);
+        server.add(recipe);
     }
 }

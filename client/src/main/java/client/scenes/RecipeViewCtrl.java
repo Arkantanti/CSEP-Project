@@ -307,7 +307,7 @@ public class RecipeViewCtrl {
      * gne
      */
     public void cloneRecipe(){
-        server.addRecipe(this.recipe);
+        server.add(this.recipe);
     }
 }
 
