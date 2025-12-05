@@ -22,9 +22,11 @@ import java.util.List;
 
 import client.config.Config;
 import com.google.inject.Inject;
+import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 
@@ -114,6 +116,88 @@ public class ServerUtils {
                     .request(APPLICATION_JSON)
                     .put(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
         } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * gets all ingredients in the database
+     * @return a list of ingredients in the database
+     */
+    public List<Ingredient> getIngredients(){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(serverURL).path("api/ingredients/")
+                .request(APPLICATION_JSON)
+                .get(new GenericType<List<Ingredient>>() {
+                });
+    }
+
+    /**
+     * Updates the specified recipe ingredient
+     * @param recipeIngredient the recipe ingredient to update
+     * @return the updated recipe ingredient as returned by the server
+     * @throws IllegalArgumentException if {@code recipe ingredient} is null or has invalid ID
+     */
+    public RecipeIngredient updateRecipeIngredient(RecipeIngredient recipeIngredient) {
+        if (recipeIngredient == null) {
+            throw new IllegalArgumentException("Recipe Ingredient to update must not be null");
+        }
+        if (recipeIngredient.getId() < 0) {
+            throw new IllegalArgumentException("Recipe Ingredient to update must have a valid ID");
+        }
+
+        try {
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL)
+                    .path("api/recipeingredients/" + recipeIngredient.getId())
+                    .request(APPLICATION_JSON)
+                    .put(Entity.entity(recipeIngredient, APPLICATION_JSON), RecipeIngredient.class);
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Deletes the specified recipe ingredient
+     * @param id the id of the recipe ingredient to delete
+     * @throws IllegalArgumentException if id is invalid
+     */
+    public Response deleteRecipeIngredient(long id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("Recipe Ingredient to update must have a valid ID");
+        }
+
+        try {
+            Response r = ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL)
+                    .path("api/recipeingredients/" + id)
+                    .request(APPLICATION_JSON)
+                    .delete();
+            return r;
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Adds a RecipeIngredient to the server database and returns one with a valid ID
+     */
+    public RecipeIngredient addRecipeIngredient(RecipeIngredient recipeIngredient) {
+        if (recipeIngredient == null) {
+            throw new IllegalArgumentException("Recipe Ingredient to add must have a valid ID");
+        }
+        if (recipeIngredient.getId() < 0) {
+            throw new IllegalArgumentException("Recipe Ingredient to add must have a valid ID, currently "
+                    + recipeIngredient.getId());
+        }
+        try {
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL)
+                    .path("api/recipeingredients/")
+                    .request(APPLICATION_JSON)
+                    .post(Entity.entity(recipeIngredient, APPLICATION_JSON), RecipeIngredient.class);
+        }
+        catch (ProcessingException e) {
             return null;
         }
     }

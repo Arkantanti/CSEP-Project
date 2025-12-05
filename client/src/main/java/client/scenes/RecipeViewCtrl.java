@@ -84,8 +84,7 @@ public class RecipeViewCtrl {
         this.recipe = recipe;
         if (recipe != null) {
             nameLabel.setText(recipe.getName());
-            List<RecipeIngredient> ingredients = server.getRecipeIngredients(recipe.getId());
-            loadIngredients(ingredients);
+            loadIngredients();
             loadPreparationSteps(recipe.getPreparationSteps());
         }
     }
@@ -157,21 +156,18 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * Loads ingredients into the ingredients container using EditableItem components.
-     *
-     * @param ingredients the list of recipe ingredients to display
+     * Loads ingredients from the server into the ingredients container using EditableItem components.
      */
-    private void loadIngredients(List<RecipeIngredient> ingredients) {
+    private void loadIngredients() {
         ingredientsContainer.getChildren().clear();
-        this.ingredients = ingredients;
+        this.ingredients = server.getRecipeIngredients(recipe.getId());;
         if (ingredients == null || fxml == null) {
             return;
         }
         for (RecipeIngredient ri : ingredients) {
-            String ingredientText = formatIngredient(ri);
-            Pair<EditableItemCtrl, Parent> item = fxml.load(EditableItemCtrl.class,
-                    "client", "scenes", "EditableItem.fxml");
-            item.getKey().setText(ingredientText);
+            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                    "client", "scenes", "RecipeIngredient.fxml");
+            item.getKey().initialize(ri, recipe, this::loadIngredients);
             ingredientsContainer.getChildren().add(item.getValue());
         }
     }
@@ -269,6 +265,18 @@ public class RecipeViewCtrl {
 
         preparationsContainer.getChildren().add(item.getValue());
         ctrl.startEditingFromCtrl();
+    }
+
+    /**
+     * called when the user presses the + under the ingredients list
+     */
+    @FXML
+    private void onAddRecipeIngredient(){
+        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                "client", "scenes", "RecipeIngredient.fxml");
+        item.getKey().initialize(null, recipe, this::loadIngredients);
+        ingredientsContainer.getChildren().add(item.getValue());
+        item.getKey().startEditingFromCtrl();
     }
 
     /**

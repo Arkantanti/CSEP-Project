@@ -5,6 +5,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 @Entity
@@ -94,6 +97,65 @@ public class RecipeIngredient {
     public void setAmount(double amount){ this.amount = amount; }
 
     public void setUnit(Unit unit){ this.unit = unit; }
+
+    /**
+     *  helper function to format recipeIngredient
+     * @return a formatted version of the toString. ex: 100 L salt
+     */
+    public String formatIngredient() {
+        StringBuilder s = new StringBuilder();
+
+        // List politely yoinked from https://en.wikipedia.org/wiki/Metric_prefix
+        Dictionary<Integer, String> metricPrefixes = new Hashtable<Integer, String>(){
+            {
+                put(-30, "q"); // quecto
+                put(-27, "r");
+                put(-24, "y");
+                put(-21, "z");
+                put(-18, "a");
+                put(-15, "f");
+                put(-12, "p");
+                put(-9, "n");
+                put(-6, "μ");
+                put(-3, "m");
+                put(-2, "c");
+                put(-1, "d");   // deci
+                put(0, "");
+//                put(1, "da"); Hecto and Deca are not that useful, so I'll comment them out
+//                put(2, "h");  However I really cant wait for my recipe using 1 quectogram of salt
+                put(3, "k");    // kilo
+                put(6, "M");    // mega
+                put(9, "G");    // giga
+                put(12, "T");
+                put(15, "P");
+                put(18, "E");
+                put(21, "Z");
+                put(24, "Y");
+                put(27, "R");
+                put(30, "Q"); //quetta
+            }
+        };
+
+        int magnitude = (int) Math.floor(Math.log10(amount));
+        if (magnitude < -30) magnitude = -30;
+        if (magnitude > 30) magnitude = 30;
+
+        while (metricPrefixes.get(magnitude) == null && magnitude > -30) {
+            magnitude--;
+        }
+
+        String unitChar = switch (unit){
+            case GRAM -> "g";
+            case LITER -> "L";
+            case CUSTOM -> "";
+        };
+
+        if (unit == Unit.CUSTOM) magnitude = 0;
+        s.append(amount / Math.pow(10, magnitude)).append(" ")
+                .append(metricPrefixes.get(magnitude)).append(unitChar)
+                .append(" ").append(ingredient.getName());
+        return s.toString();
+    }
 
     @Override
     public boolean equals(Object obj) {
