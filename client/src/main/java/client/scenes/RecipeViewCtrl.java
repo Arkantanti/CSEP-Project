@@ -51,7 +51,7 @@ public class RecipeViewCtrl {
     private final Printer printer;
     private Recipe recipe;
     private List<RecipeIngredient> ingredients;
-    private AppViewCtrl appViewCtrl;
+    private final AppViewCtrl appViewCtrl;
 
     /**
      * Constructor for RecipeViewCtrl.
