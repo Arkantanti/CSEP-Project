@@ -51,6 +51,7 @@ public class RecipeViewCtrl {
     private final Printer printer;
     private Recipe recipe;
     private List<RecipeIngredient> ingredients;
+    private AppViewCtrl appViewCtrl;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -62,6 +63,7 @@ public class RecipeViewCtrl {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
+        this.appViewCtrl = mainCtrl.getAppViewCtrl();
     }
 
     /**
@@ -310,10 +312,8 @@ public class RecipeViewCtrl {
         try {
             Recipe recipeNew = new Recipe(this.recipe.getName(), this.recipe.getServings(), this.recipe.getPreparationSteps());
             Recipe savedRecipe = server.add(recipeNew);
-
             mainCtrl.showRecipe(savedRecipe);
             server.clone(savedRecipe);
-
         } catch (Exception e) {
             showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
         }

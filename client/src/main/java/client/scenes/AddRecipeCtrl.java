@@ -33,6 +33,8 @@ public class AddRecipeCtrl {
     @FXML
     private TextArea preparationsArea;
 
+    private AppViewCtrl appViewCtrl;
+
     /**
      *  The constructor for the add recipeController
      * @param server the server it is linked to
@@ -41,6 +43,7 @@ public class AddRecipeCtrl {
     public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.appViewCtrl = mainCtrl.getAppViewCtrl();
     }
 
     /**
@@ -70,7 +73,7 @@ public class AddRecipeCtrl {
 
             Recipe recipe = new Recipe(name, servings, preparationSteps);
             Recipe savedRecipe = server.add(recipe);
-
+            appViewCtrl.loadRecipes();
             mainCtrl.showRecipe(savedRecipe);
         } catch (Exception e) {
             showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
@@ -95,5 +98,6 @@ public class AddRecipeCtrl {
      */
     public void onCancel(){
         mainCtrl.showAppView();
+        appViewCtrl.loadRecipes();
     }
 }

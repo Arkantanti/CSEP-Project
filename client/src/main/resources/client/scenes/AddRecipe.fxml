@@ -23,13 +23,13 @@
                             </font>
                             <HBox.margin>
                                 <Insets left="10.0" top="5.0" />
-                            </HBox.margin></Label>
+                            </HBox.margin>
+                        </Label>
                         <TextField fx:id="nameTextField" prefHeight="35.0" promptText="Edit title" style="-fx-font-size: 24px;">
                             <HBox.margin>
                                 <Insets left="10.0" top="5.0" />
                             </HBox.margin>
                         </TextField>
-
                     </children>
                 </HBox>
                 <Label prefHeight="28.0" prefWidth="113.0" text="Ingredients:">

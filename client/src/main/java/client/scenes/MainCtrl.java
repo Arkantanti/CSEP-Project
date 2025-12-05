@@ -76,7 +76,6 @@ public class MainCtrl {
                 "client", "scenes", "RecipeView.fxml");
         recipeView.getKey().setRecipe(recipe, fxml);
         appViewCtrl.setContent(recipeView.getValue());
-        appViewCtrl.loadRecipes();
     }
 
     /**
@@ -108,5 +107,13 @@ public class MainCtrl {
         }
 
         return null;
+    }
+
+    /**
+     * function to get the appViewCtrl
+     * @return the appViewCtrl
+     */
+    public AppViewCtrl getAppViewCtrl(){
+        return appViewCtrl;
     }
 }
