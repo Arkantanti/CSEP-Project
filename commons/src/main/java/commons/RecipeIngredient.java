@@ -118,8 +118,8 @@ public class RecipeIngredient {
                 put(-9, "n");
                 put(-6, "μ");
                 put(-3, "m");
-                put(-2, "c");
-                put(-1, "d");   // deci
+//                put(-2, "c");
+//                put(-1, "d");   // deci
                 put(0, "");
 //                put(1, "da"); Hecto and Deca are not that useful, so I'll comment them out
 //                put(2, "h");  However I really cant wait for my recipe using 1 quectogram of salt
