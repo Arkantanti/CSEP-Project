@@ -71,28 +71,10 @@ public class AddRecipeCtrl {
             Recipe recipe = new Recipe(name, servings, preparationSteps);
             Recipe savedRecipe = server.add(recipe);
 
-            clearFields();
             mainCtrl.showRecipe(savedRecipe);
         } catch (Exception e) {
             showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
         }
-    }
-
-    /**
-     *  cancel function for the adding recipes
-     */
-    @FXML
-    public void onCancel() {
-        clearFields();
-        mainCtrl.showAppView();
-    }
-
-    /**
-     * clearing the fields in the input place
-     */
-    private void clearFields() {
-        nameTextField.clear();
-        servingsArea.clear();
     }
 
     /**
@@ -106,5 +88,12 @@ public class AddRecipeCtrl {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    /**
+     * gne
+     */
+    public void onCancel(){
+
     }
 }
