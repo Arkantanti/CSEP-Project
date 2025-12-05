@@ -94,6 +94,6 @@ public class AddRecipeCtrl {
      * gne
      */
     public void onCancel(){
-
+        mainCtrl.showAppView();
     }
 }
