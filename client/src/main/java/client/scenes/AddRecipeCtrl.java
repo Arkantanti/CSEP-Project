@@ -94,7 +94,19 @@ public class AddRecipeCtrl {
     }
 
     /**
-     * gne
+     * the function to clone the recipe.
+     * @param recipe the recipe information that needs be inputted for the clone
+     */
+    public void clone(Recipe recipe) {
+        if (recipe == null) return;
+
+        nameTextField.setText(recipe.getName());
+        servingsArea.setText(String.valueOf(recipe.getServings()));
+        preparationsArea.setText(String.join("\n", recipe.getPreparationSteps()));
+    }
+
+    /**
+     * To cancel the add function
      */
     public void onCancel(){
         mainCtrl.showAppView();

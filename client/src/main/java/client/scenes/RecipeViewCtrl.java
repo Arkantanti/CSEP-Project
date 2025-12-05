@@ -143,6 +143,7 @@ public class RecipeViewCtrl {
             if (recipe != null) {
                 recipe.setName(newName);
                 server.updateRecipe(recipe);
+                appViewCtrl.loadRecipes();
             }
         }
 
@@ -309,14 +310,9 @@ public class RecipeViewCtrl {
      * This function will be implemented for adding recipes
      */
     public void cloneRecipe(){
-        try {
-            Recipe recipeNew = new Recipe(this.recipe.getName(), this.recipe.getServings(), this.recipe.getPreparationSteps());
-            Recipe savedRecipe = server.add(recipeNew);
-            mainCtrl.showRecipe(savedRecipe);
-            server.clone(savedRecipe);
-        } catch (Exception e) {
-            showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
-        }
+        mainCtrl.showAddRecipe();
+        AddRecipeCtrl addCtrl = mainCtrl.getAddRecipeCtrl();
+        addCtrl.clone(recipe);
     }
 
     /**

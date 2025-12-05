@@ -36,6 +36,7 @@ public class MainCtrl {
     private AppViewCtrl appViewCtrl;
     private Scene appView;
     private MyFXML fxml;
+    private AddRecipeCtrl addRecipeCtrl;
 
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
@@ -84,6 +85,7 @@ public class MainCtrl {
     public void showAddRecipe() {
         Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class,
                 "client", "scenes", "AddRecipe.fxml");
+        this.addRecipeCtrl = addRecipeView.getKey();
         appViewCtrl.setContent(addRecipeView.getValue());
     }
 
@@ -107,6 +109,10 @@ public class MainCtrl {
         }
 
         return null;
+    }
+
+    public AddRecipeCtrl getAddRecipeCtrl() {
+        return addRecipeCtrl;
     }
 
     /**
