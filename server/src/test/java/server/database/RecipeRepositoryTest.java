@@ -83,18 +83,16 @@ public class RecipeRepositoryTest implements RecipeRepository {
 
         return recipes.stream()
                 .filter(r ->
-                        // 1. Check Name
-                        (r.getName() != null && r.getName().toLowerCase().contains(lowerQuery)) ||
+                                // 1. Check Name
+                                (r.getName() != null && r.getName().toLowerCase().contains(lowerQuery)) ||
 
-                                // 2. Check Preparation Steps
-                                (r.getPreparationSteps() != null && r.getPreparationSteps().stream()
-                                        .anyMatch(step -> step != null && step.toLowerCase().contains(lowerQuery))) ||
+                                        // 2. Check Preparation Steps
+                                        (r.getPreparationSteps() != null && r.getPreparationSteps().stream()
+                                                .anyMatch(step -> step != null && step.toLowerCase().contains(lowerQuery)))
 
-                                // 3. Check Ingredients
-                                (r.getIngredients() != null && r.getIngredients().stream()
-                                        .anyMatch(ri -> ri.getIngredient() != null &&
-                                                ri.getIngredient().getName() != null &&
-                                                ri.getIngredient().getName().toLowerCase().contains(lowerQuery)))
+                        // 3. Ingredient check removed from Unit Test because Recipe
+                        // no longer owns the ingredients list (Circular dependency fix).
+                        // The real database query uses a subquery to handle this.
                 )
                 .distinct()
                 .collect(Collectors.toList());

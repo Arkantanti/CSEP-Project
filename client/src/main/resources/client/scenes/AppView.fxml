@@ -47,7 +47,7 @@
             </HBox>
             <HBox alignment="TOP_CENTER" prefHeight="27.0" prefWidth="187.0">
                <children>
-                  <TextField fx:id="searchField" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="172.0" text="search" />
+                  <TextField fx:id="searchField" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="172.0" promptText="search" />
                </children>
             </HBox>
             <ListView fx:id="itemsList" prefHeight="325.0" prefWidth="161.0" />
