@@ -150,10 +150,14 @@ public class RecipeIngredient {
             case CUSTOM -> "";
         };
 
-        if (unit == Unit.CUSTOM) magnitude = 0;
-        s.append(amount / Math.pow(10, magnitude)).append(" ")
-                .append(metricPrefixes.get(magnitude)).append(unitChar)
-                .append(" ").append(ingredient.getName());
+        if (unit != Unit.CUSTOM) {
+            s.append(amount / Math.pow(10, magnitude)).append(" ")
+                    .append(metricPrefixes.get(magnitude)).append(unitChar);
+        }
+        else {
+            s.append(informalUnit);
+        }
+        s.append(" ").append(ingredient.getName());
         return s.toString();
     }
 

@@ -110,8 +110,12 @@ public class RecipeIngredientCtrl {
         defaultView.setManaged(false);
 
         // load data to show
-        amountField.setText(String.valueOf(recipeIngredient.getAmount()));
-
+        if (recipeIngredient.getUnit() != Unit.CUSTOM) {
+            amountField.setText(String.valueOf(recipeIngredient.getAmount()));
+        }
+        else {
+            amountField.setText(recipeIngredient.getInformalUnit());
+        }
         // Ingredient dropdown
         List<Ingredient> ingredients = serverUtils.getIngredients();
         ingredientComboBox.getItems().setAll(ingredients);
@@ -139,28 +143,38 @@ public class RecipeIngredientCtrl {
      */
     @FXML
     private void onConfirmClicked() {
-        double amount = -1;
-        try {
-            amount = Double.parseDouble(amountField.getText());
+        Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
+
+        String informalAmount = null;
+        double amount = 0;
+
+        if (unit == Unit.CUSTOM) {
+            informalAmount = amountField.getText();
         }
-        catch (NumberFormatException _) {
+        else{
+            try {
+                amount = Double.parseDouble(amountField.getText());
+            }
+            catch (Exception _) {
+                amount = -1;
+            }
         }
 
-        Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
         Ingredient ingredient = ingredientComboBox.getSelectionModel().getSelectedItem();
 
-        if (amount <= 0 || unit == null || ingredient == null) {
+        if ((amount <= 0 && unit != Unit.CUSTOM) || unit == null || ingredient == null) {
             return;
         }
 
         if (recipeIngredient == null){
             recipeIngredient = serverUtils.addRecipeIngredient(
-                    new RecipeIngredient(recipe, ingredient, "", amount, unit)
+                    new RecipeIngredient(recipe, ingredient, informalAmount, amount, unit)
             );
         }
         else {
             recipeIngredient.setAmount(amount);
             recipeIngredient.setUnit(unit);
+            recipeIngredient.setInformalUnit(informalAmount);
             recipeIngredient.setIngredient(ingredient);
             serverUtils.updateRecipeIngredient(recipeIngredient);
         }
@@ -178,6 +192,10 @@ public class RecipeIngredientCtrl {
      */
     @FXML
     private void onCancelClicked() {
+        if (recipeIngredient == null) {
+            updateIngredientList.run();
+        }
+
         editView.setVisible(false);
         editView.setManaged(false);
 
