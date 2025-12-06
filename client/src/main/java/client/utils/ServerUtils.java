@@ -120,7 +120,7 @@ public class ServerUtils {
     }
 
     /**
-     * this is to
+     * this is to create a new recipe
      *
      * @param recipe recipe of the recipe.
      * @return a new recipe
