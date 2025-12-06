@@ -33,7 +33,7 @@ public class AddRecipeCtrl {
     @FXML
     private TextArea preparationsArea;
 
-    private AppViewCtrl appViewCtrl;
+    private final AppViewCtrl appViewCtrl;
 
     /**
      *  The constructor for the add recipeController

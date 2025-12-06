@@ -77,7 +77,7 @@ public class AppViewCtrl implements Initializable {
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
 
         refreshButton.setOnAction(e -> loadRecipes());
-        
+
         loadRecipes();
     }
 
