@@ -314,19 +314,6 @@ public class RecipeViewCtrl {
         AddRecipeCtrl addCtrl = mainCtrl.getAddRecipeCtrl();
         addCtrl.clone(recipe);
     }
-
-    /**
-     * To show an error for if something goes wrong
-     * @param header The head text of the error
-     * @param content The main text of the error
-     */
-    private void showError(String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
 }
 
 

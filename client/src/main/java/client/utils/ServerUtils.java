@@ -26,14 +26,13 @@ import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientConfig;
-
 
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.ClientBuilder;
 
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.client.ClientConfig;
 
 /**
  * Utility class for communicating with the server via REST.
@@ -132,20 +131,6 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .post(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
     }
-
-    /**
-     * this function is to clone the recipe
-     * @param recipe the recipe that will be cloned
-     * @return return the new recipe
-     */
-    public Recipe clone(Recipe recipe){
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(serverURL).path("/api/recipes/clone")
-                .request(APPLICATION_JSON)
-                .post(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
-    }
-
-
 
 
     /**

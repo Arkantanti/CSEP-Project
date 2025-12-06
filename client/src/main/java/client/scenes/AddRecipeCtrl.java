@@ -109,6 +109,11 @@ public class AddRecipeCtrl {
      * To cancel the add function
      */
     public void onCancel(){
+        if(mainCtrl.getFirstOpen()){
+            mainCtrl.showAppView();
+            appViewCtrl.loadRecipes();
+            mainCtrl.showDefaultScreen();
+        }
         mainCtrl.showAppView();
         appViewCtrl.loadRecipes();
     }

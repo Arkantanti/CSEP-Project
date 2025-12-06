@@ -159,25 +159,6 @@ public class RecipeController {
     }
 
     /**
-     * Adds a new recipe to the system.
-     * The following conditions must be met, otherwise a
-     * {@code 400 Bad Request} response is returned:
-     *     The recipe must have a non-empty name
-     *     The number of servings must be at least 1
-     *     The preparation steps must not be {@code null}
-     *
-     * @param recipe the recipe object to be added
-     * @return {@code 400 Bad Request} if validation fails,
-     *         otherwise {@code 200 OK} containing the saved recipe
-     */
-    @PostMapping("clone")
-    public ResponseEntity<Recipe> clone(@RequestBody Recipe recipe) {
-
-        Recipe saved = repo.save(recipe);
-        return ResponseEntity.ok(saved);
-    }
-
-    /**
      * Utility method to check whether a given string is {@code null} or empty.
      *
      * @param s the string to evaluate

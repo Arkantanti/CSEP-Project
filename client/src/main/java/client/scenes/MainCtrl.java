@@ -37,6 +37,7 @@ public class MainCtrl {
     private Scene appView;
     private MyFXML fxml;
     private AddRecipeCtrl addRecipeCtrl;
+    private boolean firstOpen;
 
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
@@ -50,9 +51,13 @@ public class MainCtrl {
         this.appViewCtrl = appView.getKey();
         this.appView = new Scene(appView.getValue());
         this.fxml = fxml;
+        this.firstOpen = true;
+
+        appViewCtrl.setContent(new javafx.scene.control.Label("Select a recipe from the list"));
 
         showAppView();
         primaryStage.show();
+        showDefaultScreen();
     }
 
     /**
@@ -77,6 +82,7 @@ public class MainCtrl {
                 "client", "scenes", "RecipeView.fxml");
         recipeView.getKey().setRecipe(recipe, fxml);
         appViewCtrl.setContent(recipeView.getValue());
+        switchFirstOpen();
     }
 
     /**
@@ -87,6 +93,16 @@ public class MainCtrl {
                 "client", "scenes", "AddRecipe.fxml");
         this.addRecipeCtrl = addRecipeView.getKey();
         appViewCtrl.setContent(addRecipeView.getValue());
+    }
+
+    /**
+     * function to make sure there are no problems when the app is first opened
+     * and then a recipe gets added and canceled immediately.
+     */
+    public void showDefaultScreen(){
+        Pair<RecipeViewCtrl, Parent> defaultScreen = fxml.load(RecipeViewCtrl.class,
+                "client", "scenes", "DefaultView.fxml");
+        appViewCtrl.setContent(defaultScreen.getValue());
     }
 
     /**
@@ -109,6 +125,17 @@ public class MainCtrl {
         }
 
         return null;
+    }
+
+    /**
+     * The switch to change if it was opened or not.
+     */
+    public void switchFirstOpen(){
+        this.firstOpen = !this.firstOpen;
+    }
+
+    public boolean getFirstOpen(){
+        return this.firstOpen;
     }
 
     public AddRecipeCtrl getAddRecipeCtrl() {
