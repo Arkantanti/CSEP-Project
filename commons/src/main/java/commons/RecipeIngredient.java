@@ -155,7 +155,12 @@ public class RecipeIngredient {
                     .append(metricPrefixes.get(magnitude)).append(unitChar);
         }
         else {
-            s.append(informalUnit);
+            if (informalUnit != null) {
+                s.append(informalUnit);
+            }
+            else {
+                s.append(amount);
+            }
         }
         s.append(" ").append(ingredient.getName());
         return s.toString();

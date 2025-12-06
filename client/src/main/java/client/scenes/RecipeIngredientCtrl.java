@@ -110,7 +110,7 @@ public class RecipeIngredientCtrl {
         defaultView.setManaged(false);
 
         // load data to show
-        if (recipeIngredient.getUnit() != Unit.CUSTOM) {
+        if (recipeIngredient.getUnit() != Unit.CUSTOM || recipeIngredient.getInformalUnit() == null) {
             amountField.setText(String.valueOf(recipeIngredient.getAmount()));
         }
         else {
@@ -193,7 +193,7 @@ public class RecipeIngredientCtrl {
     @FXML
     private void onCancelClicked() {
         if (recipeIngredient == null) {
-            updateIngredientList.run();
+            updateIngredientList.run(); // removes the recipeIngredient from the list
         }
 
         editView.setVisible(false);
