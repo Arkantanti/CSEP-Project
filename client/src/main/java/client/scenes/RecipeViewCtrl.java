@@ -160,7 +160,7 @@ public class RecipeViewCtrl {
      */
     private void loadIngredients() {
         ingredientsContainer.getChildren().clear();
-        this.ingredients = server.getRecipeIngredients(recipe.getId());;
+        this.ingredients = server.getRecipeIngredients(recipe.getId());
         if (ingredients == null || fxml == null) {
             return;
         }
