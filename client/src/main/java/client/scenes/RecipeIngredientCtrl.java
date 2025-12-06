@@ -162,8 +162,25 @@ public class RecipeIngredientCtrl {
 
         Ingredient ingredient = ingredientComboBox.getSelectionModel().getSelectedItem();
 
-        if ((amount <= 0 && unit != Unit.CUSTOM) || unit == null || ingredient == null) {
+        if ((amount <= 0 && unit != Unit.CUSTOM) ||
+                ((informalAmount == null || informalAmount.isEmpty()) && unit == Unit.CUSTOM)) {
+            amountField.styleProperty().set("-fx-text-box-border: red;");
             return;
+        }
+        else {
+            amountField.styleProperty().set("-fx-text-box-border: lightgray;");
+        }
+
+        if (ingredient == null){
+            ingredientComboBox.styleProperty().set("-fx-border-color: red; -fx-border-radius: 4;");
+            return;
+        }
+        else{
+            ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
+        }
+
+        if (unit == null) { // user should not be able to set unit as null,
+            return;         // so I will simply not allow that
         }
 
         if (recipeIngredient == null){
