@@ -1,22 +1,12 @@
-/*
- * Copyright 2021 Delft University of Technology
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package client.scenes;
 
+import commons.Recipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MainCtrlTest {
 
@@ -28,8 +18,11 @@ public class MainCtrlTest {
     }
 
     @Test
-    public void writeSomeTests() {
-        // TODO create replacement objects and write some tests
-        // sut.initialize(null, null, null);
+    void showRecipe_throwsIfNotInitialized() {
+        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step 1"));
+
+        assertThrows(IllegalStateException.class,
+                () -> sut.showRecipe(recipe),
+                "Expected showRecipe to fail if FXML/AppViewCtrl are not initialized");
     }
 }

@@ -62,7 +62,7 @@
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
             </VBox>
-            <Button fx:id="ingredientAddButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="+">
+            <Button fx:id="ingredientAddButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onAddRecipeIngredient" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="+">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
