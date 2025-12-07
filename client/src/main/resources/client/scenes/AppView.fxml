@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -13,9 +14,9 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AppViewCtrl">
    <top>
-      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ToolBar prefHeight="83.0" prefWidth="708.0" BorderPane.alignment="CENTER">
          <items>
-            <Label alignment="CENTER" prefHeight="36.0" prefWidth="662.0" text="    FoodPal">
+            <Label alignment="CENTER" prefHeight="49.0" prefWidth="661.0" text="    FoodPal">
                <font>
                   <Font size="25.0" />
                </font>
@@ -31,7 +32,7 @@
    <left>
       <VBox prefHeight="438.0" prefWidth="187.0" styleClass="sidebar-root" stylesheets="/styles/sidebar.css" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="47.0" prefWidth="170.0" spacing="5.0" styleClass="sidebar-actions">
+            <HBox prefHeight="57.0" prefWidth="187.0" spacing="5.0" styleClass="sidebar-actions">
                <children>
                   <Button fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="82.0" styleClass="sidebar-toggle" text="Recipes" />
                   <Button fx:id="ingredientsButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="sidebar-toggle" text="Ingredients">
@@ -43,6 +44,11 @@
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
+            </HBox>
+            <HBox alignment="TOP_CENTER" prefHeight="27.0" prefWidth="187.0">
+               <children>
+                  <TextField fx:id="searchField" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="172.0" promptText="search" />
+               </children>
             </HBox>
             <ListView fx:id="itemsList" prefHeight="325.0" prefWidth="161.0" />
             <HBox prefHeight="44.0" prefWidth="170.0" spacing="5.0" styleClass="sidebar-actions">

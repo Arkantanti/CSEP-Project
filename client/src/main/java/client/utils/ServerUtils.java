@@ -65,6 +65,20 @@ public class ServerUtils {
     }
 
     /**
+     * Searches for recipes matching the query.
+     *
+     * @param query the search string (name, ingredient, or step)
+     * @return a list of matching recipes
+     */
+    public List<Recipe> searchRecipes(String query) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(serverURL).path("api/recipes/search")
+                .queryParam("name", query) // Matches @RequestParam("name") in your Controller
+                .request(APPLICATION_JSON)
+                .get(new GenericType<List<Recipe>>() {});
+    }
+
+    /**
      * Retrieves all recipe ingredients for a specific recipe from the server.
      *
      * @param recipeId the ID of the recipe
