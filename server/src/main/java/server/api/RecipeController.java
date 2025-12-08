@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.RecipeRepository;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Controller responsible for handling all HTTP requests related to {@link Recipe} entities.
@@ -122,19 +123,6 @@ public class RecipeController {
         return ResponseEntity.ok(saved);
     }
 
-    /**
-     * Searches for recipes containing the given name (case-insensitive).
-     *
-     * @param name the search string
-     * @return a list of matching recipes
-     */
-    @GetMapping("search")
-    public ResponseEntity<List<Recipe>> searchRecipes(@RequestParam String name) {
-        if (isNullOrEmpty(name)) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(repo.findByNameContainingIgnoreCase(name));
-    }
 
     /**
      * Deletes the recipe with the specified ID.
@@ -167,5 +155,39 @@ public class RecipeController {
      */
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
+    }
+
+    /**
+     * Searches for recipes based on a flexible query string.
+     * Supports multiple keywords (e.g., "bread cheese" finds recipes with both).
+     *
+     * @param name the search query string
+     * @return 400 if blank, otherwise list of matching recipes
+     */
+    @GetMapping("search")
+    public ResponseEntity<List<Recipe>> searchRecipes(@RequestParam String name) {
+        if (name == null || name.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // 1. Split query into separate keywords by whitespace
+        String[] terms = name.trim().split("\\s+");
+
+        // 2. Initial search with the first term
+        // Wrap in ArrayList to ensure the list is mutable (modifiable)
+        List<Recipe> results = new ArrayList<>(repo.search(terms[0]));
+
+        // 3. Filter results: Keep only recipes that match ALL subsequent terms
+        for (int i = 1; i < terms.length; i++) {
+            List<Recipe> matches = repo.search(terms[i]);
+            results.retainAll(matches); // Intersection: keeps only items present in both lists
+
+            // Optimization: If results become empty, no need to check further
+            if (results.isEmpty()) {
+                break;
+            }
+        }
+
+        return ResponseEntity.ok(results);
     }
 }
