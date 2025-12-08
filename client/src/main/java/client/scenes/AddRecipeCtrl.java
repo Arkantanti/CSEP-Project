@@ -117,8 +117,9 @@ public class AddRecipeCtrl {
             mainCtrl.showAppView();
             appViewCtrl.loadRecipes();
             mainCtrl.showDefaultScreen();
+        } else {
+            mainCtrl.showAppView();
+            appViewCtrl.loadRecipes();
         }
-        mainCtrl.showAppView();
-        appViewCtrl.loadRecipes();
     }
 }

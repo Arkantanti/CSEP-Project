@@ -82,7 +82,9 @@ public class MainCtrl {
                 "client", "scenes", "RecipeView.fxml");
         recipeView.getKey().setRecipe(recipe, fxml);
         appViewCtrl.setContent(recipeView.getValue());
-        switchFirstOpen();
+        if(firstOpen){
+            switchFirstOpen();
+        }
     }
 
     /**
