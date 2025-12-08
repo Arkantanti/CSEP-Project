@@ -5,7 +5,11 @@ import client.utils.ServerUtils;
 import commons.Recipe;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+// temporarily removed the adding as the design of adding
+// ingredients make it so the recipe needs to be created first.
+
+
+//import javafx.scene.layout.VBox;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,10 +17,10 @@ import java.util.List;
 public class AddRecipeCtrl {
     @FXML
     private Label nameLabel;
-    @FXML
-    private VBox ingredientsContainer;
-    @FXML
-    private Button ingredientAddButton;
+//    @FXML
+//    private VBox ingredientsContainer;
+//    @FXML
+//    private Button ingredientAddButton;
     @FXML
     private Button saveButton;
     @FXML
