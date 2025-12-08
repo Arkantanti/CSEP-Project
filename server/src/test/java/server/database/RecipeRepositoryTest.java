@@ -75,6 +75,29 @@ public class RecipeRepositoryTest implements RecipeRepository {
         recipes.removeIf(r -> r.getId() == id);
     }
 
+    @Override
+    public List<Recipe> search(String query) {
+        call("search");
+        if (query == null) return new ArrayList<>();
+        String lowerQuery = query.toLowerCase();
+
+        return recipes.stream()
+                .filter(r ->
+                                // 1. Check Name
+                                (r.getName() != null && r.getName().toLowerCase().contains(lowerQuery)) ||
+
+                                        // 2. Check Preparation Steps
+                                        (r.getPreparationSteps() != null && r.getPreparationSteps().stream()
+                                                .anyMatch(step -> step != null && step.toLowerCase().contains(lowerQuery)))
+
+                        // 3. Ingredient check removed from Unit Test because Recipe
+                        // no longer owns the ingredients list (Circular dependency fix).
+                        // The real database query uses a subquery to handle this.
+                )
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     // --- Boilerplate methods required by interface (return null/do nothing) ---
 
     @Override public List<Recipe> findAll(Sort sort) { return null; }
