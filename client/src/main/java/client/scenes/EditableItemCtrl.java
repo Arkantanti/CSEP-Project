@@ -108,7 +108,7 @@ public class EditableItemCtrl {
     private void startEditing() {
         editing = true;
         textField.setText(textLabel.getText());
-        
+
         textLabel.setVisible(false);
         textLabel.setManaged(false);
 

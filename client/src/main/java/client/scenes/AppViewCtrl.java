@@ -75,6 +75,11 @@ public class AppViewCtrl implements Initializable {
                 mainCtrl.showRecipe((Recipe) newVal);
             }
         });
+
+        additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
+
+        refreshButton.setOnAction(e -> loadRecipes());
+
         if (searchField != null) {
             searchField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null || newValue.isBlank()) {

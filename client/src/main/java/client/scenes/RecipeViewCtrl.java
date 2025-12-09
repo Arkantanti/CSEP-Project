@@ -41,6 +41,8 @@ public class RecipeViewCtrl {
     private Button preparationAddButton;
     @FXML
     private Button printButton;
+    @FXML
+    private Button cloneButton;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -49,6 +51,7 @@ public class RecipeViewCtrl {
     private final Printer printer;
     private Recipe recipe;
     private List<RecipeIngredient> ingredients;
+    private final AppViewCtrl appViewCtrl;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -60,6 +63,7 @@ public class RecipeViewCtrl {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
+        this.appViewCtrl = mainCtrl.getAppViewCtrl();
     }
 
     /**
@@ -139,6 +143,7 @@ public class RecipeViewCtrl {
             if (recipe != null) {
                 recipe.setName(newName);
                 server.updateRecipe(recipe);
+                appViewCtrl.loadRecipes();
             }
         }
 
@@ -299,6 +304,15 @@ public class RecipeViewCtrl {
                 alert.showAndWait();
             });
         }
+    }
+
+    /**
+     * This function will be implemented for adding recipes
+     */
+    public void cloneRecipe(){
+        mainCtrl.showAddRecipe();
+        AddRecipeCtrl addCtrl = mainCtrl.getAddRecipeCtrl();
+        addCtrl.clone(recipe);
     }
 }
 

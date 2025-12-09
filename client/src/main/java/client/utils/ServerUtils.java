@@ -26,14 +26,13 @@ import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientConfig;
-
 
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.ClientBuilder;
 
 import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+import org.glassfish.jersey.client.ClientConfig;
 
 /**
  * Utility class for communicating with the server via REST.
@@ -135,6 +134,20 @@ public class ServerUtils {
     }
 
     /**
+     * this is to create a new recipe
+     *
+     * @param recipe recipe of the recipe.
+     * @return a new recipe
+     */
+    public Recipe add(Recipe recipe){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(serverURL).path("/api/recipes/")
+                .request(APPLICATION_JSON)
+                .post(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
+    }
+
+
+    /**
      * gets all ingredients in the database
      * @return a list of ingredients in the database
      */
@@ -215,4 +228,5 @@ public class ServerUtils {
             return null;
         }
     }
+
 }

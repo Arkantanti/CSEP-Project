@@ -36,7 +36,7 @@ public class RecipeController {
      *
      * @return a list of all {@link Recipe} objects available in the system
      */
-    @GetMapping( "")
+    @GetMapping("")
     public List<Recipe> getAll() {
         return repo.findAll();
     }
