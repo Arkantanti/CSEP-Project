@@ -160,6 +160,26 @@ public class ServerUtils {
     }
 
     /**
+     * this function is for deleting recipes
+     */
+    public Response deleteRecipe(long id){
+        if (id < 0) {
+            throw new IllegalArgumentException("Recipe Ingredient to update must have a valid ID");
+        }
+
+        try {
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL)
+                    .path("/api/recipes/" + id)
+                    .request()
+                    .delete();
+        } catch (ProcessingException e) {
+            System.out.println("something went wrong;");
+        }
+        return null;
+    }
+
+    /**
      * Updates the specified recipe ingredient
      * @param recipeIngredient the recipe ingredient to update
      * @return the updated recipe ingredient as returned by the server

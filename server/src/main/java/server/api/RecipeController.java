@@ -74,7 +74,7 @@ public class RecipeController {
      */
     @PostMapping("")
     public ResponseEntity<Recipe> add(@RequestBody Recipe recipe) {
-
+        System.out.println(">>> DELETE HIT with id = ");
         if (recipe == null
                 || isNullOrEmpty(recipe.getName())
                 || recipe.getServings() < 1
@@ -102,6 +102,7 @@ public class RecipeController {
      */
     @PutMapping("{id}")
     public ResponseEntity<Recipe> update(@PathVariable long id, @RequestBody Recipe recipe) {
+        System.out.println("something went wrong;");
         if (id < 0) {
             return ResponseEntity.badRequest().build();
         }

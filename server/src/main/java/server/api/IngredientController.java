@@ -131,6 +131,7 @@ public class IngredientController {
      */
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
+        System.out.println("something went wrong;");
         if (id < 0) {
             return ResponseEntity.badRequest().build();
         }

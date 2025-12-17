@@ -43,6 +43,8 @@ public class RecipeViewCtrl {
     private Button printButton;
     @FXML
     private Button cloneButton;
+    @FXML
+    private Button deleteButton;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -52,6 +54,7 @@ public class RecipeViewCtrl {
     private Recipe recipe;
     private List<RecipeIngredient> ingredients;
     private final AppViewCtrl appViewCtrl;
+    private Runnable updateRecipeList;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -313,6 +316,20 @@ public class RecipeViewCtrl {
         mainCtrl.showAddRecipe();
         AddRecipeCtrl addCtrl = mainCtrl.getAddRecipeCtrl();
         addCtrl.clone(recipe);
+    }
+
+    /**
+     * this function will be used to delete recipes.
+     */
+    public void deleteRecipe(){
+        try{
+            server.deleteRecipe(this.recipe.getId());
+            appViewCtrl.loadRecipes();
+        } catch (Exception e){
+            System.out.println("something went wrong.");
+        }
+
+
     }
 }
 
