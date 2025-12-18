@@ -73,10 +73,7 @@ public class Main extends Application {
             return;
         }
 
-        var overview = fxml.load(AppViewCtrl.class,
-                "client", "scenes", "AppView.fxml");
-
         var mainCtrl = injector.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, fxml);
+        mainCtrl.initialize(primaryStage, fxml);
     }
 }

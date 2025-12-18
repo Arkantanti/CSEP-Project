@@ -116,7 +116,7 @@ public class AddRecipeCtrl {
         if(mainCtrl.getFirstOpen()){
             mainCtrl.showAppView();
             appViewCtrl.loadRecipes();
-            mainCtrl.showDefaultScreen();
+            mainCtrl.showDefaultView();
         } else {
             mainCtrl.showAppView();
             appViewCtrl.loadRecipes();

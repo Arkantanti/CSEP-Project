@@ -311,8 +311,7 @@ public class RecipeViewCtrl {
      */
     public void cloneRecipe(){
         mainCtrl.showAddRecipe();
-        AddRecipeCtrl addCtrl = mainCtrl.getAddRecipeCtrl();
-        addCtrl.clone(recipe);
+        mainCtrl.getAddRecipeCtrl().clone(recipe);
     }
 }
 

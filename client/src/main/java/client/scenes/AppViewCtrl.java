@@ -17,6 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.StackPane;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -72,9 +73,12 @@ public class AppViewCtrl implements Initializable {
 
         itemsList.getSelectionModel().selectedItemProperty().addListener((
                 obs, oldVal, newVal) -> {
-            if (newVal != null && newVal instanceof Recipe) {
+            if (newVal instanceof Recipe) {
                 mainCtrl.showRecipe((Recipe) newVal);
+            } else if (newVal instanceof Ingredient) {
+                mainCtrl.showIngredient((Ingredient) newVal);
             }
+
         });
 
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
@@ -115,6 +119,7 @@ public class AppViewCtrl implements Initializable {
         try {
             // Fetch from server
             List<Recipe> recipes = server.getRecipes();
+            recipes.sort(Comparator.comparing(Recipe::getName));
 
             // Update UI on JavaFX Application Thread
             Platform.runLater(() -> {
@@ -139,6 +144,7 @@ public class AppViewCtrl implements Initializable {
     private void searchRecipes(String query) {
         try {
             List<Recipe> results = server.searchRecipes(query);
+            results.sort(Comparator.comparing(Recipe::getName));
             // JavaFX UI updates must run on the UI thread
             Platform.runLater(() -> {
                 itemsList.setItems(FXCollections.observableArrayList(results));
@@ -160,6 +166,7 @@ public class AppViewCtrl implements Initializable {
         try {
             // Fetch from server
             List<Ingredient> ingredients = server.getIngredients();
+            ingredients.sort(Comparator.comparing(Ingredient::getName));
 
             // Update UI on JavaFX Application Thread
             Platform.runLater(() -> {

@@ -26,6 +26,7 @@ public class IngredientViewCtrl {
     private boolean editing = false;
     private final MainCtrl mainCtrl;
     private Ingredient ingredient;
+    private final AppViewCtrl appViewCtrl;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -36,6 +37,7 @@ public class IngredientViewCtrl {
     public IngredientViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.appViewCtrl = mainCtrl.getAppViewCtrl();
     }
 
     /**

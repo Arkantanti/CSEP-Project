@@ -185,6 +185,31 @@ public class ServerUtils {
     }
 
     /**
+     * Updates the specified ingredient
+     * @param ingredient the ingredient to update
+     * @return the updated ingredient as returned by the server
+     * @throws IllegalArgumentException if {@code ingredient} is null or has invalid ID
+     */
+    public Ingredient updateIngredient(Ingredient ingredient) {
+        if (ingredient == null) {
+            throw new IllegalArgumentException("Ingredient to update must not be null");
+        }
+        if (ingredient.getId() < 0) {
+            throw new IllegalArgumentException("Ingredient to update must have a valid ID");
+        }
+
+        try {
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL)
+                    .path("api/ingredients/" + ingredient.getId())
+                    .request(APPLICATION_JSON)
+                    .put(Entity.entity(ingredient, APPLICATION_JSON), Ingredient.class);
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
      * Deletes the specified recipe ingredient
      * @param id the id of the recipe ingredient to delete
      * @throws IllegalArgumentException if id is invalid
