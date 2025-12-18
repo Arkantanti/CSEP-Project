@@ -134,7 +134,7 @@ public class MainCtrl {
      */
     public Path showFileChooser(String placeholder) {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Choose Markdown Save Location");
+        chooser.setTitle("Choose PDF Save Location");
         chooser.setInitialFileName(placeholder);
 
         chooser.getExtensionFilters().add(
