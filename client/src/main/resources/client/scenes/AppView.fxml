@@ -34,8 +34,8 @@
          <children>
             <HBox prefHeight="57.0" prefWidth="187.0" spacing="5.0" styleClass="sidebar-actions">
                <children>
-                  <Button fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="82.0" styleClass="sidebar-toggle" text="Recipes" />
-                  <Button fx:id="ingredientsButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="sidebar-toggle" text="Ingredients">
+                  <Button onAction="#loadRecipes" fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="82.0" styleClass="sidebar-toggle" text="Recipes" />
+                  <Button onAction="#loadIngredients" fx:id="ingredientsButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="sidebar-toggle" text="Ingredients">
                      <font>
                         <Font size="10.0" />
                      </font>

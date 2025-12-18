@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Ingredient;
 import commons.Recipe;
 import commons.Showable;
 import javafx.application.Platform;
@@ -109,6 +110,8 @@ public class AppViewCtrl implements Initializable {
      * is unreachable, an error alert is displayed to the user.
      */
     public void loadRecipes() {
+        searchField.setVisible(true);
+        searchField.setManaged(true);
         try {
             // Fetch from server
             List<Recipe> recipes = server.getRecipes();
@@ -128,6 +131,7 @@ public class AppViewCtrl implements Initializable {
             });
         }
     }
+
     /**
      * Searches for recipes via the server and updates the UI list.
      * @param query The text to search for
@@ -141,6 +145,35 @@ public class AppViewCtrl implements Initializable {
             });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Fetches the complete list of ingredients from the server and updates the recipe ListView.
+     * <p>
+     * This method runs asynchronously to avoid blocking the UI thread. If the server
+     * is unreachable, an error alert is displayed to the user.
+     */
+    public void loadIngredients() {
+        searchField.setVisible(false);
+        searchField.setManaged(false);
+        try {
+            // Fetch from server
+            List<Ingredient> ingredients = server.getIngredients();
+
+            // Update UI on JavaFX Application Thread
+            Platform.runLater(() -> {
+                itemsList.setItems(FXCollections.observableArrayList(ingredients));
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Connection Error");
+                alert.setHeaderText("Could not load ingredients");
+                alert.setContentText("Check if the server is running.");
+                alert.showAndWait();
+            });
         }
     }
 }
