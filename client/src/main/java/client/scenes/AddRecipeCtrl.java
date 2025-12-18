@@ -1,10 +1,15 @@
 package client.scenes;
 
+import client.MyFXML;
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Recipe;
+import commons.RecipeIngredient;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 // temporarily removed the adding as the design of adding
 // ingredients make it so the recipe needs to be created first.
 
@@ -17,10 +22,10 @@ import java.util.List;
 public class AddRecipeCtrl {
     @FXML
     private Label nameLabel;
-//    @FXML
-//    private VBox ingredientsContainer;
-//    @FXML
-//    private Button ingredientAddButton;
+    @FXML
+    private VBox ingredientsContainer;
+    @FXML
+    private Button ingredientAddButton;
     @FXML
     private Button saveButton;
     @FXML
@@ -28,6 +33,8 @@ public class AddRecipeCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+
+    private MyFXML fxml;
 
     @FXML
     private TextField nameTextField;
@@ -39,6 +46,8 @@ public class AddRecipeCtrl {
 
     private final AppViewCtrl appViewCtrl;
 
+    private List<RecipeIngredient> recipeIngredientList;
+
     /**
      *  The constructor for the add recipeController
      * @param server the server it is linked to
@@ -48,6 +57,13 @@ public class AddRecipeCtrl {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
+    }
+
+    /**
+     * gne
+     */
+    public void initialize(MyFXML fxml){
+        this.fxml = fxml;
     }
 
     /**
@@ -120,6 +136,33 @@ public class AddRecipeCtrl {
         } else {
             mainCtrl.showAppView();
             appViewCtrl.loadRecipes();
+        }
+    }
+
+    /**
+     * called when the user presses the + under the ingredients list
+     */
+    @FXML
+    private void onAddRecipeIngredient(){
+        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                "client", "scenes", "RecipeIngredient.fxml");
+        item.getKey().initialize(null, null, this::showIngredients);
+        ingredientsContainer.getChildren().add(item.getValue());
+        item.getKey().startEditingFromCtrl();
+    }
+
+
+    /**
+     * gne
+     */
+    private void showIngredients(){
+        ingredientsContainer.getChildren().clear();
+        for(RecipeIngredient ri : recipeIngredientList){
+            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                    "client", "scenes", "RecipeIngredient.fxml");
+            item.getKey().initialize(null, null, this::showIngredients);
+            ingredientsContainer.getChildren().add(item.getValue());
+            item.getKey().startEditingFromCtrl();
         }
     }
 }

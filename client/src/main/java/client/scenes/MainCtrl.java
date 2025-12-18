@@ -94,6 +94,7 @@ public class MainCtrl {
         Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class,
                 "client", "scenes", "AddRecipe.fxml");
         this.addRecipeCtrl = addRecipeView.getKey();
+        addRecipeCtrl.initialize(fxml);
         appViewCtrl.setContent(addRecipeView.getValue());
     }
 

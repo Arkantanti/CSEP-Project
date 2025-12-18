@@ -54,7 +54,6 @@ public class RecipeViewCtrl {
     private Recipe recipe;
     private List<RecipeIngredient> ingredients;
     private final AppViewCtrl appViewCtrl;
-    private Runnable updateRecipeList;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -328,7 +327,7 @@ public class RecipeViewCtrl {
         } catch (Exception e){
             System.out.println("something went wrong.");
         }
-
+        mainCtrl.showDefaultScreen();
 
     }
 }
