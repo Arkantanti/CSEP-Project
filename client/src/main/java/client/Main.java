@@ -80,7 +80,8 @@ public class Main extends Application {
         try {
             List<Long> removedIds = favoritesManager.validate();
             if (!removedIds.isEmpty()) {
-                System.out.println("Removed " + removedIds.size() + " invalid favorite recipes from config.");
+                System.out.println("Removed " + removedIds.size() +
+                        " invalid favorite recipes from config.");
             }
         } catch (Exception e) {
             System.err.println("Failed to validate favorites: " + e.getMessage());

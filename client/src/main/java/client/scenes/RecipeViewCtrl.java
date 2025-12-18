@@ -63,7 +63,10 @@ public class RecipeViewCtrl {
      * @param server the server utility used for network communication
      */
     @Inject
-    public RecipeViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer, FavoritesManager favoritesManager) {
+    public RecipeViewCtrl(ServerUtils server,
+                          MainCtrl mainCtrl,
+                          Printer printer,
+                          FavoritesManager favoritesManager) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
