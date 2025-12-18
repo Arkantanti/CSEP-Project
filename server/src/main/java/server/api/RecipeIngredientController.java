@@ -38,7 +38,7 @@ public class RecipeIngredientController {
      *         otherwise {@code 200 OK} with the integer count
      */
     @GetMapping("recipeCount/{ingredientId}")
-    public ResponseEntity<Long> getRecipeCount(@PathVariable int ingredientId) {
+    public ResponseEntity<Long> getRecipeCount(@PathVariable long ingredientId) {
         if (ingredientId < 0) {
             return ResponseEntity.badRequest().build();
         }

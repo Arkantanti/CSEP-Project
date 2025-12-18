@@ -30,6 +30,7 @@ public class RecipeIngredientRepositoryTest implements RecipeIngredientRepositor
 
     @Override
     public <S extends RecipeIngredient> S save(S entity) {
+
         call("save");
         if(entity.getId()==0 ||
                 recipeIngredients.stream().noneMatch(q -> q.getId() == entity.getId())) {
@@ -70,6 +71,14 @@ public class RecipeIngredientRepositoryTest implements RecipeIngredientRepositor
 
         return recipeIngredients.stream()
                 .filter(x -> x.getRecipe().getId() == recipeId).toList();
+    }
+
+    @Override
+    public List<RecipeIngredient> findByIngredientId(long ingredientId) {
+        call("findByIngredientId");
+
+        return recipeIngredients.stream()
+                .filter(x -> x.getIngredient().getId() == ingredientId).toList();
     }
 
     // --- Boilerplate ---

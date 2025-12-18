@@ -47,6 +47,7 @@ class RecipeIngredientControllerTest {
         ri1 = repo.save(new RecipeIngredient(r1, ing2, null, 4, Unit.GRAM));
         ri2 = repo.save(new RecipeIngredient(r2, ing1, null, 3, Unit.GRAM));
         ri3 = repo.save(new RecipeIngredient(r1, ing3, null, 1, Unit.GRAM));
+        repo.save(new RecipeIngredient(r2, ing2, null, 312, Unit.LITER));
 
     }
 
@@ -119,5 +120,12 @@ class RecipeIngredientControllerTest {
     void delete_notfoundId() {
         ResponseEntity<Void> response = controller.delete(999);
         assertEquals(404, response.getStatusCode().value());
+    }
+
+    @Test
+    void recipeCountSuccess() {
+        ResponseEntity<Long> response = controller.getRecipeCount(ing2.getId());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(2,response.getBody());
     }
 }
