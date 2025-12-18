@@ -138,6 +138,13 @@ public class AddRecipeCtrl {
      * To cancel the add function
      */
     public void onCancel(){
+        try{
+            System.out.println(recipe.getId());
+            server.deleteRecipe(recipe.getId());
+        } catch(Exception e){
+            System.out.println("Something went wrong");
+        }
+
         if(mainCtrl.getFirstOpen()){
             mainCtrl.showAppView();
             appViewCtrl.loadRecipes();
@@ -146,12 +153,6 @@ public class AddRecipeCtrl {
             mainCtrl.showAppView();
             appViewCtrl.loadRecipes();
         }
-        try{
-            server.deleteRecipe(recipe.getId());
-        } catch(Exception e){
-            System.out.println("Something went wrong");
-        }
-
     }
 
     /**
