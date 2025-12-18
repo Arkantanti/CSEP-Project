@@ -143,4 +143,12 @@ public class AppViewCtrl implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Opens the shopping list window
+     */
+    @FXML
+    private void openShoppingList(){
+        mainCtrl.openShoppingList();
+    }
 }
