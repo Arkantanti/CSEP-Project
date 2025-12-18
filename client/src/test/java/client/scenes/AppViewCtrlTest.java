@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AppViewCtrlTest {
 
@@ -15,7 +15,7 @@ public class AppViewCtrlTest {
     @BeforeEach
     void setup() {
         mainCtrl = new MainCtrl();
-        ctrl = new AppViewCtrl(null, mainCtrl);
+        ctrl = new AppViewCtrl(null, mainCtrl, null);
     }
 
     @Test
