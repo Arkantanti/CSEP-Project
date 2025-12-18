@@ -39,6 +39,44 @@
                   </Button>
                </children>
             </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-pref-height: 50px;">
+               <children>
+                  <Label text="Fat:">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="fatLabel" style="-fx-min-width: 100px;" />
+                  <Label text="Protein:">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="proteinLabel" style="-fx-min-width: 100px;" />
+                  <Label style="-fx-min-width: 100px;" text="Carbs:">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="carbsLabel" />
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-pref-height: 50px;">
+               <children>
+                  <Label text="Used in:">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="usedCountLabel" style="-fx-min-width: 100px;" />
+                  <Label text="Kcal:">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="kcalLabel" style="-fx-min-width: 100px;" />
+               </children>
+            </HBox>
          </children>
       </VBox>
    </content>

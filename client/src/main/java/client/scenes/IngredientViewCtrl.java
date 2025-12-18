@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
-public class IngredientViewCtrl {
+public class  IngredientViewCtrl {
 
     @FXML
     private Button titleEditButton;
@@ -20,29 +20,37 @@ public class IngredientViewCtrl {
     private TextField nameTextField;
     @FXML
     private Label nameLabel;
+    @FXML
+    private Label fatLabel;
+    @FXML
+    private Label proteinLabel;
+    @FXML
+    private Label carbsLabel;
+    @FXML
+    private Label usedCountLabel;
+    @FXML
+    private Label kcalLabel;
 
     private MyFXML fxml;
     private final ServerUtils server;
     private boolean editing = false;
-    private final MainCtrl mainCtrl;
     private Ingredient ingredient;
     private final AppViewCtrl appViewCtrl;
 
     /**
-     * Constructor for RecipeViewCtrl.
+     * Constructor for IngredientViewCtrl.
      *
      * @param server the server utility used for network communication
      */
     @Inject
     public IngredientViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
-        this.mainCtrl = mainCtrl;
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
     }
 
     /**
-     * The method that gets called internally when setting up the RecipeView.
-     * This method initializes the base properties for the RecipeView
+     * The method that gets called internally when setting up the IngredientView.
+     * This method initializes the base properties for the IngredientView
      */
     @FXML
     public void initialize() {
@@ -55,18 +63,24 @@ public class IngredientViewCtrl {
      * Sets the ingredient to display in this view.
      *
      * @param ingredient the ingredient to display
-     * @param fxml   the FXML loader for loading EditableItem components
+     * @param fxml the FXML loader
      */
     public void setIngredient(Ingredient ingredient, MyFXML fxml) {
         this.fxml = fxml;
         this.ingredient = ingredient;
         if (ingredient != null) {
             nameLabel.setText(ingredient.getName());
+            fatLabel.setText(String.valueOf(ingredient.getFat()));
+            proteinLabel.setText(String.valueOf(ingredient.getProtein()));
+            carbsLabel.setText(String.valueOf(ingredient.getCarbs()));
+            kcalLabel.setText("TODO");
+            usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
         }
     }
 
+
     /**
-     * Handles the edit button click for the recipe title.
+     * Handles the edit button click for the ingredient name.
      * Toggles between editing and viewing mode.
      */
     @FXML
@@ -79,7 +93,7 @@ public class IngredientViewCtrl {
     }
 
     /**
-     * Starts editing mode for the recipe title.
+     * Starts editing mode for the ingredient name.
      * Shows the text field and hides the label.
      */
     private void startEditing() {
@@ -99,7 +113,7 @@ public class IngredientViewCtrl {
     }
 
     /**
-     * Finishes editing mode for the recipe title.
+     * Finishes editing mode for the ingredient name.
      * Shows the label and hides the text field.
      */
     private void finishEditing() {

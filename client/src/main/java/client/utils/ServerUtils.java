@@ -215,7 +215,7 @@ public class ServerUtils {
         }
 
         try {
-            return ClientBuilder.newClient(new ClientConfig())
+            return this.client
                     .target(serverURL)
                     .path("api/ingredients/" + ingredient.getId())
                     .request(APPLICATION_JSON)
@@ -264,6 +264,27 @@ public class ServerUtils {
                     .path("api/recipeingredients/")
                     .request(APPLICATION_JSON)
                     .post(Entity.entity(recipeIngredient, APPLICATION_JSON), RecipeIngredient.class);
+        }
+        catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Counts how many recipes an ingredient is used in through a REST endpoint.
+     * @param ingredientId Ingredient id to count by.
+     * @return The number of recipes the ingredient is used in.
+     */
+    public Long recipeCount(Long ingredientId) {
+        if (ingredientId < 0) {
+            throw new IllegalArgumentException("Ingredient ID must not be negative");
+        }
+        try {
+            return this.client
+                    .target(serverURL)
+                    .path("api/recipeingredients/recipeCount/"+ingredientId)
+                    .request(APPLICATION_JSON)
+                    .get(new GenericType<Long>() {});
         }
         catch (ProcessingException e) {
             return null;
