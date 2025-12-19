@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.MyFXML;
 import client.config.Config;
+import client.config.ConfigManager;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
@@ -21,19 +22,16 @@ public class ShoppingListCtrl {
     @FXML
     private VBox ingredientListBox;
 
-    private final ServerUtils serverUtils;
     private final Config config;
     private MyFXML fxml;
 
     /**
      * Constructor for ShoppingListCtrl.
      *
-     * @param server the server utility used for network communication
      * @param config the config file to load/save shopping list ingredients
      */
     @Inject
-    public ShoppingListCtrl(ServerUtils server, Config config) {
-        this.serverUtils = server;
+    public ShoppingListCtrl(Config config) {
         this.config = config;
     }
 
@@ -42,16 +40,9 @@ public class ShoppingListCtrl {
      */
     public void initialize(MyFXML fxml) {
         this.fxml = fxml;
-        List<Ingredient> allIngredients = serverUtils.getIngredients();
         if (config.getShoppingList() == null) {
-            // Temporary values
             this.config.setShoppingList(new ArrayList<>());
-            this.config.getShoppingList().add(new RecipeIngredient(null, allIngredients.getFirst(), "", 1.0, Unit.GRAM));
-            this.config.getShoppingList().add(new RecipeIngredient(null, allIngredients.getFirst(), "", 2.0, Unit.GRAM));
-            this.config.getShoppingList().add(new RecipeIngredient(null, allIngredients.getFirst(), "", 3.0, Unit.LITER));
-            this.config.getShoppingList().add(new RecipeIngredient(null, allIngredients.getLast(), "", 1.0, Unit.GRAM));
         }
-        // Temp values
         loadShoppingList();
     }
 
@@ -59,6 +50,12 @@ public class ShoppingListCtrl {
      * loads the shopping List
      */
     private void loadShoppingList() {
+        try {
+            ConfigManager.save(config);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         ingredientListBox.getChildren().clear();
         for (RecipeIngredient ri : this.config.getShoppingList()) {
             Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class,
