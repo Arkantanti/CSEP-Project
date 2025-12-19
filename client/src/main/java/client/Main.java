@@ -74,7 +74,7 @@ public class Main extends Application {
             System.err.println(msg);
             return;
         }
-        
+
         // Validate and clean favorites at startup
         FavoritesManager favoritesManager = injector.getInstance(FavoritesManager.class);
         try {

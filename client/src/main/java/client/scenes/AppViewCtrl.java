@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 import java.net.URL;
@@ -54,6 +55,9 @@ public class AppViewCtrl implements Initializable {
 
     @FXML
     private Button favoritesButton;
+
+    @FXML
+    private HBox overListHBox;
 
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
@@ -136,8 +140,8 @@ public class AppViewCtrl implements Initializable {
      * is unreachable, an error alert is displayed to the user.
      */
     public void loadRecipes() {
-        searchField.setVisible(true);
-        searchField.setManaged(true);
+        overListHBox.setVisible(true);
+        overListHBox.setManaged(true);
         try {
             // Fetch from server
             List<Recipe> recipes = server.getRecipes();
@@ -183,8 +187,8 @@ public class AppViewCtrl implements Initializable {
      * is unreachable, an error alert is displayed to the user.
      */
     public void loadIngredients() {
-        searchField.setVisible(false);
-        searchField.setManaged(false);
+        overListHBox.setVisible(false);
+        overListHBox.setManaged(false);
         try {
             // Fetch from server
             List<Ingredient> ingredients = server.getIngredients();
