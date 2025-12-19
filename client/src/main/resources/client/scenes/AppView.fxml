@@ -32,10 +32,10 @@
    <left>
       <VBox prefHeight="438.0" prefWidth="187.0" styleClass="sidebar-root" stylesheets="/styles/sidebar.css" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="57.0" prefWidth="187.0" spacing="5.0" styleClass="sidebar-actions">
+            <HBox prefHeight="51.0" prefWidth="187.0" spacing="5.0" styleClass="sidebar-actions">
                <children>
-                  <Button onAction="#loadRecipes" fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="82.0" styleClass="sidebar-toggle" text="Recipes" />
-                  <Button onAction="#loadIngredients" fx:id="ingredientsButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="sidebar-toggle" text="Ingredients">
+                  <Button onAction="#loadRecipes"  fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="86.0" styleClass="sidebar-toggle" text="Recipes" />
+                  <Button onAction="#loadIngredients"  fx:id="ingredientsButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="sidebar-toggle" text="Ingredients">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -45,12 +45,20 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </HBox>
-            <HBox alignment="TOP_CENTER" prefHeight="27.0" prefWidth="187.0">
+            <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="139.0" />
+            <HBox alignment="TOP_CENTER" prefHeight="38.0" prefWidth="187.0" spacing="5.0">
                <children>
-                  <TextField fx:id="searchField" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="172.0" promptText="search" />
+                  <Button fx:id="favoritesButton" mnemonicParsing="false" prefHeight="29.0" prefWidth="32.0" text="★">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Button>
+                  <TextField fx:id="searchField" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="142.0" promptText="search" />
                </children>
             </HBox>
-            <ListView fx:id="itemsList" prefHeight="325.0" prefWidth="161.0" />
+            <ListView fx:id="itemsList" prefHeight="281.0" prefWidth="187.0">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin></ListView>
             <HBox prefHeight="44.0" prefWidth="170.0" spacing="5.0" styleClass="sidebar-actions">
                <children>
                   <Button fx:id="additionButton" mnemonicParsing="false" prefHeight="19.0" prefWidth="9.0" styleClass="sidebar-action-button" text="+">

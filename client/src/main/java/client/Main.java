@@ -18,6 +18,7 @@ package client;
 import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
+import java.util.List;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 
@@ -27,6 +28,7 @@ import client.scenes.AppViewCtrl;
 import com.google.inject.Injector;
 
 import client.scenes.MainCtrl;
+import client.utils.FavoritesManager;
 import client.utils.ServerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -71,6 +73,18 @@ public class Main extends Application {
             var msg = "The server URL is incorrect or the server is unavailable. Shutting down.";
             System.err.println(msg);
             return;
+        }
+        
+        // Validate and clean favorites at startup
+        FavoritesManager favoritesManager = injector.getInstance(FavoritesManager.class);
+        try {
+            List<Long> removedIds = favoritesManager.validate();
+            if (!removedIds.isEmpty()) {
+                System.out.println("Removed " + removedIds.size() +
+                        " invalid favorite recipes from config.");
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to validate favorites: " + e.getMessage());
         }
 
         var mainCtrl = injector.getInstance(MainCtrl.class);

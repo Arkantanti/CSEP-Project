@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.FavoritesManager;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
@@ -18,6 +19,7 @@ import javafx.scene.layout.StackPane;
 
 import java.net.URL;
 import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -25,6 +27,7 @@ public class AppViewCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final FavoritesManager favoritesManager;
 
     @FXML
     private javafx.scene.control.TextField searchField;
@@ -49,6 +52,9 @@ public class AppViewCtrl implements Initializable {
     @FXML
     private Button refreshButton;
 
+    @FXML
+    private Button favoritesButton;
+
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
      *
@@ -56,9 +62,10 @@ public class AppViewCtrl implements Initializable {
      * @param mainCtrl the main controller used for scene navigation
      */
     @Inject
-    public AppViewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AppViewCtrl(ServerUtils server, MainCtrl mainCtrl, FavoritesManager favoritesManager) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.favoritesManager = favoritesManager;
     }
 
     @Override
@@ -67,7 +74,18 @@ public class AppViewCtrl implements Initializable {
             @Override
             protected void updateItem(Showable item, boolean empty) {
                 super.updateItem(item, empty);
-                setText((empty || item == null) ? null : item.getName());
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String name = item.getName();
+                    if (item instanceof Recipe) {
+                        Recipe recipe = (Recipe) item;
+                        if (favoritesManager.isFavorite(recipe.getId())) {
+                            name = name + " ★";
+                        }
+                    }
+                    setText(name);
+                }
             }
         });
 
@@ -85,12 +103,16 @@ public class AppViewCtrl implements Initializable {
 
         refreshButton.setOnAction(e -> loadRecipes());
 
+        recipesButton.setOnAction(e -> loadRecipes());
+
+        favoritesButton.setOnAction(e -> loadFavorites());
+
         if (searchField != null) {
             searchField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null || newValue.isBlank()) {
-                    loadRecipes(); // Field is empty -> Show all recipes
+                    loadRecipes();
                 } else {
-                    searchRecipes(newValue); // Field has text -> Search
+                    searchRecipes(newValue);
                 }
             });
         }
@@ -171,6 +193,7 @@ public class AppViewCtrl implements Initializable {
             // Update UI on JavaFX Application Thread
             Platform.runLater(() -> {
                 itemsList.setItems(FXCollections.observableArrayList(ingredients));
+
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,6 +201,34 @@ public class AppViewCtrl implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Connection Error");
                 alert.setHeaderText("Could not load ingredients");
+                alert.setContentText("Check if the server is running.");
+                alert.showAndWait();
+            });
+        }
+    }
+    /**
+     * Loads list of favorite recipes and displays in the list view.
+     */
+    public void loadFavorites() {
+        try {
+            List<Recipe> allRecipes = server.getRecipes();
+            List<Recipe> favoriteRecipes = new ArrayList<>();
+
+            for (Recipe recipe : allRecipes) {
+                if (favoritesManager.isFavorite(recipe.getId())) {
+                    favoriteRecipes.add(recipe);
+                }
+            }
+
+            Platform.runLater(() -> {
+                itemsList.setItems(FXCollections.observableArrayList(favoriteRecipes));
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Connection Error");
+                alert.setHeaderText("Could not load favorite recipes");
                 alert.setContentText("Check if the server is running.");
                 alert.showAndWait();
             });
