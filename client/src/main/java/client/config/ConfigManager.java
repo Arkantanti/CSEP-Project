@@ -28,7 +28,6 @@ public class ConfigManager {
         return Path.of("client-config.json");
     }
 
-
     /**
      * Loads the configuration from the given path.
      * If the file does not exist, a default configuration is created,
@@ -41,20 +40,44 @@ public class ConfigManager {
     public static Config loadOrCreate(Path path) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
+        Config config;
         if (Files.exists(path)) {
-            return mapper.readValue(path.toFile(), Config.class);
+            config = mapper.readValue(path.toFile(), Config.class);
+        } else {
+            config = new Config();
+
+            //Creating the directories
+            if (path.getParent() != null) {
+                Files.createDirectories(path.getParent());
+            }
+
+            //Saving the default
+            mapper.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), config);
         }
 
-        Config defaultConfig = new Config();
+        config.setConfigPath(path);
+        return config;
+    }
 
+    /**
+     * Saves the current state of the config back to the file.
+     * 
+     * @param config the config to save
+     * @throws IOException if writing the file fails
+     */
+    public static void save(Config config) throws IOException {
+        Path path = config.getConfigPath();
+        if (path == null) {
+            throw new IllegalStateException("Config path is not set");
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        
         //Creating the directories
         if (path.getParent() != null) {
             Files.createDirectories(path.getParent());
         }
-
-        //Saving the default
-        mapper.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), defaultConfig);
-
-        return defaultConfig;
+        
+        mapper.writerWithDefaultPrettyPrinter().writeValue(path.toFile(), config);
     }
 }
