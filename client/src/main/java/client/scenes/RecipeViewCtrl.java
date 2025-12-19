@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeViewCtrl {
@@ -43,6 +44,10 @@ public class RecipeViewCtrl {
     private Button printButton;
     @FXML
     private Button cloneButton;
+    @FXML
+    private TextField servingsScalingInput;
+    @FXML
+    private Button resetServingsButton;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -52,6 +57,10 @@ public class RecipeViewCtrl {
     private Recipe recipe;
     private List<RecipeIngredient> ingredients;
     private final AppViewCtrl appViewCtrl;
+
+    private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
+    private int baseServings;
+    private int targetServings;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -75,6 +84,12 @@ public class RecipeViewCtrl {
         // default state is label with text
         nameTextField.setVisible(false);
         nameTextField.setManaged(false);
+
+        servingsScalingInput.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if (!isFocused) {
+                applyServingsFromField();
+            }
+        });
     }
 
     /**
@@ -86,11 +101,26 @@ public class RecipeViewCtrl {
     public void setRecipe(Recipe recipe, MyFXML fxml) {
         this.fxml = fxml;
         this.recipe = recipe;
-        if (recipe != null) {
-            nameLabel.setText(recipe.getName());
-            loadIngredients();
-            loadPreparationSteps(recipe.getPreparationSteps());
-        }
+        if (recipe == null) return;
+
+        baseServings = Math.max(1, recipe.getServings());
+        targetServings = baseServings;
+        setServingsField(targetServings);
+
+        nameLabel.setText(recipe.getName());
+        loadIngredients();
+        loadPreparationSteps(recipe.getPreparationSteps());
+
+        rerenderIngredientsScaled();
+    }
+
+    /**
+     * Helper method to initialist the Target Servings field.
+     *
+     * @param servings amount of servings
+     */
+    private void setServingsField(int servings) {
+        servingsScalingInput.setText(Integer.toString(servings));
     }
 
     /**
@@ -165,6 +195,7 @@ public class RecipeViewCtrl {
      */
     private void loadIngredients() {
         ingredientsContainer.getChildren().clear();
+        ingredientRowCtrls.clear();
         this.ingredients = server.getRecipeIngredients(recipe.getId());
         if (ingredients == null || fxml == null) {
             return;
@@ -172,7 +203,11 @@ public class RecipeViewCtrl {
         for (RecipeIngredient ri : ingredients) {
             Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
                     "client", "scenes", "RecipeIngredient.fxml");
-            item.getKey().initialize(ri, recipe, this::loadIngredients);
+            RecipeIngredientCtrl ctrl = item.getKey();
+            ctrl.initialize(ri, recipe, this::loadIngredients);
+
+            ingredientRowCtrls.add(ctrl);
+
             ingredientsContainer.getChildren().add(item.getValue());
         }
     }
@@ -313,6 +348,54 @@ public class RecipeViewCtrl {
         mainCtrl.showAddRecipe();
         AddRecipeCtrl addCtrl = mainCtrl.getAddRecipeCtrl();
         addCtrl.clone(recipe);
+    }
+
+    /**
+     * called when the user presses enter after inputting Target Servings
+     */
+    @FXML
+    private void onServingsEnter() {
+        applyServingsFromField();
+    }
+
+    /**
+     * fetches the input from Target Services and handles invalid inputs
+     */
+    private void applyServingsFromField() {
+        String text = servingsScalingInput.getText();
+        if (text == null || text.isBlank()) return;
+
+        try {
+            int value = Integer.parseInt(text);
+            if (value > 0) {
+                targetServings = value;
+            }
+        } catch (NumberFormatException ignored) {}
+
+        rerenderIngredientsScaled();
+    }
+
+    /**
+     * calculates the scaling factor and rerenders it again
+     */
+    private void rerenderIngredientsScaled() {
+        double factor = (baseServings <= 0) ? 1.0 : (double) targetServings / baseServings;
+
+        for (RecipeIngredientCtrl ctrl : ingredientRowCtrls) {
+            ctrl.applyScaleFactor(factor);
+        }
+    }
+
+    /**
+     * called when the user clicks Reset button
+     */
+    @FXML
+    public void resetServingsScaling() {
+        if (recipe == null) return;
+
+        targetServings = baseServings;
+        setServingsField(targetServings);
+        rerenderIngredientsScaled();
     }
 }
 

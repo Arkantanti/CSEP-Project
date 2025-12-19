@@ -242,4 +242,16 @@ public class RecipeIngredientCtrl {
 
         unitComboBox.getSelectionModel().select(Unit.GRAM);
     }
+
+    /**
+     * applies refactoring to the ingredients
+     * @param factor the scaling factor
+     */
+    public void applyScaleFactor(double factor) {
+        if (recipeIngredient == null) return;
+
+        double scaled = recipeIngredient.getAmount() * factor;
+
+        textLabel.setText(recipeIngredient.formatIngredientScaled(scaled));
+    }
 }
