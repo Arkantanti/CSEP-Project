@@ -94,6 +94,28 @@ public class ServerUtils {
     }
 
     /**
+     * Retrieves a recipe by its ID from the server.
+     *
+     * @param id the ID of the recipe to retrieve
+     * @return the Recipe object if it found. Otherwise returns null.
+     */
+    public Recipe getRecipeById(long id) {
+        try {
+            Response response = ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL).path("api/recipes/" + id)
+                    .request(APPLICATION_JSON)
+                    .get();
+            
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(Recipe.class);
+            }
+            return null;
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
      * Retrieves all recipe ingredients for a specific recipe from the server.
      *
      * @param recipeId the ID of the recipe
