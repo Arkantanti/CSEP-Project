@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.config.Config;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
@@ -47,14 +48,17 @@ public class ShoppingListElementCtrl {
     private Runnable updateIngredientList;
 
     private final ServerUtils serverUtils;
+    private final Config config;
 
     /**
      * constructor to be injected
      * @param serverUtils serverutils to load/delete/edit ingredients
+     * @param config the config
      */
     @Inject
-    public ShoppingListElementCtrl(ServerUtils serverUtils) {
+    public ShoppingListElementCtrl(ServerUtils serverUtils, Config config) {
         this.serverUtils = serverUtils;
+        this.config = config;
     }
 
     /**
@@ -123,6 +127,7 @@ public class ShoppingListElementCtrl {
      */
     @FXML
     private void onDeleteClicked() {
+        config.getShoppingList().remove(recipeIngredient);
         this.updateIngredientList.run();
     }
 
@@ -131,6 +136,12 @@ public class ShoppingListElementCtrl {
      */
     @FXML
     private void onConfirmClicked() {
+        int index = config.getShoppingList().indexOf(recipeIngredient);
+        if (index == -1 && recipeIngredient != null) {
+            updateIngredientList.run();
+            return;
+        }
+
         Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
 
         String informalAmount = null;
@@ -173,6 +184,7 @@ public class ShoppingListElementCtrl {
 
         if (recipeIngredient == null){
             recipeIngredient = new RecipeIngredient(null, ingredient, informalAmount, amount, unit);
+            config.getShoppingList().add(recipeIngredient);
         }
         else {
             recipeIngredient.setAmount(amount);

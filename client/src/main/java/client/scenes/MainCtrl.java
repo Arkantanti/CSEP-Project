@@ -139,7 +139,7 @@ public class MainCtrl {
         stage.setScene(new Scene(shoppingListView.getValue()));
         stage.show();
 
-        shoppingListView.getKey().initialize();
+        shoppingListView.getKey().initialize(fxml);
     }
 
     /**
