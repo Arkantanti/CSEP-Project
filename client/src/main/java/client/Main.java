@@ -19,6 +19,7 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 
@@ -31,6 +32,8 @@ import client.scenes.MainCtrl;
 import client.utils.FavoritesManager;
 import client.utils.ServerUtils;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 /**
@@ -80,8 +83,14 @@ public class Main extends Application {
         try {
             List<Long> removedIds = favoritesManager.validate();
             if (!removedIds.isEmpty()) {
-                System.out.println("Removed " + removedIds.size() +
-                        " invalid favorite recipes from config.");
+                // Show the user the recipes that were removed in their absence
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Deleted Favorite Recipes");
+                    alert.setHeaderText("The following recipes were deleted from your favorites because they no longer exist:");
+                    alert.setContentText(removedIds.stream().map(id -> serverUtils.getRecipeById(id).getName()).collect(Collectors.joining(", ")));
+                    alert.showAndWait();
+                });
             }
         } catch (Exception e) {
             System.err.println("Failed to validate favorites: " + e.getMessage());
