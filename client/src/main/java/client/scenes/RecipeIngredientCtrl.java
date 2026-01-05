@@ -110,7 +110,8 @@ public class RecipeIngredientCtrl {
         defaultView.setManaged(false);
 
         // load data to show
-        if (recipeIngredient.getUnit() != Unit.CUSTOM || recipeIngredient.getInformalUnit() == null) {
+        if (recipeIngredient.getUnit() != Unit.CUSTOM
+                || recipeIngredient.getInformalUnit() == null) {
             amountField.setText(String.valueOf(recipeIngredient.getAmount()));
         }
         else {

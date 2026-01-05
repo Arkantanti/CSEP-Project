@@ -78,7 +78,8 @@ public class AddRecipeCtrl {
     @FXML
     public void onSaveRecipe() {
         try {
-            List<String> preparationSteps = Arrays.asList(preparationsArea.getText().split("\\r?\\n"));
+            List<String> preparationSteps = Arrays.asList(
+                    preparationsArea.getText().split("\\r?\\n"));
             String name = nameTextField.getText().trim();
             int servings;
             try {
@@ -105,7 +106,8 @@ public class AddRecipeCtrl {
             appViewCtrl.loadRecipes();
             mainCtrl.showRecipe(savedRecipe);
         } catch (Exception e) {
-            showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
+            showError("Error", "Could not save the recipe." +
+                    " There might be a problem with your server connection.");
         }
     }
 

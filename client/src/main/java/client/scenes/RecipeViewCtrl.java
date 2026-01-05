@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
 import commons.Recipe;
@@ -45,6 +46,8 @@ public class RecipeViewCtrl {
     private Button cloneButton;
     @FXML
     private Button deleteButton;
+    @FXML
+    private Button favoriteButton;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -54,6 +57,7 @@ public class RecipeViewCtrl {
     private Recipe recipe;
     private List<RecipeIngredient> ingredients;
     private final AppViewCtrl appViewCtrl;
+    private final FavoritesManager favoritesManager;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -61,11 +65,15 @@ public class RecipeViewCtrl {
      * @param server the server utility used for network communication
      */
     @Inject
-    public RecipeViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
+    public RecipeViewCtrl(ServerUtils server,
+                          MainCtrl mainCtrl,
+                          Printer printer,
+                          FavoritesManager favoritesManager) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
+        this.favoritesManager = favoritesManager;
     }
 
     /**
@@ -92,6 +100,7 @@ public class RecipeViewCtrl {
             nameLabel.setText(recipe.getName());
             loadIngredients();
             loadPreparationSteps(recipe.getPreparationSteps());
+            updateFavoriteButton();
         }
     }
 
@@ -242,7 +251,7 @@ public class RecipeViewCtrl {
      *
      * @param actionEvent the click action to be handled
      */
-    public void onAddClicked(ActionEvent actionEvent) {
+    public void onAddPreparationStepClicked(ActionEvent actionEvent) {
         List<String> steps = recipe.getPreparationSteps();
 
         if (steps == null) {
@@ -329,6 +338,49 @@ public class RecipeViewCtrl {
         }
         mainCtrl.showDefaultScreen();
 
+    }
+
+    /**
+     * Handles the favorite button clicks
+     */
+    @FXML
+    private void onFavoriteClicked() {
+        if (recipe == null) {
+            throw new IllegalStateException("Recipe is not set");
+        }
+        try {
+            if (favoritesManager.isFavorite(recipe.getId())) {
+                favoritesManager.removeFavorite(recipe.getId());
+            } else {
+                favoritesManager.addFavorite(recipe.getId());
+            }
+            updateFavoriteButton();
+            // Reload the recipes list after change in favorite recipes
+            appViewCtrl.loadRecipes();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Favorite status update failed");
+                alert.setHeaderText("Could not update favorite");
+                alert.showAndWait();
+            });
+        }
+    }
+
+    /**
+     * Updates the favorite button.
+     * Uses the style class 'favorited' to visually indicate the status.
+     */
+    private void updateFavoriteButton() {
+        if (recipe == null || favoriteButton == null) {
+            return;
+        }
+        if (favoritesManager.isFavorite(recipe.getId())) {
+            favoriteButton.getStyleClass().add("favorited");
+        } else {
+            favoriteButton.getStyleClass().remove("favorited");
+        }
     }
 }
 
