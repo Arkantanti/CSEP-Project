@@ -169,7 +169,7 @@ public class AddRecipeCtrl {
 
 
     /**
-     * gne
+     * This function is to show the ingredients for the adding of recipes.
      */
     private void showIngredients(){
         ingredientsContainer.getChildren().clear();

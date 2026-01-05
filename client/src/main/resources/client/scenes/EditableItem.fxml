@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxWidth="1.7976931348623157E308" prefHeight="0.0" spacing="5" styleClass="recipe-line" stylesheets="/styles/editable-item.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditableItemCtrl">
+<HBox maxWidth="1.7976931348623157E308" prefHeight="0.0" spacing="5" styleClass="recipe-line" stylesheets="/styles/editable-item.css" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EditableItemCtrl">
 
     <children>
         <Label fx:id="textLabel" maxWidth="1.7976931348623157E308" prefHeight="30.0" text="- 100g foo " HBox.hgrow="ALWAYS">

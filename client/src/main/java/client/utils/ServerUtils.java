@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
+import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.Entity;
 
 import jakarta.ws.rs.ProcessingException;
@@ -40,6 +41,7 @@ import org.glassfish.jersey.client.ClientConfig;
 public class ServerUtils {
 
     private final String serverURL;
+    private final Client client;
 
     /**
      * Constructor for the ServerUtils class.
@@ -47,7 +49,21 @@ public class ServerUtils {
      */
     @Inject
     public ServerUtils(Config cfg) {
+        // EXISTING Constructor
+        // Guice uses this one.
         serverURL = cfg.getServerUrl();
+        this.client = ClientBuilder.newClient(new ClientConfig());
+    }
+
+    /**
+     * NEW Constructor (For Testing Only)
+     * We remove @Inject so Guice ignores it. We use this in your Test class.
+     * @param cfg Client config object. Injected with Guice.
+     * @param client the fictional client we use for testing
+     */
+    public ServerUtils(Config cfg, Client client) {
+        this.serverURL = cfg.getServerUrl();
+        this.client = client;
     }
 
     /**
@@ -56,7 +72,7 @@ public class ServerUtils {
      * @return a list of Recipe objects
      */
     public List<Recipe> getRecipes() {
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("api/recipes/")
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<Recipe>>() {
@@ -70,7 +86,7 @@ public class ServerUtils {
      * @return a list of matching recipes
      */
     public List<Recipe> searchRecipes(String query) {
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("api/recipes/search")
                 .queryParam("name", query) // Matches @RequestParam("name") in your Controller
                 .request(APPLICATION_JSON)
@@ -84,7 +100,7 @@ public class ServerUtils {
      * @return a list of RecipeIngredient objects
      */
     public List<RecipeIngredient> getRecipeIngredients(long recipeId) {
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("api/recipeingredients/by-recipe/" + recipeId)
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<RecipeIngredient>>() {
@@ -98,7 +114,7 @@ public class ServerUtils {
      */
     public boolean isServerAvailable() {
         try {
-            ClientBuilder.newClient(new ClientConfig())
+            this.client
                     .target(serverURL)
                     .request(APPLICATION_JSON)
                     .get();
@@ -123,7 +139,7 @@ public class ServerUtils {
         }
 
         try {
-            return ClientBuilder.newClient(new ClientConfig())
+            return this.client
                     .target(serverURL)
                     .path("api/recipes/" + recipe.getId())
                     .request(APPLICATION_JSON)
@@ -140,7 +156,7 @@ public class ServerUtils {
      * @return a new recipe
      */
     public Recipe add(Recipe recipe){
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("/api/recipes/")
                 .request(APPLICATION_JSON)
                 .post(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
@@ -152,7 +168,7 @@ public class ServerUtils {
      * @return a list of ingredients in the database
      */
     public List<Ingredient> getIngredients(){
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("api/ingredients/")
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<Ingredient>>() {
@@ -160,7 +176,9 @@ public class ServerUtils {
     }
 
     /**
-     * this function is for deleting recipes
+     * This function is for deleting recipes
+     * @param id The id of the recipe that needs to be deleted
+     * @return The deletion of the recipe in the client
      */
     public Response deleteRecipe(long id){
         if (id < 0) {
@@ -168,7 +186,7 @@ public class ServerUtils {
         }
 
         try {
-            return ClientBuilder.newClient(new ClientConfig())
+            this.client
                     .target(serverURL)
                     .path("/api/recipes/" + id)
                     .request()
@@ -194,7 +212,7 @@ public class ServerUtils {
         }
 
         try {
-            return ClientBuilder.newClient(new ClientConfig())
+            return this.client
                     .target(serverURL)
                     .path("api/recipeingredients/" + recipeIngredient.getId())
                     .request(APPLICATION_JSON)
@@ -215,7 +233,7 @@ public class ServerUtils {
         }
 
         try {
-            Response r = ClientBuilder.newClient(new ClientConfig())
+            Response r = this.client
                     .target(serverURL)
                     .path("api/recipeingredients/" + id)
                     .request(APPLICATION_JSON)
@@ -238,7 +256,7 @@ public class ServerUtils {
                     + recipeIngredient.getId());
         }
         try {
-            return ClientBuilder.newClient(new ClientConfig())
+            return this.client
                     .target(serverURL)
                     .path("api/recipeingredients/")
                     .request(APPLICATION_JSON)

@@ -1,4 +1,4 @@
-image: maven:3.9.11-amazoncorretto-25
+image: maven:3.9-amazoncorretto-24
 
 build:
   script:
