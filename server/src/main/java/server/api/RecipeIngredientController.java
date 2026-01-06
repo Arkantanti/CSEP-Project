@@ -32,6 +32,24 @@ public class RecipeIngredientController {
     }
 
     /**
+     * Counts the number of distinct recipes that use a particular ingredient.
+     * @param ingredientId IngredientId by which we should count.
+     * @return {@code 400 Bad Request} if input is invalid,
+     *         otherwise {@code 200 OK} with the integer count
+     */
+    @GetMapping("recipeCount/{ingredientId}")
+    public ResponseEntity<Long> getRecipeCount(@PathVariable long ingredientId) {
+        if (ingredientId < 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<RecipeIngredient> allRecipeIngredients = repo.findByIngredientId(ingredientId);
+        Long recipeCount = allRecipeIngredients.stream()
+                .map(x -> x.getRecipe().getId())
+                .distinct().count();
+        return ResponseEntity.ok(recipeCount);
+    }
+
+    /**
      * Retrieves all {@link RecipeIngredient} entries associated with a specific recipe.
      *
      * @param recipeId the ID of the recipe whose ingredient entries should be returned

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AppViewCtrl">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AppViewCtrl">
    <top>
       <ToolBar prefHeight="83.0" prefWidth="708.0" BorderPane.alignment="CENTER">
          <items>
@@ -34,31 +34,28 @@
          <children>
             <HBox prefHeight="51.0" prefWidth="187.0" spacing="5.0" styleClass="sidebar-actions">
                <children>
-                  <Button fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="86.0" styleClass="sidebar-toggle" text="Recipes" />
-                  <Button fx:id="ingredientsButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="90.0" styleClass="sidebar-toggle" text="Ingredients">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Button>
+                  <Button fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadRecipes" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="@../../styles/sidebar.css" text="Recipes" />
+                  <Button fx:id="ingredientsButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadIngredients" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="@../../styles/sidebar.css" text="Ingredients" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </HBox>
-            <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="139.0" />
-            <HBox alignment="TOP_CENTER" prefHeight="38.0" prefWidth="187.0" spacing="5.0">
+            <HBox fx:id="overListHBox" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="187.0" spacing="5.0">
                <children>
                   <Button fx:id="favoritesButton" mnemonicParsing="false" prefHeight="29.0" prefWidth="32.0" text="★">
                      <font>
                         <Font size="10.0" />
-                     </font></Button>
+                     </font>
+                  </Button>
                   <TextField fx:id="searchField" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="142.0" promptText="search" />
                </children>
             </HBox>
             <ListView fx:id="itemsList" prefHeight="281.0" prefWidth="187.0">
                <VBox.margin>
                   <Insets top="10.0" />
-               </VBox.margin></ListView>
+               </VBox.margin>
+            </ListView>
             <HBox prefHeight="44.0" prefWidth="170.0" spacing="5.0" styleClass="sidebar-actions">
                <children>
                   <Button fx:id="additionButton" mnemonicParsing="false" prefHeight="19.0" prefWidth="9.0" styleClass="sidebar-action-button" text="+">
