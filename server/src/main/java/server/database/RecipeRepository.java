@@ -19,7 +19,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     /**
      * Searches for recipes by name, preparation steps, OR ingredients.
      * * Since Recipe does not have a list of ingredients, we use a subquery
-     * to find recipes referenced by matching RecipeIngredients.
+     * to find recipes referenced by matchiang RecipeIngredients.
      *
      * @param query the search string
      * @return a list of matching recipes

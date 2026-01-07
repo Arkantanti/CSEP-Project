@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
+import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.Entity;
 
 import jakarta.ws.rs.ProcessingException;
@@ -40,6 +41,7 @@ import org.glassfish.jersey.client.ClientConfig;
 public class ServerUtils {
 
     private final String serverURL;
+    private final Client client;
 
     /**
      * Constructor for the ServerUtils class.
@@ -47,7 +49,21 @@ public class ServerUtils {
      */
     @Inject
     public ServerUtils(Config cfg) {
+        // EXISTING Constructor
+        // Guice uses this one.
         serverURL = cfg.getServerUrl();
+        this.client = ClientBuilder.newClient(new ClientConfig());
+    }
+
+    /**
+     * NEW Constructor (For Testing Only)
+     * We remove @Inject so Guice ignores it. We use this in your Test class.
+     * @param cfg Client config object. Injected with Guice.
+     * @param client the fictional client we use for testing
+     */
+    public ServerUtils(Config cfg, Client client) {
+        this.serverURL = cfg.getServerUrl();
+        this.client = client;
     }
 
     /**
@@ -56,7 +72,7 @@ public class ServerUtils {
      * @return a list of Recipe objects
      */
     public List<Recipe> getRecipes() {
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("api/recipes/")
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<Recipe>>() {
@@ -70,11 +86,33 @@ public class ServerUtils {
      * @return a list of matching recipes
      */
     public List<Recipe> searchRecipes(String query) {
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("api/recipes/search")
                 .queryParam("name", query) // Matches @RequestParam("name") in your Controller
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<Recipe>>() {});
+    }
+
+    /**
+     * Retrieves a recipe by its ID from the server.
+     *
+     * @param id the ID of the recipe to retrieve
+     * @return the Recipe object if it found. Otherwise returns null.
+     */
+    public Recipe getRecipeById(long id) {
+        try {
+            Response response = ClientBuilder.newClient(new ClientConfig())
+                    .target(serverURL).path("api/recipes/" + id)
+                    .request(APPLICATION_JSON)
+                    .get();
+            
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(Recipe.class);
+            }
+            return null;
+        } catch (ProcessingException e) {
+            return null;
+        }
     }
 
     /**
@@ -84,7 +122,7 @@ public class ServerUtils {
      * @return a list of RecipeIngredient objects
      */
     public List<RecipeIngredient> getRecipeIngredients(long recipeId) {
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("api/recipeingredients/by-recipe/" + recipeId)
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<RecipeIngredient>>() {
@@ -98,7 +136,7 @@ public class ServerUtils {
      */
     public boolean isServerAvailable() {
         try {
-            ClientBuilder.newClient(new ClientConfig())
+            this.client
                     .target(serverURL)
                     .request(APPLICATION_JSON)
                     .get();
@@ -123,7 +161,7 @@ public class ServerUtils {
         }
 
         try {
-            return ClientBuilder.newClient(new ClientConfig())
+            return this.client
                     .target(serverURL)
                     .path("api/recipes/" + recipe.getId())
                     .request(APPLICATION_JSON)
@@ -140,7 +178,7 @@ public class ServerUtils {
      * @return a new recipe
      */
     public Recipe add(Recipe recipe){
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("/api/recipes/")
                 .request(APPLICATION_JSON)
                 .post(Entity.entity(recipe, APPLICATION_JSON), Recipe.class);
@@ -152,7 +190,7 @@ public class ServerUtils {
      * @return a list of ingredients in the database
      */
     public List<Ingredient> getIngredients(){
-        return ClientBuilder.newClient(new ClientConfig())
+        return this.client
                 .target(serverURL).path("api/ingredients/")
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<Ingredient>>() {
@@ -174,11 +212,36 @@ public class ServerUtils {
         }
 
         try {
-            return ClientBuilder.newClient(new ClientConfig())
+            return this.client
                     .target(serverURL)
                     .path("api/recipeingredients/" + recipeIngredient.getId())
                     .request(APPLICATION_JSON)
                     .put(Entity.entity(recipeIngredient, APPLICATION_JSON), RecipeIngredient.class);
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Updates the specified ingredient
+     * @param ingredient the ingredient to update
+     * @return the updated ingredient as returned by the server
+     * @throws IllegalArgumentException if {@code ingredient} is null or has invalid ID
+     */
+    public Ingredient updateIngredient(Ingredient ingredient) {
+        if (ingredient == null) {
+            throw new IllegalArgumentException("Ingredient to update must not be null");
+        }
+        if (ingredient.getId() < 0) {
+            throw new IllegalArgumentException("Ingredient to update must have a valid ID");
+        }
+
+        try {
+            return this.client
+                    .target(serverURL)
+                    .path("api/ingredients/" + ingredient.getId())
+                    .request(APPLICATION_JSON)
+                    .put(Entity.entity(ingredient, APPLICATION_JSON), Ingredient.class);
         } catch (ProcessingException e) {
             return null;
         }
@@ -195,7 +258,7 @@ public class ServerUtils {
         }
 
         try {
-            Response r = ClientBuilder.newClient(new ClientConfig())
+            Response r = this.client
                     .target(serverURL)
                     .path("api/recipeingredients/" + id)
                     .request(APPLICATION_JSON)
@@ -218,11 +281,32 @@ public class ServerUtils {
                     + recipeIngredient.getId());
         }
         try {
-            return ClientBuilder.newClient(new ClientConfig())
+            return this.client
                     .target(serverURL)
                     .path("api/recipeingredients/")
                     .request(APPLICATION_JSON)
                     .post(Entity.entity(recipeIngredient, APPLICATION_JSON), RecipeIngredient.class);
+        }
+        catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Counts how many recipes an ingredient is used in through a REST endpoint.
+     * @param ingredientId Ingredient id to count by.
+     * @return The number of recipes the ingredient is used in.
+     */
+    public Long recipeCount(Long ingredientId) {
+        if (ingredientId < 0) {
+            throw new IllegalArgumentException("Ingredient ID must not be negative");
+        }
+        try {
+            return this.client
+                    .target(serverURL)
+                    .path("api/recipeingredients/recipeCount/"+ingredientId)
+                    .request(APPLICATION_JSON)
+                    .get(new GenericType<Long>() {});
         }
         catch (ProcessingException e) {
             return null;

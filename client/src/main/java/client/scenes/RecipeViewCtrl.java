@@ -1,6 +1,8 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.utils.FavoritesManager;
+import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
 import commons.Recipe;
@@ -48,6 +50,8 @@ public class RecipeViewCtrl {
     private TextField servingsScalingInput;
     @FXML
     private Button resetServingsButton;
+    @FXML
+    private Button favoriteButton;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -57,6 +61,7 @@ public class RecipeViewCtrl {
     private Recipe recipe;
     private List<RecipeIngredient> ingredients;
     private final AppViewCtrl appViewCtrl;
+    private final FavoritesManager favoritesManager;
 
     private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
     private int baseServings;
@@ -68,11 +73,15 @@ public class RecipeViewCtrl {
      * @param server the server utility used for network communication
      */
     @Inject
-    public RecipeViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
+    public RecipeViewCtrl(ServerUtils server,
+                          MainCtrl mainCtrl,
+                          Printer printer,
+                          FavoritesManager favoritesManager) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
+        this.favoritesManager = favoritesManager;
     }
 
     /**
@@ -110,7 +119,7 @@ public class RecipeViewCtrl {
         nameLabel.setText(recipe.getName());
         loadIngredients();
         loadPreparationSteps(recipe.getPreparationSteps());
-
+        updateFavoriteButton();
         rerenderIngredientsScaled();
     }
 
@@ -213,28 +222,6 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * Formats a RecipeIngredient into a displayable string.
-     *
-     * @param ri the RecipeIngredient to format and display
-     * @return a string representation of ingredient amount and unit from {@code RecipeIngredient}
-     */
-    private String formatIngredient(RecipeIngredient ri) {
-        if (ri.getInformalUnit() != null && !ri.getInformalUnit().isEmpty()) {
-            return ri.getInformalUnit() + " " + ri.getIngredient().getName();
-        }
-        String unitString = "";
-        // TODO: EXTRA UNIT NORMALIZATION AND FORMATTING LOGIC
-        if (ri.getUnit() != null) {
-            if (ri.getUnit() == Unit.GRAM) {
-                unitString = "g";
-            } else if (ri.getUnit() == Unit.LITER) {
-                unitString = "L";
-            }
-        }
-        return ri.getAmount() + unitString + " " + ri.getIngredient().getName();
-    }
-
-    /**
      * Loads preparation steps into the preparations container using EditableItem components.
      *
      * @param steps the list of preparation steps to display
@@ -275,7 +262,7 @@ public class RecipeViewCtrl {
      *
      * @param actionEvent the click action to be handled
      */
-    public void onAddClicked(ActionEvent actionEvent) {
+    public void onAddPreparationStepClicked(ActionEvent actionEvent) {
         List<String> steps = recipe.getPreparationSteps();
 
         if (steps == null) {
@@ -346,8 +333,50 @@ public class RecipeViewCtrl {
      */
     public void cloneRecipe(){
         mainCtrl.showAddRecipe();
-        AddRecipeCtrl addCtrl = mainCtrl.getAddRecipeCtrl();
-        addCtrl.clone(recipe);
+        mainCtrl.getAddRecipeCtrl().clone(recipe);
+    }
+
+    /**
+     * Handles the favorite button clicks
+     */
+    @FXML
+    private void onFavoriteClicked() {
+        if (recipe == null) {
+            throw new IllegalStateException("Recipe is not set");
+        }
+        try {
+            if (favoritesManager.isFavorite(recipe.getId())) {
+                favoritesManager.removeFavorite(recipe.getId());
+            } else {
+                favoritesManager.addFavorite(recipe.getId());
+            }
+            updateFavoriteButton();
+            // Reload the recipes list after change in favorite recipes
+            appViewCtrl.loadRecipes();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Favorite status update failed");
+                alert.setHeaderText("Could not update favorite");
+                alert.showAndWait();
+            });
+        }
+    }
+
+    /**
+     * Updates the favorite button.
+     * Uses the style class 'favorited' to visually indicate the status.
+     */
+    private void updateFavoriteButton() {
+        if (recipe == null || favoriteButton == null) {
+            return;
+        }
+        if (favoritesManager.isFavorite(recipe.getId())) {
+            favoriteButton.getStyleClass().add("favorited");
+        } else {
+            favoriteButton.getStyleClass().remove("favorited");
+        }
     }
 
     /**

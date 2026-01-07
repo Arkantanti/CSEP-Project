@@ -1,5 +1,6 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -16,6 +17,12 @@ public class Recipe implements Showable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "recipe",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<RecipeIngredient> recipeIngredients;
 
     private String name;
     private int servings;

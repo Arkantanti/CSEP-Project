@@ -1,12 +1,12 @@
 package commons;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.util.List;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -16,6 +16,12 @@ public class Ingredient implements Showable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "ingredient",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<RecipeIngredient> recipeIngredients;
 
     private String name; // ingredient name
 

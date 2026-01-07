@@ -1,14 +1,24 @@
 package client.scenes;
 
 import commons.Ingredient;
+import commons.Recipe;
+import client.utils.FavoritesManager;
+
 import commons.RecipeIngredient;
 import commons.Unit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import javafx.event.ActionEvent;
+
 
 public class RecipeViewCtrlTest {
 
@@ -17,18 +27,7 @@ public class RecipeViewCtrlTest {
 
     @BeforeEach
     void setup() {
-        ctrl = new RecipeViewCtrl(null, sut = new MainCtrl(), null);
-    }
-
-    private String format(RecipeIngredient ri) {
-        try {
-            Method m = RecipeViewCtrl.class
-                    .getDeclaredMethod("formatIngredient", RecipeIngredient.class);
-            m.setAccessible(true);
-            return (String) m.invoke(ctrl, ri);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        ctrl = new RecipeViewCtrl(null, sut = new MainCtrl(), null, null);
     }
 
     private Ingredient ingredient(String name) {
@@ -42,33 +41,108 @@ public class RecipeViewCtrlTest {
     // --- Existing tests (kept) ---
 
     @Test
-    void formatIngredient_usesInformalUnitWhenPresent() {
-        Ingredient ingredient = new Ingredient("Sugar", 0.0, 0.0, 0.0);
-        RecipeIngredient ri = new RecipeIngredient(null, ingredient, "one pinch", 0.0, null);
+    void onFavoriteClicked_addsFavoriteWhenNotFavorited() throws Exception {
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
+        AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
 
-        String result = format(ri);
+        // Must set up stub before creating controller, because constructor call getAppViewCtrl
+        when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
 
-        assertEquals("one pinch Sugar", result);
+        RecipeViewCtrl ctrl = new RecipeViewCtrl(null, mainCtrl, null, favoritesManager);
+
+        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"));
+        recipe.setId(1L);
+
+        when(favoritesManager.isFavorite(1L)).thenReturn(false);
+
+        Field recipeField = RecipeViewCtrl.class.getDeclaredField("recipe");
+        recipeField.setAccessible(true);
+        recipeField.set(ctrl, recipe);
+
+        Method method = RecipeViewCtrl.class.getDeclaredMethod("onFavoriteClicked");
+        method.setAccessible(true);
+        method.invoke(ctrl);
+
+        verify(favoritesManager).addFavorite(1L);
+        verify(appViewCtrl).loadRecipes();
     }
 
     @Test
-    void formatIngredient_formatsGramUnit() {
-        Ingredient ingredient = new Ingredient("Flour", 0.0, 0.0, 0.0);
-        RecipeIngredient ri = new RecipeIngredient(null, ingredient, null, 100.0, Unit.GRAM);
+    void onFavoriteClicked_removesFavoriteWhenFavorited() throws Exception {
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
+        AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
 
-        String result = format(ri);
+       // Must set up stub before creating controller, because constructor calls getAppViewCtrl
+        when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
 
-        assertEquals("100.0g Flour", result);
+        RecipeViewCtrl ctrl = new RecipeViewCtrl(null, mainCtrl, null, favoritesManager);
+
+        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"));
+        recipe.setId(1L);
+
+        when(favoritesManager.isFavorite(1L)).thenReturn(true);
+
+        Field recipeField = RecipeViewCtrl.class.getDeclaredField("recipe");
+        recipeField.setAccessible(true);
+        recipeField.set(ctrl, recipe);
+
+        Method method = RecipeViewCtrl.class.getDeclaredMethod("onFavoriteClicked");
+        method.setAccessible(true);
+        method.invoke(ctrl);
+
+        verify(favoritesManager).removeFavorite(1L);
+        verify(appViewCtrl).loadRecipes();
     }
 
     @Test
-    void formatIngredient_formatsLiterUnit() {
-        Ingredient ingredient = new Ingredient("Milk", 0.0, 0.0, 0.0);
-        RecipeIngredient ri = new RecipeIngredient(null, ingredient, null, 0.5, Unit.LITER);
+    void onFavoriteClicked_throwsWhenRecipeIsNull() throws Exception {
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
 
-        String result = format(ri);
+        when(mainCtrl.getAppViewCtrl()).thenReturn(null);
 
-        assertEquals("0.5L Milk", result);
+        RecipeViewCtrl ctrl = new RecipeViewCtrl(null, mainCtrl, null, favoritesManager);
+
+        Field recipeField = RecipeViewCtrl.class.getDeclaredField("recipe");
+        recipeField.setAccessible(true);
+        recipeField.set(ctrl, null);
+
+        Method method = RecipeViewCtrl.class.getDeclaredMethod("onFavoriteClicked");
+        method.setAccessible(true);
+
+        // wrapping exception in InvocationTargetException and later checking of it is of type IllegalStateException
+        // because method.invoke() throws InvocationTargetException
+        InvocationTargetException thrown = assertThrows(InvocationTargetException.class,
+                () -> method.invoke(ctrl));
+        assertTrue(thrown.getCause() instanceof IllegalStateException);
+    }
+
+    @Test
+    void onAddPreparationStepClicked_throwsWhenPreparationStepsIsNull() throws Exception {
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
+        AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
+
+        // must set up stub before creating controller, because constructor calls getAppViewCtrl()
+        when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
+
+        RecipeViewCtrl ctrl = new RecipeViewCtrl(null, mainCtrl, null, favoritesManager);
+
+        Recipe recipe = new Recipe("Test Recipe", 1, null);
+
+        Field recipeField = RecipeViewCtrl.class.getDeclaredField("recipe");
+        recipeField.setAccessible(true);
+        recipeField.set(ctrl, recipe);
+
+        Method method = RecipeViewCtrl.class.getDeclaredMethod(
+                "onAddPreparationStepClicked", ActionEvent.class);
+        method.setAccessible(true);
+
+        InvocationTargetException thrown = assertThrows(InvocationTargetException.class,
+                () -> method.invoke(ctrl, (Object) null));
+        assertTrue(thrown.getCause() instanceof IllegalStateException);
     }
 
     // --- Additional tests for broader coverage ---
@@ -77,7 +151,7 @@ public class RecipeViewCtrlTest {
     void formatIngredient_informalUnit_hasHighestPriority_evenIfUnitOrAmountPresent() {
         RecipeIngredient sugar = ri("Sugar", "one pinch", 999.0, Unit.GRAM);
 
-        String result = format(sugar);
+        String result = sugar.formatIngredient();
 
         // informal should override numeric formatting in this helper
         assertEquals("one pinch Sugar", result);
@@ -87,7 +161,7 @@ public class RecipeViewCtrlTest {
     void formatIngredient_informalUnit_whenUnitNull_stillUsesInformal() {
         RecipeIngredient sugar = ri("Sugar", "a handful", 123.0, null);
 
-        String result = format(sugar);
+        String result = sugar.formatIngredient();
 
         assertEquals("a handful Sugar", result);
     }
@@ -98,7 +172,7 @@ public class RecipeViewCtrlTest {
         // so "" should be treated as "not present"
         RecipeIngredient flour = ri("Flour", "", 100.0, Unit.GRAM);
 
-        String result = format(flour);
+        String result = flour.formatIngredient();;
 
         assertEquals("100.0g Flour", result);
     }
@@ -108,7 +182,7 @@ public class RecipeViewCtrlTest {
         // Documents current behavior: isEmpty() does NOT treat "   " as empty
         RecipeIngredient salt = ri("Salt", "   ", 5.0, Unit.GRAM);
 
-        String result = format(salt);
+        String result = salt.formatIngredient();
 
         assertEquals("    Salt", result); // "   " + " " + "Salt"
     }
@@ -119,7 +193,7 @@ public class RecipeViewCtrlTest {
         // Use CUSTOM as representative of "not GRAM/LITER"
         RecipeIngredient pepper = ri("Pepper", null, 2.0, Unit.CUSTOM);
 
-        String result = format(pepper);
+        String result = pepper.formatIngredient();
 
         assertEquals("2.0 Pepper", result);
     }
@@ -128,7 +202,7 @@ public class RecipeViewCtrlTest {
     void formatIngredient_unitNull_hasEmptyUnitString_andStillFormatsAmount() {
         RecipeIngredient water = ri("Water", null, 3.0, null);
 
-        String result = format(water);
+        String result = water.formatIngredient();
 
         assertEquals("3.0 Water", result);
     }
@@ -138,8 +212,8 @@ public class RecipeViewCtrlTest {
         RecipeIngredient flour = ri("Flour", null, 0.0, Unit.GRAM);
         RecipeIngredient milk = ri("Milk", null, 0.0, Unit.LITER);
 
-        assertEquals("0.0g Flour", format(flour));
-        assertEquals("0.0L Milk", format(milk));
+        assertEquals("0.0g Flour", flour.formatIngredient());
+        assertEquals("0.0L Milk", milk.formatIngredient());
     }
 
     @Test
@@ -147,7 +221,7 @@ public class RecipeViewCtrlTest {
         // Documents current behavior: no validation in formatIngredient
         RecipeIngredient weird = ri("WeirdStuff", null, -12.5, Unit.GRAM);
 
-        String result = format(weird);
+        String result = weird.formatIngredient();
 
         assertEquals("-12.5g WeirdStuff", result);
     }
@@ -157,7 +231,7 @@ public class RecipeViewCtrlTest {
         // This helper does no normalization (normalization is now in RecipeIngredient.formatIngredientInternal)
         RecipeIngredient rice = ri("Rice", null, 2000.0, Unit.GRAM);
 
-        String result = format(rice);
+        String result = rice.formatIngredient();
 
         assertEquals("2000.0g Rice", result);
     }
@@ -166,7 +240,7 @@ public class RecipeViewCtrlTest {
     void formatIngredient_ingredientNameWithSpaces_isPreserved() {
         RecipeIngredient brownSugar = ri("Brown Sugar", null, 50.0, Unit.GRAM);
 
-        String result = format(brownSugar);
+        String result = brownSugar.formatIngredient();
 
         assertEquals("50.0g Brown Sugar", result);
     }
@@ -175,7 +249,7 @@ public class RecipeViewCtrlTest {
     void formatIngredient_informalUnit_canContainNumbers_andIsPreservedVerbatim() {
         RecipeIngredient garlic = ri("Garlic", "2 cloves", 10.0, Unit.GRAM);
 
-        String result = format(garlic);
+        String result = garlic.formatIngredient();
 
         assertEquals("2 cloves Garlic", result);
     }
@@ -184,7 +258,7 @@ public class RecipeViewCtrlTest {
     void formatIngredient_hasSingleSpaceBetweenAmountUnitAndName() {
         RecipeIngredient flour = ri("Flour", null, 100.0, Unit.GRAM);
 
-        String result = format(flour);
+        String result = flour.formatIngredient();
 
         assertEquals("100.0g Flour", result);
         assertFalse(result.contains("  "));
