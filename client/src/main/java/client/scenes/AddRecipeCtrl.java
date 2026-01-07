@@ -10,11 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
-// temporarily removed the adding as the design of adding
-// ingredients make it so the recipe needs to be created first.
-
-
-//import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -182,7 +177,7 @@ public class AddRecipeCtrl {
                 }
             }
 
-            System.out.println("DEBUG: Total ingredients to save: " + ingredientsToSave.size());
+            System.out.println("Ingredients to save: " + ingredientsToSave.size());
 
             // Only delete old ingredients if we have new ones to save
             if (!ingredientsToSave.isEmpty()) {
@@ -226,14 +221,66 @@ public class AddRecipeCtrl {
 
     /**
      * the function to clone the recipe.
-     * @param recipe the recipe information that needs be inputted for the clone
+     * @param originalRecipe the recipe information that needs be inputted for the clone.
      */
-    public void clone(Recipe recipe) {
-        if (recipe == null) return;
+    public void clone(Recipe originalRecipe) {
+        if (originalRecipe == null) return;
 
-        nameTextField.setText(recipe.getName());
-        servingsArea.setText(String.valueOf(recipe.getServings()));
-        preparationsArea.setText(String.join("\n", recipe.getPreparationSteps()));
+        // Clear the existing data
+        clearForm();
+
+        // Set the values that have changed to the clone
+        nameTextField.setText(originalRecipe.getName());
+        servingsArea.setText(String.valueOf(originalRecipe.getServings()));
+        preparationsArea.setText(String.join("\n", originalRecipe.getPreparationSteps()));
+
+        // Create a new recipe for the clone
+        this.recipe = server.add(new Recipe("temp", 1, new ArrayList<>()));
+
+        // Load and clone the ingredients
+        cloneIngredients(originalRecipe);
+    }
+
+    /**
+     * Clears the form for fresh input
+     */
+    private void clearForm() {
+        nameTextField.clear();
+        servingsArea.clear();
+        preparationsArea.clear();
+        ingredientsContainer.getChildren().clear();
+        recipe = null;
+    }
+
+    /**
+     * Clones ingredients from the original recipe.
+     */
+    private void cloneIngredients(Recipe originalRecipe) {
+        if (originalRecipe == null || fxml == null) return;
+
+        // Get ingredients from the original recipe
+        List<RecipeIngredient> originalIngredients = server.getRecipeIngredients(originalRecipe.getId());
+
+        if (originalIngredients == null || originalIngredients.isEmpty()) {
+            return;
+        }
+
+        // Clear current ingredients
+        ingredientsContainer.getChildren().clear();
+
+        // Clone each ingredient
+        for (RecipeIngredient originalIngredient : originalIngredients) {
+            // Create a copy of the ingredient
+            originalIngredient.setRecipe(recipe);
+            server.updateRecipeIngredient(originalIngredient);
+
+            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                    "client", "scenes", "RecipeIngredient.fxml");
+            item.getKey().initialize(originalIngredient, recipe, this::showIngredients);
+            item.getValue().setUserData(item.getKey());
+
+            ingredientsContainer.getChildren().add(item.getValue());
+        }
     }
 
     /**
