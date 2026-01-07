@@ -63,24 +63,62 @@ public class AddRecipeCtrl {
     }
 
     /**
-     * gne
+     * The stuff we need for that this begins so it can properly work.
      */
     public void initialize(MyFXML fxml){
         this.fxml = fxml;
-        this.recipe = server.add(
-                new Recipe("temp", 1, new ArrayList<String>())
-        );
+        // Start with no recipe - will be created when needed
+        this.recipe = null;
     }
 
     /**
-     * The function to save the recipes
+     * function for adding recipeIngredients
+     */
+    @FXML
+    private void onAddRecipeIngredient(){
+        // If no recipe exists yet, create it from current fields
+        if (recipe == null) {
+            String name = nameTextField.getText().trim();
+            if (name.isEmpty()) name = "New Recipe";
+
+            int servings = 1;
+            try {
+                servings = Integer.parseInt(servingsArea.getText().trim());
+            } catch (Exception e) {
+                // Use default
+            }
+
+            List<String> steps = new ArrayList<>();
+            if (!preparationsArea.getText().isEmpty()) {
+                steps = Arrays.asList(preparationsArea.getText().split("\\r?\\n"));
+            }
+
+            recipe = server.add(new Recipe(name, servings, steps));
+            System.out.println("DEBUG: Created recipe for first ingredient, ID: " + recipe.getId());
+        }
+
+        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                "client", "scenes", "RecipeIngredient.fxml");
+        item.getKey().initialize(null, recipe, this::showIngredients);
+
+        item.getValue().setUserData(item.getKey());
+        ingredientsContainer.getChildren().add(item.getValue());
+        item.getKey().startEditingFromCtrl();
+    }
+
+    /**
+     * function to save the recipe
      */
     @FXML
     public void onSaveRecipe() {
         try {
-            List<String> preparationSteps = Arrays.asList(
-                    preparationsArea.getText().split("\\r?\\n"));
+            // Make sure the inputs are correct
             String name = nameTextField.getText().trim();
+            if (name.isBlank()) {
+                showError("Input Error", "Recipe name cannot be empty.");
+                return;
+            }
+
             int servings;
             try {
                 servings = Integer.parseInt(servingsArea.getText().trim());
@@ -93,21 +131,83 @@ public class AddRecipeCtrl {
                 return;
             }
 
-            if (name.isBlank() || preparationSteps.isEmpty()) {
-                showError("Input was invalid", "Please fill all fields correctly.");
+            List<String> preparationSteps = Arrays.asList(
+                    preparationsArea.getText().split("\\r?\\n"));
+            if (preparationSteps.isEmpty() ||
+                    (preparationSteps.size() == 1 && preparationSteps.get(0).isBlank())) {
+                showError("Input Error", "Preparation steps cannot be empty.");
                 return;
             }
 
-//            Recipe recipe = new Recipe(name, servings, preparationSteps);
-            recipe.setName(name);
-            recipe.setServings(servings);
-            recipe.setPreparationSteps(preparationSteps);
-            Recipe savedRecipe = server.add(recipe);
+            // Check if a recipe exists before adding the ingredients.
+            if (recipe == null) {
+                // If not first create the recipe.
+                recipe = server.add(new Recipe(name, servings, preparationSteps));
+            } else {
+                // Update the existing recipe.
+                recipe.setName(name);
+                recipe.setServings(servings);
+                recipe.setPreparationSteps(preparationSteps);
+                recipe = server.updateRecipe(recipe);
+            }
+
+            // Now save all ingredients to the server.
+            saveAllIngredientsToServer(recipe);
+
             appViewCtrl.loadRecipes();
-            mainCtrl.showRecipe(savedRecipe);
+            mainCtrl.showRecipe(recipe);
+
         } catch (Exception e) {
-            showError("Error", "Could not save the recipe." +
-                    " There might be a problem with your server connection.");
+            showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
+        }
+    }
+
+    /**
+     * Save all ingredients to the server.
+     */
+    private void saveAllIngredientsToServer(Recipe targetRecipe) {
+        try {
+            //Collect the ingredients.
+            List<RecipeIngredient> ingredientsToSave = new ArrayList<>();
+
+            for (javafx.scene.Node node : ingredientsContainer.getChildren()) {
+                Object controller = node.getUserData();
+                if (controller instanceof RecipeIngredientCtrl ctrl) {
+                    RecipeIngredient ri = ctrl.getRecipeIngredient();
+
+                    if (ri != null && ri.getIngredient() != null) {
+                        ingredientsToSave.add(ri);
+                        System.out.println(ri.getIngredient().getName());
+                    }
+                }
+            }
+
+            System.out.println("DEBUG: Total ingredients to save: " + ingredientsToSave.size());
+
+            // Only delete old ingredients if we have new ones to save
+            if (!ingredientsToSave.isEmpty()) {
+                // Delete all existing ingredients to prevent duplicates
+                List<RecipeIngredient> existing = server.getRecipeIngredients(targetRecipe.getId());
+                if (existing != null) {
+                    for (RecipeIngredient old : existing) {
+                        server.deleteRecipeIngredient(old.getId());
+                    }
+                }
+
+                // Input the recipes again
+                for (RecipeIngredient ingredient : ingredientsToSave) {
+                    RecipeIngredient fresh = new RecipeIngredient(
+                            targetRecipe,
+                            ingredient.getIngredient(),
+                            ingredient.getInformalUnit(),
+                            ingredient.getAmount(),
+                            ingredient.getUnit()
+                    );
+                    server.addRecipeIngredient(fresh);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("There was an error in the saving of the ingredients.");
         }
     }
 
@@ -141,8 +241,11 @@ public class AddRecipeCtrl {
      */
     public void onCancel(){
         try{
+            // if cancelled delete the recipe we created.
             System.out.println(recipe.getId());
-            server.deleteRecipe(recipe.getId());
+            if(recipe != null){
+                server.deleteRecipe(recipe.getId());
+            }
         } catch(Exception e){
             System.out.println("Something went wrong");
         }
@@ -157,33 +260,35 @@ public class AddRecipeCtrl {
         }
     }
 
-    /**
-     * called when the user presses the + under the ingredients list
-     */
-    @FXML
-    private void onAddRecipeIngredient(){
-        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
-                "client", "scenes", "RecipeIngredient.fxml");
-        item.getKey().initialize(null, recipe, this::showIngredients);
-        ingredientsContainer.getChildren().add(item.getValue());
-        item.getKey().startEditingFromCtrl();
-    }
 
 
     /**
      * This function is to show the ingredients for the adding of recipes.
      */
     private void showIngredients(){
-        ingredientsContainer.getChildren().clear();
-        this.recipeIngredientList = server.getRecipeIngredients(recipe.getId());
-        if(recipeIngredientList == null || fxml == null){
+        if(recipe == null || fxml == null){
             return;
+        }
+        // first up clear the ingredient Container.
+        ingredientsContainer.getChildren().clear();
+
+        this.recipeIngredientList = server.getRecipeIngredients(recipe.getId());
+
+        if(recipeIngredientList == null){
+            recipeIngredientList = new ArrayList<>();
         }
 
         for(RecipeIngredient ri : recipeIngredientList){
+            //To make sure the ingredients are set on the correct recipe.
+            ri.setRecipe(recipe);
+
             Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
                     "client", "scenes", "RecipeIngredient.fxml");
             item.getKey().initialize(ri, recipe, this::showIngredients);
+
+            // STORE THE CONTROLLER REFERENCE
+            item.getValue().setUserData(item.getKey());
+
             ingredientsContainer.getChildren().add(item.getValue());
         }
     }
