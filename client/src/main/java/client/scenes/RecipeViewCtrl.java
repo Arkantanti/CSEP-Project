@@ -399,7 +399,12 @@ public class RecipeViewCtrl {
             if (value > 0) {
                 targetServings = value;
             }
-        } catch (NumberFormatException ignored) {}
+            else{
+                setServingsField(targetServings);
+            }
+        } catch (NumberFormatException ignored) {
+            setServingsField(targetServings);
+        }
 
         rerenderIngredientsScaled();
     }
