@@ -151,6 +151,19 @@ public class MainCtrl {
     }
 
     /**
+     * Opens the shopping list window
+     */
+    public void openShoppingList(){
+        Pair<ShoppingListCtrl, Parent> shoppingListView = fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
+        Stage stage = new Stage();
+        stage.setTitle("Shopping List");
+        stage.setScene(new Scene(shoppingListView.getValue()));
+        stage.show();
+
+        shoppingListView.getKey().initialize(fxml);
+    }
+
+    /**
      * The switch to change if it was opened or not.
      */
     public void switchFirstOpen(){

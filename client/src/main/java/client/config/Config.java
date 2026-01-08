@@ -1,5 +1,6 @@
 package client.config;
 
+import commons.RecipeIngredient;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -14,6 +15,8 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 public class Config {
 
     private String serverUrl = "http://localhost:8080/"; //Default value
+
+    private List<RecipeIngredient> shoppingList;
 
     private List<Long> favoriteRecipesIds = new ArrayList<>();
 
@@ -30,9 +33,17 @@ public class Config {
         return serverUrl;
     }
 
+    public List<RecipeIngredient> getShoppingList() {
+        return shoppingList;
+    }
+
+    public void setShoppingList(List<RecipeIngredient> shoppingList) {
+        this.shoppingList = shoppingList;
+    }
+
     /**
      * Gets the list of favorite recipes ids.
-     * 
+     *
      * @return the list of favorite recipes ids
      */
     public List<Long> getFavoriteRecipesIds() {
@@ -41,7 +52,7 @@ public class Config {
 
     /**
      * Sets the list of favorite recipes ids.
-     * 
+     *
      * @param favoriteRecipesIds the list of favorite recipes ids
      */
     public void setFavoriteRecipesIds(List<Long> favoriteRecipesIds) {
@@ -50,7 +61,7 @@ public class Config {
 
     /**
      * Returns the path to the config file.
-     * 
+     *
      * @return the path to the config file
      */
     public Path getConfigPath() {
@@ -59,7 +70,7 @@ public class Config {
 
     /**
      * Sets the path to the config file.
-     * 
+     *
      * @param configPath the path to the config file
      */
     public void setConfigPath(Path configPath) {
