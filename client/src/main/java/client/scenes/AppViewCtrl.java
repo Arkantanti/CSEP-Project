@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.FavoritesManager;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Ingredient;
 import commons.Recipe;
 import commons.Showable;
 import javafx.application.Platform;
@@ -14,9 +15,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -52,6 +55,9 @@ public class AppViewCtrl implements Initializable {
 
     @FXML
     private Button favoritesButton;
+
+    @FXML
+    private HBox overListHBox;
 
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
@@ -89,9 +95,12 @@ public class AppViewCtrl implements Initializable {
 
         itemsList.getSelectionModel().selectedItemProperty().addListener((
                 obs, oldVal, newVal) -> {
-            if (newVal != null && newVal instanceof Recipe) {
+            if (newVal instanceof Recipe) {
                 mainCtrl.showRecipe((Recipe) newVal);
+            } else if (newVal instanceof Ingredient) {
+                mainCtrl.showIngredient((Ingredient) newVal);
             }
+
         });
 
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
@@ -131,9 +140,12 @@ public class AppViewCtrl implements Initializable {
      * is unreachable, an error alert is displayed to the user.
      */
     public void loadRecipes() {
+        overListHBox.setVisible(true);
+        overListHBox.setManaged(true);
         try {
             // Fetch from server
             List<Recipe> recipes = server.getRecipes();
+            recipes.sort(Comparator.comparing(Recipe::getName));
 
             // Update UI on JavaFX Application Thread
             Platform.runLater(() -> {
@@ -150,6 +162,7 @@ public class AppViewCtrl implements Initializable {
             });
         }
     }
+
     /**
      * Searches for recipes via the server and updates the UI list.
      * @param query The text to search for
@@ -157,6 +170,7 @@ public class AppViewCtrl implements Initializable {
     private void searchRecipes(String query) {
         try {
             List<Recipe> results = server.searchRecipes(query);
+            results.sort(Comparator.comparing(Recipe::getName));
             // JavaFX UI updates must run on the UI thread
             Platform.runLater(() -> {
                 itemsList.setItems(FXCollections.observableArrayList(results));
@@ -166,6 +180,36 @@ public class AppViewCtrl implements Initializable {
         }
     }
 
+    /**
+     * Fetches the complete list of ingredients from the server and updates the recipe ListView.
+     * <p>
+     * This method runs asynchronously to avoid blocking the UI thread. If the server
+     * is unreachable, an error alert is displayed to the user.
+     */
+    public void loadIngredients() {
+        overListHBox.setVisible(false);
+        overListHBox.setManaged(false);
+        try {
+            // Fetch from server
+            List<Ingredient> ingredients = server.getIngredients();
+            ingredients.sort(Comparator.comparing(Ingredient::getName));
+
+            // Update UI on JavaFX Application Thread
+            Platform.runLater(() -> {
+                itemsList.setItems(FXCollections.observableArrayList(ingredients));
+
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Connection Error");
+                alert.setHeaderText("Could not load ingredients");
+                alert.setContentText("Check if the server is running.");
+                alert.showAndWait();
+            });
+        }
+    }
     /**
      * Loads list of favorite recipes and displays in the list view.
      */

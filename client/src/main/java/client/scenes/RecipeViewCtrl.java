@@ -189,28 +189,6 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * Formats a RecipeIngredient into a displayable string.
-     *
-     * @param ri the RecipeIngredient to format and display
-     * @return a string representation of ingredient amount and unit from {@code RecipeIngredient}
-     */
-    private String formatIngredient(RecipeIngredient ri) {
-        if (ri.getInformalUnit() != null && !ri.getInformalUnit().isEmpty()) {
-            return ri.getInformalUnit() + " " + ri.getIngredient().getName();
-        }
-        String unitString = "";
-        // TODO: EXTRA UNIT NORMALIZATION AND FORMATTING LOGIC
-        if (ri.getUnit() != null) {
-            if (ri.getUnit() == Unit.GRAM) {
-                unitString = "g";
-            } else if (ri.getUnit() == Unit.LITER) {
-                unitString = "L";
-            }
-        }
-        return ri.getAmount() + unitString + " " + ri.getIngredient().getName();
-    }
-
-    /**
      * Loads preparation steps into the preparations container using EditableItem components.
      *
      * @param steps the list of preparation steps to display
@@ -322,8 +300,7 @@ public class RecipeViewCtrl {
      */
     public void cloneRecipe(){
         mainCtrl.showAddRecipe();
-        AddRecipeCtrl addCtrl = mainCtrl.getAddRecipeCtrl();
-        addCtrl.clone(recipe);
+        mainCtrl.getAddRecipeCtrl().clone(recipe);
     }
 
     /**

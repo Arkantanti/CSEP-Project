@@ -245,6 +245,31 @@ public class ServerUtils {
     }
 
     /**
+     * Updates the specified ingredient
+     * @param ingredient the ingredient to update
+     * @return the updated ingredient as returned by the server
+     * @throws IllegalArgumentException if {@code ingredient} is null or has invalid ID
+     */
+    public Ingredient updateIngredient(Ingredient ingredient) {
+        if (ingredient == null) {
+            throw new IllegalArgumentException("Ingredient to update must not be null");
+        }
+        if (ingredient.getId() < 0) {
+            throw new IllegalArgumentException("Ingredient to update must have a valid ID");
+        }
+
+        try {
+            return this.client
+                    .target(serverURL)
+                    .path("api/ingredients/" + ingredient.getId())
+                    .request(APPLICATION_JSON)
+                    .put(Entity.entity(ingredient, APPLICATION_JSON), Ingredient.class);
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
      * Deletes the specified recipe ingredient
      * @param id the id of the recipe ingredient to delete
      * @throws IllegalArgumentException if id is invalid
@@ -283,6 +308,27 @@ public class ServerUtils {
                     .path("api/recipeingredients/")
                     .request(APPLICATION_JSON)
                     .post(Entity.entity(recipeIngredient, APPLICATION_JSON), RecipeIngredient.class);
+        }
+        catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Counts how many recipes an ingredient is used in through a REST endpoint.
+     * @param ingredientId Ingredient id to count by.
+     * @return The number of recipes the ingredient is used in.
+     */
+    public Long recipeCount(Long ingredientId) {
+        if (ingredientId < 0) {
+            throw new IllegalArgumentException("Ingredient ID must not be negative");
+        }
+        try {
+            return this.client
+                    .target(serverURL)
+                    .path("api/recipeingredients/recipeCount/"+ingredientId)
+                    .request(APPLICATION_JSON)
+                    .get(new GenericType<Long>() {});
         }
         catch (ProcessingException e) {
             return null;
