@@ -47,6 +47,8 @@ public class RecipeViewCtrl {
     @FXML
     private Button cloneButton;
     @FXML
+    private Button deleteButton;
+    @FXML
     private TextField servingsScalingInput;
     @FXML
     private Button resetServingsButton;
@@ -334,6 +336,20 @@ public class RecipeViewCtrl {
     public void cloneRecipe(){
         mainCtrl.showAddRecipe();
         mainCtrl.getAddRecipeCtrl().clone(recipe);
+    }
+
+    /**
+     * this function will be used to delete recipes.
+     */
+    public void deleteRecipe(){
+        try{
+            server.deleteRecipe(this.recipe.getId());
+            appViewCtrl.loadRecipes();
+        } catch (Exception e){
+            System.out.println("something went wrong.");
+        }
+        mainCtrl.showDefaultView();
+
     }
 
     /**
