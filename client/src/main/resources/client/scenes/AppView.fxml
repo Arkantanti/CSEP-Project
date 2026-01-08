@@ -16,7 +16,12 @@
    <top>
       <ToolBar prefHeight="83.0" prefWidth="708.0" BorderPane.alignment="CENTER">
          <items>
-            <Label alignment="CENTER" prefHeight="49.0" prefWidth="661.0" text="    FoodPal">
+            <Button mnemonicParsing="false" onAction="#openShoppingList" prefHeight="23.0" text="Shopping List">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="49.0" prefWidth="540.0" text="    FoodPal">
                <font>
                   <Font size="25.0" />
                </font>

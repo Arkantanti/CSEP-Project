@@ -181,6 +181,14 @@ public class AppViewCtrl implements Initializable {
     }
 
     /**
+     * Opens the shopping list window
+     */
+    @FXML
+    private void openShoppingList(){
+        mainCtrl.openShoppingList();
+    }
+
+    /**
      * Fetches the complete list of ingredients from the server and updates the recipe ListView.
      * <p>
      * This method runs asynchronously to avoid blocking the UI thread. If the server
