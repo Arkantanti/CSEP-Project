@@ -1,15 +1,19 @@
 package client.scenes;
 
+import client.config.Config;
+import client.config.ConfigManager;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.*;
+import commons.Ingredient;
+import commons.RecipeIngredient;
+import commons.Unit;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import java.util.List;
 
-public class RecipeIngredientCtrl {
+public class ShoppingListElementCtrl {
     @FXML
     private HBox defaultView;
 
@@ -40,53 +44,45 @@ public class RecipeIngredientCtrl {
     @FXML
     private Button cancelButton;
 
-
     private RecipeIngredient recipeIngredient;
-    private Recipe recipe;
 
     private Runnable updateIngredientList;
 
     private final ServerUtils serverUtils;
+    private final Config config;
 
     /**
      * constructor to be injected
      * @param serverUtils serverutils to load/delete/edit ingredients
+     * @param config the config
      */
     @Inject
-    public RecipeIngredientCtrl(ServerUtils serverUtils) {
+    public ShoppingListElementCtrl(ServerUtils serverUtils, Config config) {
         this.serverUtils = serverUtils;
+        this.config = config;
     }
 
     /**
-     * called by the RecipeView to initialize the cell
-     * @param recipeIngredient the RecipeIngredient this cell corresponds to
+     * initializes the ShoppingElementCtrl
+     * @param recipeIngredient A recipeIngredient containing information about the ingredient and its amount
+     * @param updateIngredientList a function that is called whenever the list should be updated
      */
     public void initialize(RecipeIngredient recipeIngredient,
-                           Recipe recipe,
                            Runnable updateIngredientList) {
         this.recipeIngredient = recipeIngredient;
-        this.recipe = recipe;
         this.updateIngredientList = updateIngredientList;
-
-        editView.setVisible(false);
-        editView.setManaged(false);
 
         defaultView.setVisible(true);
         defaultView.setManaged(true);
+
+        editView.setVisible(false);
+        editView.setManaged(false);
 
         if (recipeIngredient != null) {
             textLabel.setText(recipeIngredient.formatIngredient());
         }
         textLabel.setVisible(true);
         textLabel.setManaged(true);
-
-        ingredientComboBox.setCellFactory(list -> new ListCell<Ingredient>() {
-            @Override
-            protected void updateItem(Ingredient item, boolean empty) {
-                super.updateItem(item, empty);
-                setText((empty || item == null) ? null : item.getName());
-            }
-        });
 
         ingredientComboBox.setButtonCell(new ListCell<Ingredient>() {
             @Override
@@ -96,6 +92,13 @@ public class RecipeIngredientCtrl {
             }
         });
 
+        ingredientComboBox.setCellFactory(list -> new ListCell<Ingredient>() {
+            @Override
+            protected void updateItem(Ingredient item, boolean empty) {
+                super.updateItem(item, empty);
+                setText((empty || item == null) ? null : item.getName());
+            }
+        });
     }
 
     /**
@@ -103,30 +106,20 @@ public class RecipeIngredientCtrl {
      */
     @FXML
     private void onEditClicked() {
-        editView.setVisible(true);
-        editView.setManaged(true);
-
-        defaultView.setVisible(false);
-        defaultView.setManaged(false);
+        enterEditMode();
 
         // load data to show
-        if (recipeIngredient.getUnit() != Unit.CUSTOM
-                || recipeIngredient.getInformalUnit() == null) {
+        if (recipeIngredient.getUnit() != Unit.CUSTOM || recipeIngredient.getInformalUnit() == null) {
             amountField.setText(String.valueOf(recipeIngredient.getAmount()));
         }
         else {
             amountField.setText(recipeIngredient.getInformalUnit());
         }
         // Ingredient dropdown
-        List<Ingredient> ingredients = serverUtils.getIngredients();
-        ingredientComboBox.getItems().setAll(ingredients);
-
-        int i = ingredients.indexOf(recipeIngredient.getIngredient());
+        int i = ingredientComboBox.getItems().indexOf(recipeIngredient.getIngredient());
         ingredientComboBox.getSelectionModel().select(i);
 
         // unit dropdown
-        unitComboBox.getItems().setAll(Unit.values());
-
         unitComboBox.getSelectionModel().select(recipeIngredient.getUnit());
     }
 
@@ -135,7 +128,7 @@ public class RecipeIngredientCtrl {
      */
     @FXML
     private void onDeleteClicked() {
-        serverUtils.deleteRecipeIngredient(recipeIngredient.getId());
+        config.getShoppingList().remove(recipeIngredient);
         this.updateIngredientList.run();
     }
 
@@ -144,6 +137,12 @@ public class RecipeIngredientCtrl {
      */
     @FXML
     private void onConfirmClicked() {
+        int index = config.getShoppingList().indexOf(recipeIngredient);
+        if (index == -1 && recipeIngredient != null) {
+            updateIngredientList.run();
+            return;
+        }
+
         Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
 
         String informalAmount = null;
@@ -185,16 +184,18 @@ public class RecipeIngredientCtrl {
         }
 
         if (recipeIngredient == null){
-            recipeIngredient = serverUtils.addRecipeIngredient(
-                    new RecipeIngredient(recipe, ingredient, informalAmount, amount, unit)
-            );
+            recipeIngredient = new RecipeIngredient(null, ingredient, informalAmount, amount, unit);
+            config.getShoppingList().add(recipeIngredient);
+            try{
+                ConfigManager.save(config);
+            }
+            catch (Exception _) {}
         }
         else {
             recipeIngredient.setAmount(amount);
             recipeIngredient.setUnit(unit);
             recipeIngredient.setInformalUnit(informalAmount);
             recipeIngredient.setIngredient(ingredient);
-            serverUtils.updateRecipeIngredient(recipeIngredient);
         }
         textLabel.setText(recipeIngredient.formatIngredient());
 
@@ -225,14 +226,23 @@ public class RecipeIngredientCtrl {
      * called when creating a new RecipeIngredient from clicking the +
      */
     public void startEditingFromCtrl() {
-        editView.setVisible(true);
-        editView.setManaged(true);
+        // load data to show
+        amountField.setText("");
 
+        unitComboBox.getSelectionModel().select(Unit.GRAM);
+
+        enterEditMode();
+    }
+
+    /**
+     * enters edit mode
+     */
+    public void enterEditMode(){
         defaultView.setVisible(false);
         defaultView.setManaged(false);
 
-        // load data to show
-        amountField.setText("");
+        editView.setVisible(true);
+        editView.setManaged(true);
 
         // Ingredient dropdown
         List<Ingredient> ingredients = serverUtils.getIngredients();
@@ -241,18 +251,6 @@ public class RecipeIngredientCtrl {
         // unit dropdown
         unitComboBox.getItems().setAll(Unit.values());
 
-        unitComboBox.getSelectionModel().select(Unit.GRAM);
     }
 
-    /**
-     * applies refactoring to the ingredients
-     * @param factor the scaling factor
-     */
-    public void applyScaleFactor(double factor) {
-        if (recipeIngredient == null) return;
-
-        double scaled = recipeIngredient.getAmount() * factor;
-
-        textLabel.setText(recipeIngredient.formatIngredientScaled(scaled));
-    }
 }

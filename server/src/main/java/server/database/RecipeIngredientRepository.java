@@ -20,4 +20,13 @@ public interface RecipeIngredientRepository extends JpaRepository<RecipeIngredie
     @Query("SELECT DISTINCT ri FROM RecipeIngredient ri " +
             "JOIN FETCH ri.ingredient i WHERE ri.recipe.id = :recipeId")
     List<RecipeIngredient> findByRecipeId(@Param("recipeId") long recipeId);
+    /**
+     *Retrieves all {@link RecipeIngredient} entries that belong to a specific ingredient.
+     *
+     * @param ingredientId the ID of the recipe whose ingredient mappings should be returned;
+     * @return a list of all {@link RecipeIngredient} objects linked to the specified ingredient;
+     */
+    @Query("SELECT DISTINCT ri FROM RecipeIngredient ri " +
+            "JOIN FETCH ri.ingredient i WHERE ri.ingredient.id = :ingredientId")
+    List<RecipeIngredient> findByIngredientId(@Param("ingredientId") long ingredientId);
 }

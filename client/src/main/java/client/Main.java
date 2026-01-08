@@ -96,10 +96,7 @@ public class Main extends Application {
             System.err.println("Failed to validate favorites: " + e.getMessage());
         }
 
-        var overview = fxml.load(AppViewCtrl.class,
-                "client", "scenes", "AppView.fxml");
-
         var mainCtrl = injector.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, fxml);
+        mainCtrl.initialize(primaryStage, fxml);
     }
 }

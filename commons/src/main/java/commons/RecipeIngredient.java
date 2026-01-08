@@ -99,10 +99,28 @@ public class RecipeIngredient {
     public void setUnit(Unit unit){ this.unit = unit; }
 
     /**
+     * when displaying a RecipeIngredient with original amount
+     * @return the String format of RecipeIngredient
+     */
+    public String formatIngredient(){
+        return formatIngredientInternal(this.amount);
+    }
+
+    /**
+     *
+     * when displaying a RecipeIngredient with scaled amount
+     * @param amount the scaled amount to be displayed
+     * @return the String format of RecipeIngredient
+     */
+    public String formatIngredientScaled(double amount){
+        return formatIngredientInternal(amount);
+    }
+
+    /**
      *  helper function to format recipeIngredient
      * @return a formatted version of the toString. ex: 100 L salt
      */
-    public String formatIngredient() {
+    public String formatIngredientInternal(double amount) {
         StringBuilder s = new StringBuilder();
 
         // List politely yoinked from https://en.wikipedia.org/wiki/Metric_prefix
