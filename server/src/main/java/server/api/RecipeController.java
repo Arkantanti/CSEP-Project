@@ -74,7 +74,6 @@ public class RecipeController {
      */
     @PostMapping("")
     public ResponseEntity<Recipe> add(@RequestBody Recipe recipe) {
-
         if (recipe == null
                 || isNullOrEmpty(recipe.getName())
                 || recipe.getServings() < 1
