@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.config.Config;
+import client.config.ConfigManager;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
@@ -185,6 +186,10 @@ public class ShoppingListElementCtrl {
         if (recipeIngredient == null){
             recipeIngredient = new RecipeIngredient(null, ingredient, informalAmount, amount, unit);
             config.getShoppingList().add(recipeIngredient);
+            try{
+                ConfigManager.save(config);
+            }
+            catch (Exception _) {}
         }
         else {
             recipeIngredient.setAmount(amount);
