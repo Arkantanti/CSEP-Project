@@ -36,7 +36,6 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(AppViewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(Config.class).toInstance(config);
         binder.bind(Printer.class).in(Scopes.SINGLETON);
         binder.bind(FavoritesManager.class).in(Scopes.SINGLETON);

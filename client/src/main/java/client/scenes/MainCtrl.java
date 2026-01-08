@@ -16,6 +16,7 @@
 package client.scenes;
 
 import client.MyFXML;
+import commons.Ingredient;
 import commons.Recipe;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -34,30 +35,27 @@ public class MainCtrl {
     private Stage primaryStage;
 
     private AppViewCtrl appViewCtrl;
-    private Scene appView;
-    private MyFXML fxml;
     private AddRecipeCtrl addRecipeCtrl;
+
+    private MyFXML fxml;
     private boolean firstOpen;
 
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
      * @param primaryStage the primary stage of the application
-     * @param appView the pair containing the controller and parent for the overview scene
      * @param fxml the FXML loader for loading views
      */
-    public void initialize(Stage primaryStage, Pair<AppViewCtrl, Parent> appView, MyFXML fxml) {
+    public void initialize(Stage primaryStage, MyFXML fxml) {
+
+
         this.primaryStage = primaryStage;
-        this.appViewCtrl = appView.getKey();
-        this.appView = new Scene(appView.getValue());
         this.fxml = fxml;
         this.firstOpen = true;
 
-        appViewCtrl.setContent(new javafx.scene.control.Label("Select a recipe from the list"));
-
         showAppView();
         primaryStage.show();
-        showDefaultScreen();
+        showDefaultView();
     }
 
     /**
@@ -66,7 +64,11 @@ public class MainCtrl {
      */
     public void showAppView() {
         primaryStage.setTitle("FoodPal");
-        primaryStage.setScene(appView);
+        var overview = fxml.load(AppViewCtrl.class,
+                "client", "scenes", "AppView.fxml");
+
+        this.appViewCtrl = overview.getKey();
+        primaryStage.setScene(new Scene(overview.getValue()));
     }
 
     /**
@@ -88,20 +90,38 @@ public class MainCtrl {
     }
 
     /**
+     * Opens the ingredient view for the selected recipe in the AppView content area.
+     *
+     * @param ingredient the recipe to display
+     */
+    public void showIngredient(Ingredient ingredient) {
+        if (fxml == null || appViewCtrl == null) {
+            throw new IllegalStateException("FXML or AppViewCtrl are null");
+        }
+        Pair<IngredientViewCtrl, Parent> ingredientView = fxml.load(IngredientViewCtrl.class,
+                "client", "scenes", "IngredientView.fxml");
+        ingredientView.getKey().setIngredient(ingredient, fxml);
+        appViewCtrl.setContent(ingredientView.getValue());
+        if(firstOpen){
+            switchFirstOpen();
+        }
+    }
+
+    /**
      * The function to show the addRecipe fxml file
      */
     public void showAddRecipe() {
         Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class,
                 "client", "scenes", "AddRecipe.fxml");
-        this.addRecipeCtrl = addRecipeView.getKey();
+        addRecipeCtrl = addRecipeView.getKey();
         appViewCtrl.setContent(addRecipeView.getValue());
     }
 
     /**
-     * function to make sure there are no problems when the app is first opened
+     * Function to make sure there are no problems when the app is first opened
      * and then a recipe gets added and canceled immediately.
      */
-    public void showDefaultScreen(){
+    public void showDefaultView(){
         Pair<RecipeViewCtrl, Parent> defaultScreen = fxml.load(RecipeViewCtrl.class,
                 "client", "scenes", "DefaultView.fxml");
         appViewCtrl.setContent(defaultScreen.getValue());
@@ -114,7 +134,7 @@ public class MainCtrl {
      */
     public Path showFileChooser(String placeholder) {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Choose Markdown Save Location");
+        chooser.setTitle("Choose PDF Save Location");
         chooser.setInitialFileName(placeholder);
 
         chooser.getExtensionFilters().add(
@@ -153,10 +173,6 @@ public class MainCtrl {
         return this.firstOpen;
     }
 
-    public AddRecipeCtrl getAddRecipeCtrl() {
-        return addRecipeCtrl;
-    }
-
     /**
      * function to get the appViewCtrl
      * @return the appViewCtrl
@@ -164,4 +180,6 @@ public class MainCtrl {
     public AppViewCtrl getAppViewCtrl(){
         return appViewCtrl;
     }
+
+    public AddRecipeCtrl getAddRecipeCtrl() {return addRecipeCtrl; }
 }
