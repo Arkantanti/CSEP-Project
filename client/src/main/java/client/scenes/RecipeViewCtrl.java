@@ -65,7 +65,7 @@ public class RecipeViewCtrl {
 
     private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
     private int baseServings;
-    private int targetServings;
+    private double targetServings;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -128,8 +128,8 @@ public class RecipeViewCtrl {
      *
      * @param servings amount of servings
      */
-    private void setServingsField(int servings) {
-        servingsScalingInput.setText(Integer.toString(servings));
+    private void setServingsField(double servings) {
+        servingsScalingInput.setText(Double.toString(servings));
     }
 
     /**
@@ -395,7 +395,7 @@ public class RecipeViewCtrl {
         if (text == null || text.isBlank()) return;
 
         try {
-            int value = Integer.parseInt(text);
+            double value = Double.parseDouble(text);
             if (value > 0) {
                 targetServings = value;
             }
