@@ -1,56 +1,66 @@
 package client.scenes;
 
-import commons.Recipe;
 import client.utils.FavoritesManager;
-
-import org.junit.jupiter.api.BeforeEach;
+import client.utils.Printer;
+import client.utils.ServerUtils;
+import commons.Recipe;
+import javafx.event.ActionEvent;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javafx.event.ActionEvent;
-
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class RecipeViewCtrlTest {
 
-    private MainCtrl sut;
-    private RecipeViewCtrl ctrl;
+    private static RecipeViewCtrl newCtrl(MainCtrl mainCtrl, FavoritesManager favoritesManager) {
+        // Constructor stores appViewCtrl immediately, so stub before creating controller
+        AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
+        when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
 
-    @BeforeEach
-    void setup() {
-        ctrl = new RecipeViewCtrl(null, sut = new MainCtrl(), null, null);
+        ServerUtils server = mock(ServerUtils.class);
+        Printer printer = mock(Printer.class);
+
+        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager);
+    }
+
+    private static void setField(Object target, String fieldName, Object value) throws Exception {
+        Field f = target.getClass().getDeclaredField(fieldName);
+        f.setAccessible(true);
+        f.set(target, value);
+    }
+
+    private static Object invokePrivate(Object target, String methodName, Class<?>... paramTypes) throws Exception {
+        Method m = target.getClass().getDeclaredMethod(methodName, paramTypes);
+        m.setAccessible(true);
+        return m.invoke(target);
     }
 
     @Test
     void onFavoriteClicked_addsFavoriteWhenNotFavorited() throws Exception {
         FavoritesManager favoritesManager = mock(FavoritesManager.class);
         MainCtrl mainCtrl = mock(MainCtrl.class);
-        AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
 
-        // Must set up stub before creating controller, because constructor call getAppViewCtrl
-        when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
-
-        RecipeViewCtrl ctrl = new RecipeViewCtrl(null, mainCtrl, null, favoritesManager);
+        RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
         Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"));
         recipe.setId(1L);
 
         when(favoritesManager.isFavorite(1L)).thenReturn(false);
 
-        Field recipeField = RecipeViewCtrl.class.getDeclaredField("recipe");
-        recipeField.setAccessible(true);
-        recipeField.set(ctrl, recipe);
+        // Avoid JavaFX toolkit issues: keep favoriteButton null (updateFavoriteButton() will just return)
+        setField(ctrl, "recipe", recipe);
 
-        Method method = RecipeViewCtrl.class.getDeclaredMethod("onFavoriteClicked");
-        method.setAccessible(true);
-        method.invoke(ctrl);
+        invokePrivate(ctrl, "onFavoriteClicked");
 
         verify(favoritesManager).addFavorite(1L);
+        verify(favoritesManager, never()).removeFavorite(anyLong());
+
+        AppViewCtrl appViewCtrl = mainCtrl.getAppViewCtrl();
         verify(appViewCtrl).loadRecipes();
     }
 
@@ -58,27 +68,22 @@ public class RecipeViewCtrlTest {
     void onFavoriteClicked_removesFavoriteWhenFavorited() throws Exception {
         FavoritesManager favoritesManager = mock(FavoritesManager.class);
         MainCtrl mainCtrl = mock(MainCtrl.class);
-        AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
 
-       // Must set up stub before creating controller, because constructor calls getAppViewCtrl
-        when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
-
-        RecipeViewCtrl ctrl = new RecipeViewCtrl(null, mainCtrl, null, favoritesManager);
+        RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
         Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"));
         recipe.setId(1L);
 
         when(favoritesManager.isFavorite(1L)).thenReturn(true);
 
-        Field recipeField = RecipeViewCtrl.class.getDeclaredField("recipe");
-        recipeField.setAccessible(true);
-        recipeField.set(ctrl, recipe);
+        setField(ctrl, "recipe", recipe);
 
-        Method method = RecipeViewCtrl.class.getDeclaredMethod("onFavoriteClicked");
-        method.setAccessible(true);
-        method.invoke(ctrl);
+        invokePrivate(ctrl, "onFavoriteClicked");
 
         verify(favoritesManager).removeFavorite(1L);
+        verify(favoritesManager, never()).addFavorite(anyLong());
+
+        AppViewCtrl appViewCtrl = mainCtrl.getAppViewCtrl();
         verify(appViewCtrl).loadRecipes();
     }
 
@@ -87,47 +92,37 @@ public class RecipeViewCtrlTest {
         FavoritesManager favoritesManager = mock(FavoritesManager.class);
         MainCtrl mainCtrl = mock(MainCtrl.class);
 
-        when(mainCtrl.getAppViewCtrl()).thenReturn(null);
+        RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
-        RecipeViewCtrl ctrl = new RecipeViewCtrl(null, mainCtrl, null, favoritesManager);
+        setField(ctrl, "recipe", null);
 
-        Field recipeField = RecipeViewCtrl.class.getDeclaredField("recipe");
-        recipeField.setAccessible(true);
-        recipeField.set(ctrl, null);
+        InvocationTargetException thrown = assertThrows(
+                InvocationTargetException.class,
+                () -> invokePrivate(ctrl, "onFavoriteClicked")
+        );
 
-        Method method = RecipeViewCtrl.class.getDeclaredMethod("onFavoriteClicked");
-        method.setAccessible(true);
-
-        // wrapping exception in InvocationTargetException and later checking of it is of type IllegalStateException
-        // because method.invoke() throws InvocationTargetException
-        InvocationTargetException thrown = assertThrows(InvocationTargetException.class,
-                () -> method.invoke(ctrl));
-        assertTrue(thrown.getCause() instanceof IllegalStateException);
+        assertInstanceOf(IllegalStateException.class, thrown.getCause());
+        assertTrue(thrown.getCause().getMessage().toLowerCase().contains("recipe"));
     }
 
     @Test
     void onAddPreparationStepClicked_throwsWhenPreparationStepsIsNull() throws Exception {
         FavoritesManager favoritesManager = mock(FavoritesManager.class);
         MainCtrl mainCtrl = mock(MainCtrl.class);
-        AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
 
-        // must set up stub before creating controller, because constructor calls getAppViewCtrl()
-        when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
+        RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
-        RecipeViewCtrl ctrl = new RecipeViewCtrl(null, mainCtrl, null, favoritesManager);
-
+        // This must throw BEFORE touching fxml or JavaFX containers
         Recipe recipe = new Recipe("Test Recipe", 1, null);
+        recipe.setId(1L);
 
-        Field recipeField = RecipeViewCtrl.class.getDeclaredField("recipe");
-        recipeField.setAccessible(true);
-        recipeField.set(ctrl, recipe);
+        setField(ctrl, "recipe", recipe);
 
-        Method method = RecipeViewCtrl.class.getDeclaredMethod(
-                "onAddPreparationStepClicked", ActionEvent.class);
-        method.setAccessible(true);
+        IllegalStateException thrown = assertThrows(
+                IllegalStateException.class,
+                () -> ctrl.onAddPreparationStepClicked((ActionEvent) null)
+        );
 
-        InvocationTargetException thrown = assertThrows(InvocationTargetException.class,
-                () -> method.invoke(ctrl, (Object) null));
-        assertTrue(thrown.getCause() instanceof IllegalStateException);
+        assertTrue(thrown.getMessage().toLowerCase().contains("preparation"));
     }
 }
