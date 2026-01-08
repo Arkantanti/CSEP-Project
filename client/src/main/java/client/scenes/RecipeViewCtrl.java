@@ -313,7 +313,7 @@ public class RecipeViewCtrl {
         } catch (Exception e){
             System.out.println("something went wrong.");
         }
-        mainCtrl.showDefaultScreen();
+        mainCtrl.showDefaultView();
 
     }
 
