@@ -2,12 +2,12 @@
 | Key                 | Value                 |
 | ------------------- | --------------------- |
 | Date:               | 08-01-2026            |
-| Time:               | 17:00+                |
-| Location:           | Drebbelweg PC hall 1? |
+| Time:               | 17:30                 |
+| Location:           | online                |
 | Chair:              | Eliott Duparc         |
 | Minute Taker:       | Arthur Bakker         |
 | Expected attendees: | 6                     |
-| Online:             | none                  |
+| Online:             | everyone              |
 
 #### Agenda Items:
 - Opening by chair (1 min)
