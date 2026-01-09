@@ -46,6 +46,7 @@ public class AddRecipeCtrl {
 
     private Recipe recipe;
     private boolean isCloneMode = false;
+    private boolean isSaved = false;
 
     /**
      *  The constructor for the add recipeController
@@ -138,6 +139,7 @@ public class AddRecipeCtrl {
                 showError("Input Error", "Preparation steps cannot be empty.");
                 return;
             }
+            isSaved = true;
 
             // Check if a recipe exists before adding the ingredients.
             if (recipe == null) {
@@ -310,7 +312,7 @@ public class AddRecipeCtrl {
         try{
             // if cancelled delete the recipe we created.
             if(recipe != null && !isCloneMode && recipe.getId() > 0){
-                server.deleteRecipe(recipe.getId());
+                deleter(recipe.getId());
             }
         } catch(Exception e){
             System.out.println("Something went wrong");
@@ -324,6 +326,14 @@ public class AddRecipeCtrl {
             mainCtrl.showAppView();
             appViewCtrl.loadRecipes();
         }
+    }
+
+    /**
+     * function that removed the recipe id.
+     * @param id the id of the recipe to be removed
+     */
+    public void deleter(long id){
+        server.deleteRecipe(id);
     }
 
     /**
@@ -356,5 +366,21 @@ public class AddRecipeCtrl {
                 ingredientsContainer.getChildren().add(item.getValue());
             }
         }
+    }
+
+    /**
+     * function to get the is saved value
+     * @return the is saved value
+     */
+    public boolean getIsSaved(){
+        return this.isSaved;
+    }
+
+    /**
+     * Function to get the recipe
+     * @return the recipe of the addRecipeCtrl.
+     */
+    public Recipe getRecipe(){
+        return this.recipe;
     }
 }
