@@ -59,6 +59,9 @@ public class AppViewCtrl implements Initializable {
     @FXML
     private HBox overListHBox;
 
+    // Keeps track of whether recipes are displayed (true) or ingredients (false)
+    private boolean sidebarContent;
+
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
      *
@@ -70,6 +73,7 @@ public class AppViewCtrl implements Initializable {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.favoritesManager = favoritesManager;
+        sidebarContent = true;
     }
 
     @Override
@@ -105,8 +109,6 @@ public class AppViewCtrl implements Initializable {
 
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
 
-        refreshButton.setOnAction(e -> loadRecipes());
-
         recipesButton.setOnAction(e -> loadRecipes());
 
         favoritesButton.setOnAction(e -> loadFavorites());
@@ -121,6 +123,18 @@ public class AppViewCtrl implements Initializable {
             });
         }
         loadRecipes();
+    }
+
+    /**
+     * Runs when the refresh button is clicked. Either refreshes the ingredients or refreshes the
+     * recipes.
+     */
+    public void refresh() {
+        if(sidebarContent) {
+            loadRecipes();
+        } else {
+            loadIngredients();
+        }
     }
 
     /**
@@ -140,6 +154,7 @@ public class AppViewCtrl implements Initializable {
      * is unreachable, an error alert is displayed to the user.
      */
     public void loadRecipes() {
+        sidebarContent = true;
         overListHBox.setVisible(true);
         overListHBox.setManaged(true);
         try {
@@ -195,6 +210,7 @@ public class AppViewCtrl implements Initializable {
      * is unreachable, an error alert is displayed to the user.
      */
     public void loadIngredients() {
+        sidebarContent = false;
         overListHBox.setVisible(false);
         overListHBox.setManaged(false);
         try {
