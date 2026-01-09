@@ -67,6 +67,7 @@ public class AddRecipeCtrl {
         // Start with no recipe, as this will be created when needed.
         this.recipe = null;
         this.isCloneMode = false;
+        this.isSaved = false;
     }
 
     /**
@@ -374,6 +375,14 @@ public class AddRecipeCtrl {
      */
     public boolean getIsSaved(){
         return this.isSaved;
+    }
+
+    /**
+     * function to make sure isSaved is true and random values do not get deleted.
+     * @param boo the value is saved is at now.
+     */
+    public void setIsSavedTrue(){
+        this.isSaved = true;
     }
 
     /**
