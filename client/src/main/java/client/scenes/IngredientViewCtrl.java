@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.util.converter.DoubleStringConverter;
 import org.w3c.dom.Text;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -97,9 +99,9 @@ public class  IngredientViewCtrl {
         this.ingredient = ingredient;
         if (ingredient != null) {
             nameLabel.setText(ingredient.getName());
-            fatLabel.setText(String.valueOf(ingredient.getFat()));
-            proteinLabel.setText(String.valueOf(ingredient.getProtein()));
-            carbsLabel.setText(String.valueOf(ingredient.getCarbs()));
+            fatLabel.setText(String.format("%.2f",ingredient.getFat()));
+            proteinLabel.setText(String.format("%.2f",ingredient.getProtein()));
+            carbsLabel.setText(String.format("%.2f",ingredient.getCarbs()));
             kcalLabel.setText("TODO");
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
         }
@@ -189,15 +191,18 @@ public class  IngredientViewCtrl {
         if(tf.getText().isEmpty()) {
             tf.setText("0");
         } else {
+            float newValue = new BigDecimal(tf.getText())
+                    .setScale(2, RoundingMode.HALF_UP)
+                    .floatValue();
             switch(tf.getId()) {
                 case "proteinLabel":
-                    ingredient.setProtein(Float.parseFloat(tf.getText()));
+                    ingredient.setProtein(newValue);
                     break;
                 case "carbsLabel":
-                    ingredient.setCarbs(Float.parseFloat(tf.getText()));
+                    ingredient.setCarbs(newValue);
                     break;
                 case "fatLabel":
-                    ingredient.setFat(Float.parseFloat(tf.getText()));
+                    ingredient.setFat(newValue);
             }
             server.updateIngredient(ingredient);
             appViewCtrl.loadIngredients();
