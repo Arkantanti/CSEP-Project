@@ -1,8 +1,10 @@
 package commons;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,7 +64,7 @@ class RecipeTest {
 
     @Test
     void setPreparationSteps() {
-        ArrayList<String> newSteps = AsList.of("New step");
+        ArrayList<String> newSteps = new ArrayList<>(Arrays.asList("New step", "Second step"));
         recipe.setPreparationSteps(newSteps);
         assertEquals(newSteps, recipe.getPreparationSteps());
     }
