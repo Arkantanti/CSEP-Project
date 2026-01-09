@@ -64,16 +64,41 @@ class IngredientTest {
 
     @Test
     void equalsTest(){
-        assertTrue(ingredient.equals(ingredient3));
+        assertEquals(ingredient3, ingredient);
     }
 
     @Test
     void equalsFalseTest(){
-        assertFalse(ingredient.equals(ingredient2));
+        assertNotEquals(ingredient2, ingredient);
     }
 
     @Test
     void equalsNullTest(){
-        assertFalse(ingredient.equals(null));
+        assertNotEquals(null, ingredient);
+    }
+    @Test
+    void getId() {
+        assertEquals(0, ingredient.getId());
+    }
+
+    @Test
+    void setId() {
+        ingredient.setId(10);
+        assertEquals(10, ingredient.getId());
+    }
+
+    @Test
+    void testHashCode() {
+        assertEquals(ingredient.hashCode(), ingredient3.hashCode());
+        assertNotEquals(ingredient.hashCode(), ingredient2.hashCode());
+    }
+
+    @Test
+    void testToString() {
+        String result = ingredient.toString();
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertTrue(result.contains("fat"));
     }
 }

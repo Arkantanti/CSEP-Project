@@ -8,5 +8,13 @@ class ShowableTest {
 
     @Test
     void getName() {
+        Showable showable = new Showable() {
+            @Override
+            public String getName() {
+                return "TestName";
+            }
+        };
+
+        assertEquals("TestName", showable.getName());
     }
 }

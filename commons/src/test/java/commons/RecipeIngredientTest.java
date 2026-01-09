@@ -84,33 +84,72 @@ class RecipeIngredientTest {
 
     @Test
     void setAmount() {
+        recipeIngredient.setAmount(20.5);
+        assertEquals(20.5, recipeIngredient.getAmount());
     }
 
     @Test
     void setUnit() {
+        recipeIngredient.setUnit(Unit.GRAM);
+        assertEquals(Unit.GRAM, recipeIngredient.getUnit());
     }
 
     @Test
     void formatIngredient() {
+        String result = recipeIngredient.formatIngredient();
+
+        assertNotNull(result);
+        assertTrue(result.contains("12"));
+        assertTrue(result.contains("Sugar"));
     }
 
     @Test
     void formatIngredientScaled() {
+        double scaledAmount = 24.0;
+
+        String result = recipeIngredient.formatIngredientScaled(scaledAmount);
+
+        assertNotNull(result);
+        assertTrue(result.contains("24"));
+        assertTrue(result.contains("Sugar"));
     }
 
     @Test
     void formatIngredientInternal() {
+        String result = recipeIngredient.formatIngredientInternal(12.0);
+
+        assertNotNull(result);
+        assertTrue(result.contains("12"));
+        assertTrue(result.contains("Sugar"));
     }
 
     @Test
     void testEquals() {
+        RecipeIngredient same =
+                new RecipeIngredient(recipe, sugar, "", 12.0, Unit.GRAM);
+
+        RecipeIngredient different =
+                new RecipeIngredient(recipe2, sugar, "", 12.0, Unit.GRAM);
+
+        assertEquals(recipeIngredient, same);
+        assertNotEquals(recipeIngredient, different);
+        assertNotEquals(null, recipeIngredient);
     }
 
     @Test
     void testHashCode() {
+        RecipeIngredient same =
+                new RecipeIngredient(recipe, sugar, "", 12.0, Unit.GRAM);
+
+        assertEquals(recipeIngredient.hashCode(), same.hashCode());
     }
 
     @Test
     void testToString() {
+        String result = recipeIngredient.toString();
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertTrue(result.contains("Sugar"));
     }
 }
