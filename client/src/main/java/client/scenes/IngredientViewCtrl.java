@@ -186,7 +186,22 @@ public class  IngredientViewCtrl {
      * @param tf TextField reference.
      */
     public void onStopEditing(TextField tf) {
-
+        if(tf.getText().isEmpty()) {
+            tf.setText("0");
+        } else {
+            switch(tf.getId()) {
+                case "proteinLabel":
+                    ingredient.setProtein(Float.parseFloat(tf.getText()));
+                    break;
+                case "carbsLabel":
+                    ingredient.setCarbs(Float.parseFloat(tf.getText()));
+                    break;
+                case "fatLabel":
+                    ingredient.setFat(Float.parseFloat(tf.getText()));
+            }
+            server.updateIngredient(ingredient);
+            appViewCtrl.loadIngredients();
+        }
     }
 }
 
