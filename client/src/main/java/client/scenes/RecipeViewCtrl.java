@@ -1,21 +1,17 @@
 package client.scenes;
 
 import client.MyFXML;
-import client.utils.FavoritesManager;
+import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
 import commons.Recipe;
-import commons.Unit;
 import commons.RecipeIngredient;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
@@ -25,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class RecipeViewCtrl {
 
@@ -64,6 +61,7 @@ public class RecipeViewCtrl {
     private List<RecipeIngredient> ingredients;
     private final AppViewCtrl appViewCtrl;
     private final FavoritesManager favoritesManager;
+    private final ShoppingListService shoppingListService;
 
     private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
     private int baseServings;
@@ -78,12 +76,14 @@ public class RecipeViewCtrl {
     public RecipeViewCtrl(ServerUtils server,
                           MainCtrl mainCtrl,
                           Printer printer,
-                          FavoritesManager favoritesManager) {
+                          FavoritesManager favoritesManager,
+                          ShoppingListService shoppingListService) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.favoritesManager = favoritesManager;
+        this.shoppingListService = shoppingListService;
     }
 
     /**
@@ -446,6 +446,22 @@ public class RecipeViewCtrl {
         targetServings = baseServings;
         setServingsField(targetServings);
         rerenderIngredientsScaled();
+    }
+
+    /**
+     * called when the user clicks the Shop button
+     */
+    @FXML
+    public void addToShoppingList(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Adding to shopping list");
+        alert.setHeaderText("You are about to add the ingredients for " + targetServings + " servings of "
+                + recipe.getName() + " to the shopping list.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            this.shoppingListService.addIngredients(server.getRecipeIngredients(this.recipe.getId()),
+                    targetServings/baseServings);
+        }
     }
 }
 

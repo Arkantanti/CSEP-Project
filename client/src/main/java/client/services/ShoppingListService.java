@@ -57,19 +57,14 @@ public class ShoppingListService {
      */
     public void addIngredients(List<RecipeIngredient> ingredients, double amount){
         for (RecipeIngredient i : ingredients) {
-            if (i.getUnit() == Unit.CUSTOM) {
+            if (i.getUnit() == Unit.CUSTOM && i.getInformalUnit() != null) {
                 String v = i.getInformalUnit();
-                try {
-                    double d = Double.parseDouble(v.trim());
-                    v = String.valueOf(d * amount);
-                }
-                catch (Exception _) {}
                 config.getShoppingList().add(new RecipeIngredient(null, i.getIngredient(),
-                        v, 0.0, Unit.CUSTOM));
+                        v + "x"+amount, 0.0, Unit.CUSTOM));
             }
             else{
                 config.getShoppingList().add(new RecipeIngredient(null, i.getIngredient(),
-                        "", amount*i.getAmount(), i.getUnit()));
+                        null, amount*i.getAmount(), i.getUnit()));
                 // TODO: merge similar items in the shopping list?
             }
         }
