@@ -5,6 +5,7 @@ import client.utils.FavoritesManager;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
+import commons.Ingredient;
 import commons.Recipe;
 import commons.Unit;
 import commons.RecipeIngredient;
@@ -52,6 +53,8 @@ public class RecipeViewCtrl {
     private Button resetServingsButton;
     @FXML
     private Button favoriteButton;
+    @FXML
+    private Label caloriesDisplay;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -121,6 +124,7 @@ public class RecipeViewCtrl {
         loadPreparationSteps(recipe.getPreparationSteps());
         updateFavoriteButton();
         rerenderIngredientsScaled();
+        updateCaloriesDisplay();
     }
 
     /**
@@ -219,6 +223,7 @@ public class RecipeViewCtrl {
 
             ingredientsContainer.getChildren().add(item.getValue());
         }
+        updateCaloriesDisplay();
     }
 
     /**
@@ -304,6 +309,7 @@ public class RecipeViewCtrl {
         item.getKey().initialize(null, recipe, this::loadIngredients);
         ingredientsContainer.getChildren().add(item.getValue());
         item.getKey().startEditingFromCtrl();
+        updateCaloriesDisplay();
     }
 
     /**
@@ -418,6 +424,7 @@ public class RecipeViewCtrl {
         for (RecipeIngredientCtrl ctrl : ingredientRowCtrls) {
             ctrl.applyScaleFactor(factor);
         }
+        updateCaloriesDisplay();
     }
 
     /**
@@ -431,6 +438,50 @@ public class RecipeViewCtrl {
         setServingsField(targetServings);
         rerenderIngredientsScaled();
     }
+
+    //calories display
+
+    /**
+     *
+     */
+    private void updateCaloriesDisplay(){
+        StringBuilder textToDisplay = new StringBuilder();
+        textToDisplay.append((int)calculateCaloriesForRecipe());
+        textToDisplay.append(" kcal/100g");
+        caloriesDisplay.setText(textToDisplay.toString());
+    }
+
+    /**
+     *
+     * @return
+     */
+    private double calculateCaloriesForRecipe(){
+        double factor = (baseServings <= 0) ? 1.0 : (double) targetServings / baseServings;
+
+        double totalCalories = 0;
+        double totalMass = 0;
+        for(RecipeIngredient ri: ingredients){
+            if(ri == null) continue;
+            if(ri.getIngredient() == null) continue;
+
+            //String informal = ri.getInformalUnit();
+            if (ri.getUnit() == Unit.CUSTOM) continue;
+
+            double amount = ri.getAmount();
+            Ingredient ingredient = ri.getIngredient();
+            totalCalories +=
+                    ri.getUnit() == Unit.GRAM ?
+                            ingredient.calculateCalories()*amount : ingredient.calculateCalories()*amount*10;
+            totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*10;
+
+
+        }
+        if(totalMass <= 0.0) return 0.0;
+        return factor*totalCalories/totalMass;
+    }
+
+
+
 }
 
 
