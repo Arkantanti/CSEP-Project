@@ -126,7 +126,7 @@ public class  IngredientViewCtrl {
             if (ingredient != null) {
                 ingredient.setName(newName);
                 server.updateIngredient(ingredient);
-                appViewCtrl.loadRecipes();
+                appViewCtrl.loadIngredients();
             }
         }
 
