@@ -442,7 +442,7 @@ public class RecipeViewCtrl {
     //calories display
 
     /**
-     *
+     * Updates the calories display based on the database's list of ingredients
      */
     private void updateCaloriesDisplay(){
         StringBuilder textToDisplay = new StringBuilder();
@@ -452,8 +452,9 @@ public class RecipeViewCtrl {
     }
 
     /**
-     *
-     * @return
+     * Logic for calculating the amount of calories for this Recipe.
+     * This logic assumes that 1g = 1mL.
+     * @return amount of calories or 0.0 in case of invalid ingredient's mass
      */
     private double calculateCaloriesForRecipe(){
         double factor = (baseServings <= 0) ? 1.0 : (double) targetServings / baseServings;
