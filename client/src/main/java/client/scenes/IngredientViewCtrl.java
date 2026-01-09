@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.UnaryOperator;
 
 public class  IngredientViewCtrl {
@@ -99,16 +100,13 @@ public class  IngredientViewCtrl {
         this.ingredient = ingredient;
         if (ingredient != null) {
             nameLabel.setText(ingredient.getName());
-            fatLabel.setText(String.format("%.2f",ingredient.getFat()));
-            proteinLabel.setText(String.format("%.2f",ingredient.getProtein()));
-            carbsLabel.setText(String.format("%.2f",ingredient.getCarbs()));
+            fatLabel.setText(String.format(Locale.US, "%.2f", ingredient.getFat()));
+            proteinLabel.setText(String.format(Locale.US, "%.2f", ingredient.getProtein()));
+            carbsLabel.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
             kcalLabel.setText("TODO");
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
         }
-
-
     }
-
 
     /**
      * Handles the edit button click for the ingredient name.
