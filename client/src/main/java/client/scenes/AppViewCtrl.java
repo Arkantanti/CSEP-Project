@@ -17,6 +17,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.input.KeyCode;
 
 import java.net.URL;
 import java.util.Comparator;
@@ -112,6 +113,12 @@ public class AppViewCtrl implements Initializable {
         favoritesButton.setOnAction(e -> loadFavorites());
 
         if (searchField != null) {
+            searchField.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    searchField.clear();
+                    itemsList.requestFocus();
+                }
+            });
             searchField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null || newValue.isBlank()) {
                     loadRecipes();
