@@ -36,6 +36,7 @@ public class  IngredientViewCtrl {
     private boolean editing = false;
     private Ingredient ingredient;
     private final AppViewCtrl appViewCtrl;
+    private final MainCtrl mainCtrl;
 
     /**
      * Constructor for IngredientViewCtrl.
@@ -46,6 +47,7 @@ public class  IngredientViewCtrl {
     public IngredientViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
+        this.mainCtrl = mainCtrl;
     }
 
     /**
@@ -139,6 +141,20 @@ public class  IngredientViewCtrl {
         titleEditButton.setText("✏");
         titleEditButton.setTextFill(Color.web("#1e00ff"));
     }
+    /**
+     * Uses ServerUtils to delete an ingredient.
+     */
+    public void deleteIngredient(){
+        try{
+            server.deleteIngredient(this.ingredient.getId());
+            appViewCtrl.loadRecipes();
+        } catch (Exception e){
+            System.out.println("something went wrong.");
+        }
+        mainCtrl.showDefaultView();
+    }
 }
+
+
 
 

@@ -335,4 +335,25 @@ public class ServerUtils {
         }
     }
 
+    /**
+     * Deletes the specified ingredient.
+     * @param id the id of the ingredient to delete.
+     * @throws IllegalArgumentException if id is invalid.
+     */
+    public Response deleteIngredient(long id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("Ingredient to update must have a valid ID");
+        }
+
+        try {
+            return this.client
+                    .target(serverURL)
+                    .path("api/ingredients/" + id)
+                    .request(APPLICATION_JSON)
+                    .delete();
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
+
 }
