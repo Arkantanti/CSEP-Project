@@ -19,13 +19,11 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 
 import client.config.Config;
 import client.config.ConfigManager;
-import client.scenes.AppViewCtrl;
 import com.google.inject.Injector;
 
 import client.scenes.MainCtrl;
@@ -83,12 +81,11 @@ public class Main extends Application {
         try {
             List<Long> removedIds = favoritesManager.validate();
             if (!removedIds.isEmpty()) {
-                // Show the user the recipes that were removed in their absence
+                // Show the user the number of recipes that were removed in their absence.
                 Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Deleted Favorite Recipes");
-                    alert.setHeaderText("The following recipes were deleted from your favorites because they no longer exist:");
-                    alert.setContentText(removedIds.stream().map(id -> serverUtils.getRecipeById(id).getName()).collect(Collectors.joining(", ")));
+                    alert.setContentText("Number of deleted recipes: " + removedIds.size());
                     alert.showAndWait();
                 });
             }
@@ -97,6 +94,12 @@ public class Main extends Application {
         }
 
         var mainCtrl = injector.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, fxml);
+        mainCtrl.initialize(primaryStage, fxml, favoritesManager);
+
+        // Shutdown handler to clean up polling service or additional thread services that will be implementend in the future.
+        primaryStage.setOnCloseRequest(event -> {
+            mainCtrl.shutdown();
+            Platform.exit();
+        });
     }
 }
