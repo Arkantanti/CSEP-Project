@@ -10,7 +10,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.paint.Color;
+import javafx.util.converter.DoubleStringConverter;
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.UnaryOperator;
 
 public class  IngredientViewCtrl {
 
@@ -21,11 +28,11 @@ public class  IngredientViewCtrl {
     @FXML
     private Label nameLabel;
     @FXML
-    private Label fatLabel;
+    private TextField fatLabel;
     @FXML
-    private Label proteinLabel;
+    private TextField proteinLabel;
     @FXML
-    private Label carbsLabel;
+    private TextField carbsLabel;
     @FXML
     private Label usedCountLabel;
     @FXML
@@ -59,6 +66,24 @@ public class  IngredientViewCtrl {
         // default state is label with text
         nameTextField.setVisible(false);
         nameTextField.setManaged(false);
+        List<TextField> fields = List.of(proteinLabel,carbsLabel,fatLabel);
+
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+            return newText.matches("(\\d+)?(\\.\\d*)?") ? change : null;
+        };
+
+
+
+        for (TextField tf : fields) {
+            TextFormatter<Double> formatter =
+                    new TextFormatter<>(new DoubleStringConverter(), null, filter);
+            tf.setTextFormatter(formatter);
+            tf.focusedProperty().addListener((obs, was, focused) -> {
+                if (!focused) this.onStopEditing(tf);
+            });
+            tf.setOnAction(e -> this.onStopEditing(tf));
+        }
     }
 
     /**
@@ -78,6 +103,8 @@ public class  IngredientViewCtrl {
             kcalLabel.setText("TODO");
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
         }
+
+
     }
 
 
@@ -147,11 +174,19 @@ public class  IngredientViewCtrl {
     public void deleteIngredient(){
         try{
             server.deleteIngredient(this.ingredient.getId());
-            appViewCtrl.loadRecipes();
+            appViewCtrl.loadIngredients();
         } catch (Exception e){
             System.out.println("something went wrong.");
         }
         mainCtrl.showDefaultView();
+    }
+
+    /**
+     * Function that deals with the end of editing of a textField
+     * @param tf TextField reference.
+     */
+    public void onStopEditing(TextField tf) {
+
     }
 }
 
