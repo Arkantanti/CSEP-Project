@@ -22,8 +22,11 @@ import client.scenes.AppViewCtrl;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
-import client.services.RecipeService;
-import client.services.IngredientService;
+
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import org.glassfish.jersey.client.ClientConfig;
+
 import client.scenes.MainCtrl;
 
 public class MyModule implements Module {
@@ -37,12 +40,9 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(AppViewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(Config.class).toInstance(config);
         binder.bind(Printer.class).in(Scopes.SINGLETON);
         binder.bind(FavoritesManager.class).in(Scopes.SINGLETON);
-        binder.bind(RecipeService.class).in(Scopes.SINGLETON);
-        binder.bind(IngredientService.class).in(Scopes.SINGLETON);
-
+        binder.bind(Client.class).toInstance(ClientBuilder.newClient(new ClientConfig()));
     }
 }
