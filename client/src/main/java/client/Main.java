@@ -24,9 +24,9 @@ import java.nio.file.Path;
 
 import client.config.Config;
 import client.config.ConfigManager;
-import client.scenes.AppViewCtrl;
 import com.google.inject.Injector;
 
+import client.scenes.AppViewCtrl;
 import client.scenes.MainCtrl;
 import client.utils.FavoritesManager;
 import client.utils.ServerUtils;
