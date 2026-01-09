@@ -127,21 +127,36 @@ public class EditableItemCtrl {
 
     /**
      * Turns {@code textField} into {@code textLabel} and set {@code editButton}
-     *  into an edit character instead of check character.
-     *  Checks whether the new item contains text otherwise the new item is removed
-     *  */
+     * into an edit character instead of check character.
+     * Checks whether the new item contains text otherwise the new item is removed
+     * */
     private void finishEditing() {
-        editing = false;
-        labelText = textField.getText();
+        // 1. Get the current text from the input field
+        String newText = textField.getText();
 
-        // validation logic for new item
-        if (newItem && (labelText == null || labelText.isBlank())) {
+        // 2. Validation for NEW items: If empty, remove the item (cancel creation)
+        if (newItem && (newText == null || newText.isBlank())) {
+            editing = false; // Stop editing state
             if (parentList != null && listIndex >= 0 && listIndex < parentList.size()) {
                 parentList.remove(listIndex);
             }
             if (onChange != null) onChange.run();
-            return; // return out of method because no or invalid input
+            return;
         }
+
+        // 3. Validation for EXISTING items: If empty, BLOCK the save
+        if (newText == null || newText.isBlank()) {
+            // Apply red border to indicate error
+            textField.setStyle("-fx-text-box-border: red; -fx-focus-color: red;");
+            // Return immediately to keep the user in edit mode (editing remains true)
+            return;
+        }
+
+        // 4. Valid Input: Proceed to save
+        editing = false; // Now we can safely exit edit mode
+        textField.setStyle(""); // Reset any error styles
+
+        labelText = newText; // Update the internal field
 
         if (parentList != null && listIndex >= 0 && listIndex < parentList.size()) {
             parentList.set(listIndex, labelText);
@@ -163,7 +178,6 @@ public class EditableItemCtrl {
 
         if (onChange != null) onChange.run();
     }
-
     /**
      * Initiate editing mode from parent controller class
      */

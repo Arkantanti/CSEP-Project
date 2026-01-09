@@ -72,6 +72,35 @@ class ServerUtilsTest {
     }
 
     @Test
+    void getRecipeById_success() {
+        Recipe expected = new Recipe("Test Recipe", 2, List.of());
+        expected.setId(123L);
+
+        // Mock the chain of calls: client -> target -> path -> request -> get -> response
+        when(target.path("api/recipes/123")).thenReturn(target);
+        when(builder.get()).thenReturn(response);
+        when(response.getStatus()).thenReturn(200);
+        when(response.readEntity(Recipe.class)).thenReturn(expected);
+
+        Recipe result = sut.getRecipeById(123L);
+
+        assertNotNull(result);
+        assertEquals(123L, result.getId());
+        assertEquals("Test Recipe", result.getName());
+    }
+
+    @Test
+    void getRecipeById_notFound() {
+        when(target.path("api/recipes/999")).thenReturn(target);
+        when(builder.get()).thenReturn(response);
+        when(response.getStatus()).thenReturn(404);
+
+        Recipe result = sut.getRecipeById(999L);
+
+        assertNull(result);
+    }
+
+    @Test
     void searchRecipes_withQuery() {
         when(target.queryParam(anyString(), any())).thenReturn(target);
         when(builder.get(ArgumentMatchers.<GenericType<List<Recipe>>>any()))

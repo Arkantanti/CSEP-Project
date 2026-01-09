@@ -29,11 +29,9 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.Entity;
 
 import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.client.ClientBuilder;
 
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientConfig;
 
 /**
  * Utility class for communicating with the server via REST.
@@ -46,25 +44,15 @@ public class ServerUtils {
     /**
      * Constructor for the ServerUtils class.
      * @param cfg Client config object. Injected with Guice.
+     * @param client the Client to use for requests. Injected with Guice.
      */
     @Inject
-    public ServerUtils(Config cfg) {
-        // EXISTING Constructor
-        // Guice uses this one.
-        serverURL = cfg.getServerUrl();
-        this.client = ClientBuilder.newClient(new ClientConfig());
-    }
-
-    /**
-     * NEW Constructor (For Testing Only)
-     * We remove @Inject so Guice ignores it. We use this in your Test class.
-     * @param cfg Client config object. Injected with Guice.
-     * @param client the fictional client we use for testing
-     */
     public ServerUtils(Config cfg, Client client) {
         this.serverURL = cfg.getServerUrl();
         this.client = client;
     }
+
+
 
     /**
      * Retrieves a list of all recipes from the server.
@@ -101,7 +89,7 @@ public class ServerUtils {
      */
     public Recipe getRecipeById(long id) {
         try {
-            Response response = ClientBuilder.newClient(new ClientConfig())
+            Response response = this.client
                     .target(serverURL).path("api/recipes/" + id)
                     .request(APPLICATION_JSON)
                     .get();
