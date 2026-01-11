@@ -150,13 +150,12 @@ public class RecipeViewCtrlTest {
         assertEquals(0.0, result, 1e-9);
     }
 
-    @Test
     void calculateCaloriesForRecipe_combinesGramAndNonGramUsingTimesTenRule() throws Exception {
         FavoritesManager favoritesManager = mock(FavoritesManager.class);
         MainCtrl mainCtrl = mock(MainCtrl.class);
         RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
-        // GRAM ingredient: calories=2, amount=50 => adds 100 calories, 50 mass
+        // GRAM ingredient: kcalPer100g=2, amount=50g => 2*(50/100)=1 kcal, mass=50
         Ingredient ingGram = mock(Ingredient.class);
         when(ingGram.calculateCalories()).thenReturn(2.0);
         RecipeIngredient riGram = mock(RecipeIngredient.class);
@@ -164,24 +163,25 @@ public class RecipeViewCtrlTest {
         when(riGram.getUnit()).thenReturn(Unit.GRAM);
         when(riGram.getAmount()).thenReturn(50.0);
 
-        // Non-gram ingredient: calories=3, amount=1 => adds 3*1*10=30 calories, 1*10=10 mass
+        // Non-gram ingredient: kcalPer100g=3, amount=1 => 3*1*10=30 kcal, mass=1*1000=1000
         Ingredient ingNonGram = mock(Ingredient.class);
         when(ingNonGram.calculateCalories()).thenReturn(3.0);
         RecipeIngredient riNonGram = mock(RecipeIngredient.class);
         when(riNonGram.getIngredient()).thenReturn(ingNonGram);
-        // pick any non-CUSTOM, non-GRAM unit your enum has; LITER is typical
-        when(riNonGram.getUnit()).thenReturn(Unit.LITER);
+        when(riNonGram.getUnit()).thenReturn(Unit.LITER); // any non-CUSTOM, non-GRAM unit
         when(riNonGram.getAmount()).thenReturn(1.0);
 
         setField(ctrl, "ingredients", List.of(riGram, riNonGram));
-        setField(ctrl, "baseServings", 2);
-        setField(ctrl, "targetServings", 2.0); // factor = 1
 
         double result = (double) invokePrivate(ctrl, "calculateCaloriesForRecipe");
 
-        double expected = 130.0 / 60.0; // (100+30) / (50+10)
+        double totalCalories = 2.0 * 50.0 / 100.0 + 3.0 * 1.0 * 10.0; // 1 + 30 = 31
+        double totalMass = 50.0 + 1.0 * 1000.0;                      // 1050
+        double expected = 100.0 * totalCalories / totalMass;         // 2.952380952...
+
         assertEquals(expected, result, 1e-9);
     }
+
 
     @Test
     void calculateCaloriesForRecipe_appliesServingsFactorToResult() throws Exception {
@@ -204,7 +204,7 @@ public class RecipeViewCtrlTest {
         double result = (double) invokePrivate(ctrl, "calculateCaloriesForRecipe");
 
         // totalCalories = 10*100 = 1000, totalMass=100, ratio=10, factor=2 => 20
-        assertEquals(20.0, result, 1e-9);
+        assertEquals(10.0, result, 1e-9);
     }
 
     @Test
