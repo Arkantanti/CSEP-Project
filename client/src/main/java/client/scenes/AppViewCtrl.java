@@ -17,6 +17,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.input.KeyCode;
+import java.util.stream.Collectors;
+
 
 import java.net.URL;
 import java.util.Comparator;
@@ -29,6 +32,13 @@ public class AppViewCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final FavoritesManager favoritesManager;
+    private enum ViewMode {
+        RECIPES,
+        FAVORITES,
+        INGREDIENTS
+    }
+
+    private ViewMode currentView = ViewMode.RECIPES;
 
     @FXML
     private javafx.scene.control.TextField searchField;
@@ -58,6 +68,7 @@ public class AppViewCtrl implements Initializable {
 
     @FXML
     private HBox overListHBox;
+
 
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
@@ -105,22 +116,46 @@ public class AppViewCtrl implements Initializable {
 
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
 
-        refreshButton.setOnAction(e -> loadRecipes());
-
         recipesButton.setOnAction(e -> loadRecipes());
 
         favoritesButton.setOnAction(e -> loadFavorites());
 
         if (searchField != null) {
+            searchField.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    searchField.clear();
+                    itemsList.requestFocus();
+                }
+            });
             searchField.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null || newValue.isBlank()) {
-                    loadRecipes();
+                    if (currentView == ViewMode.FAVORITES) {
+                        loadFavorites();
+                    } else {
+                        loadRecipes();
+                    }
                 } else {
-                    searchRecipes(newValue);
+                    if (currentView == ViewMode.FAVORITES) {
+                        searchFavorites(newValue);
+                    } else {
+                        searchRecipes(newValue);
+                    }
                 }
             });
         }
         loadRecipes();
+    }
+
+    /**
+     * Runs when the refresh button is clicked. Either refreshes the ingredients or refreshes the
+     * recipes.
+     */
+    public void refresh() {
+        switch(currentView) {
+            case RECIPES: loadRecipes(); break;
+            case FAVORITES: loadFavorites(); break;
+            case INGREDIENTS: loadIngredients(); break;
+        }
     }
 
     /**
@@ -140,6 +175,7 @@ public class AppViewCtrl implements Initializable {
      * is unreachable, an error alert is displayed to the user.
      */
     public void loadRecipes() {
+        currentView = ViewMode.RECIPES;
         overListHBox.setVisible(true);
         overListHBox.setManaged(true);
         try {
@@ -195,6 +231,7 @@ public class AppViewCtrl implements Initializable {
      * is unreachable, an error alert is displayed to the user.
      */
     public void loadIngredients() {
+        currentView = ViewMode.INGREDIENTS;
         overListHBox.setVisible(false);
         overListHBox.setManaged(false);
         try {
@@ -222,6 +259,7 @@ public class AppViewCtrl implements Initializable {
      * Loads list of favorite recipes and displays in the list view.
      */
     public void loadFavorites() {
+        currentView = ViewMode.FAVORITES;
         try {
             List<Recipe> allRecipes = server.getRecipes();
             List<Recipe> favoriteRecipes = new ArrayList<>();
@@ -244,6 +282,30 @@ public class AppViewCtrl implements Initializable {
                 alert.setContentText("Check if the server is running.");
                 alert.showAndWait();
             });
+        }
+    }
+
+    /**
+     * Searches for recipes matching the query, then filters for favorites.
+     * @param query The text to search for
+     */
+    private void searchFavorites(String query) {
+        try {
+            // 1. Get matches from server (or all recipes if server search isn't preferred)
+            List<Recipe> searchResults = server.searchRecipes(query);
+
+            // 2. Filter these results to keep only favorites
+            List<Recipe> favoriteResults = searchResults.stream()
+                    .filter(r -> favoritesManager.isFavorite(r.getId()))
+                    .sorted(Comparator.comparing(Recipe::getName))
+                    .collect(Collectors.toList());
+
+            // 3. Update UI
+            Platform.runLater(() -> {
+                itemsList.setItems(FXCollections.observableArrayList(favoriteResults));
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

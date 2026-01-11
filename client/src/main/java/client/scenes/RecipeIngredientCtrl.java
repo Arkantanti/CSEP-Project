@@ -223,6 +223,10 @@ public class RecipeIngredientCtrl {
         defaultView.setManaged(true);
     }
 
+    public RecipeIngredient getRecipeIngredient() {
+        return recipeIngredient;
+    }
+
     /**
      * called when creating a new RecipeIngredient from clicking the +
      */

@@ -2,12 +2,10 @@ package client.scenes;
 
 import client.MyFXML;
 import client.utils.FavoritesManager;
-import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
 import commons.Ingredient;
 import commons.Recipe;
-import commons.Unit;
 import commons.RecipeIngredient;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -47,6 +45,8 @@ public class RecipeViewCtrl {
     private Button printButton;
     @FXML
     private Button cloneButton;
+    @FXML
+    private Button deleteButton;
     @FXML
     private TextField servingsScalingInput;
     @FXML
@@ -340,6 +340,28 @@ public class RecipeViewCtrl {
     public void cloneRecipe(){
         mainCtrl.showAddRecipe();
         mainCtrl.getAddRecipeCtrl().clone(recipe);
+    }
+
+    /**
+     * this function will be used to delete recipes.
+     * Also checks whether the recipe is favorited and deletes it from favorites if it is.
+     */
+    public void deleteRecipe(){
+        try{
+            long recipeId = this.recipe.getId();
+            server.deleteRecipe(recipeId);
+            
+            // Remove from favorites if it was favorited
+            if (favoritesManager.isFavorite(recipeId)) {
+                favoritesManager.removeFavorite(recipeId);
+            }
+            
+            appViewCtrl.loadRecipes();
+        } catch (Exception e){
+            System.out.println("something went wrong.");
+        }
+        mainCtrl.showDefaultView();
+
     }
 
     /**
