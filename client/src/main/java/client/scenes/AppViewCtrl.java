@@ -123,16 +123,27 @@ public class AppViewCtrl implements Initializable {
      */
     private void setupSearch() {
         if (searchField != null) {
+            // Use the new refreshData() method which handles Services and ViewModes
             searchField.textProperty().addListener((obs, oldVal, newVal) -> refreshData());
 
             searchField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
                 if (event.getCode() == KeyCode.ESCAPE) {
                     searchField.clear();
-                    contentRoot.requestFocus();
+                    contentRoot.requestFocus(); // Remove focus
                     event.consume();
                 }
             });
         }
+    }
+
+    /**
+     * Refreshes the current view.
+     * <p>
+     * This method is added to maintain compatibility with the incoming changes (Theirs),
+     * but it delegates to the new {@link #refreshData()} method to use the Service layer.
+     */
+    public void refresh() {
+        refreshData();
     }
 
     /**
