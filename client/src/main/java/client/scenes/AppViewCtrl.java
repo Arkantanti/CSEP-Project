@@ -22,6 +22,17 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the main application view.
+ * <p>
+ * This controller acts as the central hub for the main scene. It manages:
+ * <ul>
+ * <li>The sidebar navigation between Recipes, Favorites, and Ingredients.</li>
+ * <li>The list of items displayed to the user.</li>
+ * <li>Search functionality (delegated to services).</li>
+ * <li>Switching the content area based on user interaction.</li>
+ * </ul>
+ */
 public class AppViewCtrl implements Initializable {
 
     private final MainCtrl mainCtrl;
@@ -29,10 +40,17 @@ public class AppViewCtrl implements Initializable {
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
 
-    // Enum to track the current view state
+    /**
+     * Enum to track the currently active view mode.
+     * This determines which data source is used (Recipes service vs Ingredients service)
+     * and how the search functionality behaves.
+     */
     private enum ViewMode {
+        /** Display all recipes. */
         RECIPES,
+        /** Display only favorite recipes. */
         FAVORITES,
+        /** Display all ingredients. */
         INGREDIENTS
     }
 
@@ -66,19 +84,28 @@ public class AppViewCtrl implements Initializable {
         this.ingredientService = ingredientService;
     }
 
+    /**
+     * Initializes the controller class. This method is automatically called
+     * after the FXML file has been loaded. It sets up the list cell factory,
+     * search listeners, and button actions.
+     *
+     * @param url            The location used to resolve relative paths for the root object.
+     * @param resourceBundle The resources used to localize the root object.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupListCellFactory();
         setupSearch();
 
+        // Button Actions (Preserving logic from "Theirs")
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
-        refreshButton.setOnAction(e -> refreshData());
+        refreshButton.setOnAction(e -> refresh()); // Calls the public refresh method
 
         recipesButton.setOnAction(e -> switchToMode(ViewMode.RECIPES));
         favoritesButton.setOnAction(e -> switchToMode(ViewMode.FAVORITES));
         ingredientsButton.setOnAction(e -> switchToMode(ViewMode.INGREDIENTS));
 
-        // Initial load default
+        // Set default view to Recipes
         switchToMode(ViewMode.RECIPES);
     }
 
@@ -98,6 +125,7 @@ public class AppViewCtrl implements Initializable {
                     setText(null);
                 } else {
                     String name = item.getName();
+                    // Add visual indicator for favorites
                     if (item instanceof Recipe && favoritesManager.isFavorite(((Recipe) item).getId())) {
                         name += " ★";
                     }
@@ -137,28 +165,28 @@ public class AppViewCtrl implements Initializable {
     }
 
     /**
-     * Refreshes the current view.
-     * <p>
-     * This method is added to maintain compatibility with the incoming changes (Theirs),
-     * but it delegates to the new {@link #refreshData()} method to use the Service layer.
-     */
-    public void refresh() {
-        refreshData();
-    }
-
-    /**
      * Switches the current view mode and updates the UI accordingly.
+     * Sets the content displayed in the content root area.
      *
      * @param mode The new {@link ViewMode} to switch to.
      */
     private void switchToMode(ViewMode mode) {
         this.currentMode = mode;
 
-        // Show/Hide recipe-specific buttons
+        // Show recipe-specific controls (like "Add Recipe") only when not in Ingredient mode
         boolean showRecipeControls = (mode != ViewMode.INGREDIENTS);
         overListHBox.setVisible(showRecipeControls);
         overListHBox.setManaged(showRecipeControls);
 
+        refreshData();
+    }
+
+    /**
+     * Refreshes the current view.
+     * <p>
+     * Delegates to {@link #refreshData()}. Added for compatibility with other controllers.
+     */
+    public void refresh() {
         refreshData();
     }
 
@@ -199,7 +227,7 @@ public class AppViewCtrl implements Initializable {
         }
     }
 
-    // --- Public Adapter Methods (to keep compatibility with other controllers) ---
+    // --- Public Adapter Methods (Required by MainCtrl or other scenes) ---
 
     /**
      * Switches the view to display all recipes.

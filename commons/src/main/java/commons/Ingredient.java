@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
@@ -77,6 +78,8 @@ public class Ingredient implements Showable{
         return carbs;
     }
 
+    public List<RecipeIngredient> getRecipeIngredients() {return recipeIngredients;}
+
     public void setId(long id) { this.id = id;}
 
     public void setName(String name){
@@ -93,6 +96,10 @@ public class Ingredient implements Showable{
 
     public void setCarbs(double carbs){
         this.carbs = carbs;
+    }
+
+    public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients){
+        this.recipeIngredients = recipeIngredients;
     }
 
     @Override

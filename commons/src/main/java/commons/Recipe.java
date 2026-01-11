@@ -54,8 +54,6 @@ public class Recipe implements Showable{
         this.preparationSteps = preparationSteps;
     }
 
-
-
     public long getId() {
         return id;
     }
@@ -72,6 +70,8 @@ public class Recipe implements Showable{
         return preparationSteps;
     }
 
+    public List<RecipeIngredient> getRecipeIngredients() {return recipeIngredients;}
+
     public void setName(String name){ this.name = name;}
 
     public void setId(Long id){ this.id = id;}
@@ -80,6 +80,10 @@ public class Recipe implements Showable{
 
     public void setPreparationSteps(List<String> preparationSteps) {
         this.preparationSteps = preparationSteps;
+    }
+
+    public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
+        this.recipeIngredients = recipeIngredients;
     }
 
     /**

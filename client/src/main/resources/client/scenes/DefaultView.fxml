@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
     <content>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0" spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
             <children>
-                <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="520.0" styleClass="recipe-title-section">
-                    <children>
-                        <Label prefHeight="35.0" prefWidth="289.0" styleClass="recipe-title" text="Welcome to our food App." textAlignment="CENTER">
-                            <font>
-                                <Font size="24.0" />
-                            </font>
-                            <HBox.margin>
-                                <Insets left="10.0" top="5.0" />
-                            </HBox.margin>
-                        </Label>
-                    </children>
-                </HBox>
-                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0" spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
-                    <children>
-                        <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="170.0" prefWidth="520.0" styleClass="recipe-title-section">
-                            <children>
-                                <Label prefHeight="30.0" prefWidth="368.0" text="Press on a recipe or add a recipe the choise is yours" textAlignment="CENTER">
-                                    <font>
-                                        <Font size="16.0" />
-                                    </font>
-                                </Label>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
+            <AnchorPane prefHeight="340.0" prefWidth="200.0">
+               <children>
+                  <Label layoutX="39.0" layoutY="33.0" text="Use tabs to switch between Ingredients and Recipes views">
+                     <font>
+                        <Font name="Lucida Sans Demibold Italic" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="43.0" layoutY="296.0" text="You may also add new entries using the + button">
+                     <font>
+                        <Font name="Lucida Sans Demibold Italic" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="117.0" layoutY="170.0" text="Feel free to explore the contents from the list">
+                     <font>
+                        <Font name="Lucida Sans Demibold Italic" size="15.0" />
+                     </font>
+                  </Label>
+                  <Line endX="-103.29290771484375" endY="-0.18579864501953125" layoutX="128.0" layoutY="20.0" startX="-65.0" startY="4.399993896484375" />
+                  <Line endX="-47.0" endY="-11.892906188964844" layoutX="71.0" layoutY="31.0" startX="-38.20001220703125" startY="1.0000076293945312" />
+                  <Line endX="-112.4000244140625" endY="-4.799997329711914" layoutX="150.0" layoutY="16.0" startX="-126.0" startY="3.1070938110351562" />
+                  <Line endX="-14.4000244140625" endY="41.20001220703125" layoutX="120.0" layoutY="287.0" startX="-80.0" startY="49.800048828125" />
+                  <Line endX="-154.79998779296875" endY="-8.507080078125" layoutX="206.0" layoutY="336.0" startX="-167.5" startY="1.70001220703125" />
+                  <Line endX="-200.5999755859375" endY="13.800048828125" layoutX="251.0" layoutY="331.0" startX="-211.70709228515625" startY="6.5072021484375" />
+                  <Line endX="28.5999755859375" endY="26.79998779296875" layoutX="125.0" layoutY="134.0" startX="-85.0" startY="-2.800018310546875" />
+                  <Line endX="-104.4000244140625" endY="19.399993896484375" layoutX="154.0" layoutY="127.0" startX="-114.70709228515625" startY="3.49285888671875" />
+                  <Line endX="-131.0" endY="8.0" layoutX="187.0" layoutY="116.0" startX="-147.70709228515625" startY="14.49285888671875" />
+               </children>
+            </AnchorPane>
             </children>
         </VBox>
     </content>
