@@ -31,6 +31,8 @@ import client.scenes.MainCtrl;
 import client.utils.FavoritesManager;
 import client.utils.ServerUtils;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 /**
@@ -80,14 +82,25 @@ public class Main extends Application {
         try {
             List<Long> removedIds = favoritesManager.validate();
             if (!removedIds.isEmpty()) {
-                System.out.println("Removed " + removedIds.size() +
-                        " invalid favorite recipes from config.");
+                // Show the user the number of recipes that were removed in their absence.
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Deleted Favorite Recipes");
+                    alert.setContentText("Number of deleted recipes: " + removedIds.size());
+                    alert.showAndWait();
+                });
             }
         } catch (Exception e) {
             System.err.println("Failed to validate favorites: " + e.getMessage());
         }
 
         var mainCtrl = injector.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, fxml);
+        mainCtrl.initialize(primaryStage, fxml, favoritesManager);
+
+        // Shutdown handler to clean up polling service or additional thread services that will be implementend in the future.
+        primaryStage.setOnCloseRequest(event -> {
+            mainCtrl.shutdown();
+            Platform.exit();
+        });
     }
 }

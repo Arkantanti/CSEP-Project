@@ -6,6 +6,7 @@ import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
 import commons.Recipe;
+import commons.Unit;
 import commons.RecipeIngredient;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -340,10 +341,18 @@ public class RecipeViewCtrl {
 
     /**
      * this function will be used to delete recipes.
+     * Also checks whether the recipe is favorited and deletes it from favorites if it is.
      */
     public void deleteRecipe(){
         try{
-            server.deleteRecipe(this.recipe.getId());
+            long recipeId = this.recipe.getId();
+            server.deleteRecipe(recipeId);
+
+            // Remove from favorites if it was favorited
+            if (favoritesManager.isFavorite(recipeId)) {
+                favoritesManager.removeFavorite(recipeId);
+            }
+
             appViewCtrl.loadRecipes();
         } catch (Exception e){
             System.out.println("something went wrong.");

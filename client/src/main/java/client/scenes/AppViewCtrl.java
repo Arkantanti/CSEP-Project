@@ -69,6 +69,7 @@ public class AppViewCtrl implements Initializable {
     @FXML
     private HBox overListHBox;
 
+
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
      *
@@ -115,8 +116,6 @@ public class AppViewCtrl implements Initializable {
 
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
 
-        refreshButton.setOnAction(e -> loadRecipes());
-
         recipesButton.setOnAction(e -> loadRecipes());
 
         favoritesButton.setOnAction(e -> loadFavorites());
@@ -145,6 +144,18 @@ public class AppViewCtrl implements Initializable {
             });
         }
         loadRecipes();
+    }
+
+    /**
+     * Runs when the refresh button is clicked. Either refreshes the ingredients or refreshes the
+     * recipes.
+     */
+    public void refresh() {
+        switch(currentView) {
+            case RECIPES: loadRecipes(); break;
+            case FAVORITES: loadFavorites(); break;
+            case INGREDIENTS: loadIngredients(); break;
+        }
     }
 
     /**
