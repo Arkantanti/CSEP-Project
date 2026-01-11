@@ -115,6 +115,7 @@ public class IngredientController {
             return ResponseEntity.notFound().build();
         }
 
+        ing.setRecipeIngredients(repo.findById(id).get().getRecipeIngredients());
         ing.setId(id);
 
         Ingredient saved = repo.save(ing);
