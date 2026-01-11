@@ -26,7 +26,7 @@
                   <Font size="25.0" />
                </font>
             </Label>
-            <Button fx:id="refreshButton" mnemonicParsing="false" prefHeight="23.0" prefWidth="14.0" text="↺">
+            <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refresh" prefHeight="23.0" prefWidth="14.0" text="↺">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -39,8 +39,8 @@
          <children>
             <HBox prefHeight="51.0" prefWidth="187.0" spacing="5.0" styleClass="sidebar-actions">
                <children>
-                  <Button fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadRecipes" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="@../../styles/sidebar.css" text="Recipes" />
-                  <Button fx:id="ingredientsButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadIngredients" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="@../../styles/sidebar.css" text="Ingredients" />
+                  <Button fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadRecipes" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="Recipes" />
+                  <Button fx:id="ingredientsButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadIngredients" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="Ingredients" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

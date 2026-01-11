@@ -116,6 +116,7 @@ public class RecipeController {
             return ResponseEntity.notFound().build();
         }
 
+        recipe.setRecipeIngredients(repo.findById(id).get().getRecipeIngredients());
         recipe.setId(id);
 
         Recipe saved = repo.save(recipe);
