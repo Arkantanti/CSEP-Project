@@ -470,6 +470,16 @@ public class RecipeViewCtrl {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             this.shoppingListService.addIngredients(server.getRecipeIngredients(this.recipe.getId()),
                     targetServings/baseServings);
+            Alert notif = new Alert(Alert.AlertType.INFORMATION);
+            notif.setTitle("Success");
+            notif.setHeaderText("Success");
+            StringBuilder sb = new StringBuilder("Added:\n");
+            for (RecipeIngredient ri : server.getRecipeIngredients(this.recipe.getId())){
+                sb.append(ri.formatIngredientScaled(ri.getAmount()*targetServings/baseServings));
+                sb.append("\n");
+            }
+            notif.setContentText(sb.toString());
+            notif.show();
         }
     }
 }

@@ -63,9 +63,22 @@ public class ShoppingListService {
                         v + "x"+amount, 0.0, Unit.CUSTOM));
             }
             else{
-                config.getShoppingList().add(new RecipeIngredient(null, i.getIngredient(),
-                        null, amount*i.getAmount(), i.getUnit()));
-                // TODO: merge similar items in the shopping list?
+                boolean merged = false;
+                for (RecipeIngredient shoppingListIngredient : config.getShoppingList()){
+                    System.out.println(shoppingListIngredient);
+                    if (shoppingListIngredient.getUnit() != Unit.CUSTOM
+                            && shoppingListIngredient.getUnit() == i.getUnit()
+                            && shoppingListIngredient.getIngredient().getId() ==i.getIngredient().getId()) {
+                        shoppingListIngredient.setAmount(shoppingListIngredient.getAmount() + i.getAmount()*amount);
+                        merged = true;
+                        System.out.println("Merged!");
+                        break;
+                    }
+                }
+                if (!merged) {
+                    config.getShoppingList().add(new RecipeIngredient(null, i.getIngredient(),
+                            null, amount*i.getAmount(), i.getUnit()));
+                }
             }
         }
 
