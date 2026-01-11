@@ -73,7 +73,7 @@ public class  IngredientViewCtrl {
             fatLabel.setText(String.valueOf(ingredient.getFat()));
             proteinLabel.setText(String.valueOf(ingredient.getProtein()));
             carbsLabel.setText(String.valueOf(ingredient.getCarbs()));
-            kcalLabel.setText("TODO");
+            kcalLabel.setText(String.valueOf(ingredient.calculateCalories()));
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
         }
     }

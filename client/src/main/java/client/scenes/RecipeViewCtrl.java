@@ -444,7 +444,7 @@ public class RecipeViewCtrl {
     /**
      * Updates the calories display based on the database's list of ingredients
      */
-    private void updateCaloriesDisplay(){
+    protected void updateCaloriesDisplay(){
         StringBuilder textToDisplay = new StringBuilder();
         textToDisplay.append((int)calculateCaloriesForRecipe());
         textToDisplay.append(" kcal/100g");
@@ -457,8 +457,6 @@ public class RecipeViewCtrl {
      * @return amount of calories or 0.0 in case of invalid ingredient's mass
      */
     private double calculateCaloriesForRecipe(){
-        double factor = (baseServings <= 0) ? 1.0 : (double) targetServings / baseServings;
-
         double totalCalories = 0;
         double totalMass = 0;
         for(RecipeIngredient ri: ingredients){
@@ -472,13 +470,13 @@ public class RecipeViewCtrl {
             Ingredient ingredient = ri.getIngredient();
             totalCalories +=
                     ri.getUnit() == Unit.GRAM ?
-                            ingredient.calculateCalories()*amount : ingredient.calculateCalories()*amount*10;
-            totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*10;
+                            ingredient.calculateCalories()*amount/100 : ingredient.calculateCalories()*amount*10;
+            totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*1000;
 
 
         }
         if(totalMass <= 0.0) return 0.0;
-        return factor*totalCalories/totalMass;
+        return 100*totalCalories/totalMass;
     }
 
 
