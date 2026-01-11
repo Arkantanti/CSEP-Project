@@ -24,6 +24,10 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
 
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import org.glassfish.jersey.client.ClientConfig;
+
 import client.scenes.MainCtrl;
 
 public class MyModule implements Module {
@@ -41,5 +45,6 @@ public class MyModule implements Module {
         binder.bind(Printer.class).in(Scopes.SINGLETON);
         binder.bind(FavoritesManager.class).in(Scopes.SINGLETON);
         binder.bind(ShoppingListService.class).in(Scopes.SINGLETON);
+        binder.bind(Client.class).toInstance(ClientBuilder.newClient(new ClientConfig()));
     }
 }
