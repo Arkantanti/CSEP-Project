@@ -85,6 +85,12 @@ public class MainCtrl {
      * @param recipe the recipe to display
      */
     public void showRecipe(Recipe recipe) {
+        if (    (addRecipeCtrl != null) &&
+                !addRecipeCtrl.getIsSaved() &&
+                (addRecipeCtrl.getRecipe() != null)) {
+            addRecipeCtrl.deleter(addRecipeCtrl.getRecipe().getId());
+            addRecipeCtrl.setIsSavedTrue();
+        }
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
@@ -103,6 +109,12 @@ public class MainCtrl {
      * @param ingredient the recipe to display
      */
     public void showIngredient(Ingredient ingredient) {
+        if (    (addRecipeCtrl != null) &&
+                !addRecipeCtrl.getIsSaved() &&
+                (addRecipeCtrl.getRecipe() != null)) {
+            addRecipeCtrl.deleter(addRecipeCtrl.getRecipe().getId());
+            addRecipeCtrl.setIsSavedTrue();
+        }
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
@@ -119,6 +131,12 @@ public class MainCtrl {
      * The function to show the addRecipe fxml file
      */
     public void showAddRecipe() {
+        if (    (addRecipeCtrl != null) &&
+                !addRecipeCtrl.getIsSaved() &&
+                (addRecipeCtrl.getRecipe() != null)) {
+            addRecipeCtrl.deleter(addRecipeCtrl.getRecipe().getId());
+            addRecipeCtrl.setIsSavedTrue();
+        }
         Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class,
                 "client", "scenes", "AddRecipe.fxml");
         this.addRecipeCtrl = addRecipeView.getKey();
