@@ -16,6 +16,8 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.utils.FavoritesManager;
+import client.utils.FavoritesPollingService;
 import commons.Ingredient;
 import commons.Recipe;
 import javafx.scene.Parent;
@@ -39,14 +41,16 @@ public class MainCtrl {
 
     private MyFXML fxml;
     private boolean firstOpen;
+    private FavoritesPollingService pollingService;
 
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
      * @param primaryStage the primary stage of the application
      * @param fxml the FXML loader for loading views
+     * @param favoritesManager the manager for handling favorites
      */
-    public void initialize(Stage primaryStage, MyFXML fxml) {
+    public void initialize(Stage primaryStage, MyFXML fxml, FavoritesManager favoritesManager) {
 
 
         this.primaryStage = primaryStage;
@@ -56,6 +60,10 @@ public class MainCtrl {
         showAppView();
         primaryStage.show();
         showDefaultView();
+
+        pollingService = new FavoritesPollingService(favoritesManager);
+        pollingService.setMainCtrl(this);
+        pollingService.startPollingService();
     }
 
     /**
@@ -183,4 +191,27 @@ public class MainCtrl {
     }
 
     public AddRecipeCtrl getAddRecipeCtrl() {return addRecipeCtrl; }
+
+    /**
+     * Method to load recipes from the main controller so that the main controller acts as the main orchestrator.
+     * This method is also used by the PollingService to reload recipes trough the main controller.
+     */
+    public void reloadRecipes() {
+        if (appViewCtrl != null) {
+            appViewCtrl.loadRecipes();
+        } else {
+            System.out.println("Tried to reload recipes from the main controller, but app view controller was not initialized.");
+        }
+    }
+
+    /**
+     * Shuts down the polling service when the application closes.
+     */
+    public void shutdown() {
+        if (pollingService != null) {
+            pollingService.shutdown();
+        } else {
+            System.out.println("Tried to shutdown the polling service but it was not initialized.");
+        }
+    }
 }
