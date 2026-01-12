@@ -95,7 +95,6 @@ public class RecipeIngredientCtrl {
                 setText((empty || item == null) ? null : item.getName());
             }
         });
-
     }
 
     /**
@@ -196,6 +195,9 @@ public class RecipeIngredientCtrl {
             recipeIngredient.setIngredient(ingredient);
             serverUtils.updateRecipeIngredient(recipeIngredient);
         }
+
+        updateIngredientList.run();
+
         textLabel.setText(recipeIngredient.formatIngredient());
 
         editView.setVisible(false);

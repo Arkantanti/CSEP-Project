@@ -4,8 +4,12 @@ import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
+import commons.Ingredient;
 import commons.Recipe;
+import commons.RecipeIngredient;
+import commons.Unit;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Label;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -127,4 +131,107 @@ public class RecipeViewCtrlTest {
 
         assertTrue(thrown.getMessage().toLowerCase().contains("preparation"));
     }
+
+    @Test
+    void calculateCaloriesForRecipe_returnsZeroWhenTotalMassIsZero() throws Exception {
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
+        RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
+
+        // ingredients list where everything is CUSTOM -> ignored -> totalMass stays 0
+        RecipeIngredient ri = mock(RecipeIngredient.class);
+        when(ri.getUnit()).thenReturn(Unit.CUSTOM);
+        when(ri.getIngredient()).thenReturn(mock(Ingredient.class));
+        when(ri.getAmount()).thenReturn(123.0);
+
+        setField(ctrl, "ingredients", List.of(ri));
+        setField(ctrl, "baseServings", 2);
+        setField(ctrl, "targetServings", 2.0);
+
+        double result = (double) invokePrivate(ctrl, "calculateCaloriesForRecipe");
+        assertEquals(0.0, result, 1e-9);
+    }
+
+    void calculateCaloriesForRecipe_combinesGramAndNonGramUsingTimesTenRule() throws Exception {
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
+        RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
+
+        // GRAM ingredient: kcalPer100g=2, amount=50g => 2*(50/100)=1 kcal, mass=50
+        Ingredient ingGram = mock(Ingredient.class);
+        when(ingGram.calculateCalories()).thenReturn(2.0);
+        RecipeIngredient riGram = mock(RecipeIngredient.class);
+        when(riGram.getIngredient()).thenReturn(ingGram);
+        when(riGram.getUnit()).thenReturn(Unit.GRAM);
+        when(riGram.getAmount()).thenReturn(50.0);
+
+        // Non-gram ingredient: kcalPer100g=3, amount=1 => 3*1*10=30 kcal, mass=1*1000=1000
+        Ingredient ingNonGram = mock(Ingredient.class);
+        when(ingNonGram.calculateCalories()).thenReturn(3.0);
+        RecipeIngredient riNonGram = mock(RecipeIngredient.class);
+        when(riNonGram.getIngredient()).thenReturn(ingNonGram);
+        when(riNonGram.getUnit()).thenReturn(Unit.LITER); // any non-CUSTOM, non-GRAM unit
+        when(riNonGram.getAmount()).thenReturn(1.0);
+
+        setField(ctrl, "ingredients", List.of(riGram, riNonGram));
+
+        double result = (double) invokePrivate(ctrl, "calculateCaloriesForRecipe");
+
+        double totalCalories = 2.0 * 50.0 / 100.0 + 3.0 * 1.0 * 10.0; // 1 + 30 = 31
+        double totalMass = 50.0 + 1.0 * 1000.0;                      // 1050
+        double expected = 100.0 * totalCalories / totalMass;         // 2.952380952...
+
+        assertEquals(expected, result, 1e-9);
+    }
+
+
+    @Test
+    void calculateCaloriesForRecipe_appliesServingsFactorToResult() throws Exception {
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
+        RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
+
+        Ingredient ing = mock(Ingredient.class);
+        when(ing.calculateCalories()).thenReturn(10.0);
+
+        RecipeIngredient ri = mock(RecipeIngredient.class);
+        when(ri.getIngredient()).thenReturn(ing);
+        when(ri.getUnit()).thenReturn(Unit.GRAM);
+        when(ri.getAmount()).thenReturn(100.0);
+
+        setField(ctrl, "ingredients", List.of(ri));
+        setField(ctrl, "baseServings", 2);
+        setField(ctrl, "targetServings", 4.0); // factor = 2
+
+        double result = (double) invokePrivate(ctrl, "calculateCaloriesForRecipe");
+
+        // totalCalories = 10*100 = 1000, totalMass=100, ratio=10, factor=2 => 20
+        assertEquals(10.0, result, 1e-9);
+    }
+
+    @Test
+    void caloriesDisplay_format_matchesUpdateLogic_withoutJavaFxToolkit() throws Exception {
+        FavoritesManager favoritesManager = mock(FavoritesManager.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
+        RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
+
+        Ingredient ing = mock(Ingredient.class);
+        when(ing.calculateCalories()).thenReturn(1.0);
+
+        RecipeIngredient ri = mock(RecipeIngredient.class);
+        when(ri.getIngredient()).thenReturn(ing);
+        when(ri.getUnit()).thenReturn(Unit.GRAM);
+        when(ri.getAmount()).thenReturn(3.0); // totalCalories=3, totalMass=3 => 1.0
+
+        setField(ctrl, "ingredients", List.of(ri));
+        setField(ctrl, "baseServings", 1);
+        setField(ctrl, "targetServings", 1.0);
+
+        double kcalPer100g = (double) invokePrivate(ctrl, "calculateCaloriesForRecipe");
+
+        String text = ((int) kcalPer100g) + " kcal/100g";
+        assertEquals("1 kcal/100g", text);
+    }
+
+
 }

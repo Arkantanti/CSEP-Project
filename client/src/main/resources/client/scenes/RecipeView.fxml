@@ -139,6 +139,17 @@
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Button>
+                  <Label fx:id="caloriesDisplay" text="- kcal/100g" textAlignment="CENTER">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </Label>
                </children>
                <VBox.margin>
                   <Insets />

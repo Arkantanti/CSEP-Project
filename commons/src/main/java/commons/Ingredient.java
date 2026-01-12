@@ -116,4 +116,12 @@ public class Ingredient implements Showable{
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
+
+    /**
+     * Helper method for calculating the calories of Ingredient
+     * @return number of calories of 1g of this Ingredient
+     */
+    public double calculateCalories() {
+        return 9*getFat() +  4*getProtein() + 4*getCarbs();
+    }
 }
