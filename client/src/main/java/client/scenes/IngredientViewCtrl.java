@@ -183,9 +183,9 @@ public class  IngredientViewCtrl {
         if(tf.getText().isEmpty()) {
             tf.setText("0");
         } else {
-            float newValue = new BigDecimal(tf.getText())
+            double newValue = new BigDecimal(tf.getText())
                     .setScale(2, RoundingMode.HALF_UP)
-                    .floatValue();
+                    .doubleValue();
             switch(tf.getId()) {
                 case "proteinTf":
                     ingredient.setProtein(newValue);
