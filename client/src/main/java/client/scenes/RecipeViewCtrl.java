@@ -4,8 +4,10 @@ import client.MyFXML;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
+import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
+import commons.Unit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -52,6 +54,8 @@ public class RecipeViewCtrl {
     private Button resetServingsButton;
     @FXML
     private Button favoriteButton;
+    @FXML
+    private Label caloriesDisplay;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -121,6 +125,7 @@ public class RecipeViewCtrl {
         loadPreparationSteps(recipe.getPreparationSteps());
         updateFavoriteButton();
         rerenderIngredientsScaled();
+        updateCaloriesDisplay();
     }
 
     /**
@@ -219,6 +224,7 @@ public class RecipeViewCtrl {
 
             ingredientsContainer.getChildren().add(item.getValue());
         }
+        updateCaloriesDisplay();
     }
 
     /**
@@ -304,6 +310,7 @@ public class RecipeViewCtrl {
         item.getKey().initialize(null, recipe, this::loadIngredients);
         ingredientsContainer.getChildren().add(item.getValue());
         item.getKey().startEditingFromCtrl();
+        updateCaloriesDisplay();
     }
 
     /**
@@ -440,6 +447,7 @@ public class RecipeViewCtrl {
         for (RecipeIngredientCtrl ctrl : ingredientRowCtrls) {
             ctrl.applyScaleFactor(factor);
         }
+        updateCaloriesDisplay();
     }
 
     /**
@@ -453,6 +461,49 @@ public class RecipeViewCtrl {
         setServingsField(targetServings);
         rerenderIngredientsScaled();
     }
+
+    //calories display
+
+    /**
+     * Updates the calories display based on the database's list of ingredients
+     */
+    protected void updateCaloriesDisplay(){
+        StringBuilder textToDisplay = new StringBuilder();
+        textToDisplay.append((int)calculateCaloriesForRecipe());
+        textToDisplay.append(" kcal/100g");
+        caloriesDisplay.setText(textToDisplay.toString());
+    }
+
+    /**
+     * Logic for calculating the amount of calories for this Recipe.
+     * This logic assumes that 1g = 1mL.
+     * @return amount of calories or 0.0 in case of invalid ingredient's mass
+     */
+    private double calculateCaloriesForRecipe(){
+        double totalCalories = 0;
+        double totalMass = 0;
+        for(RecipeIngredient ri: ingredients){
+            if(ri == null) continue;
+            if(ri.getIngredient() == null) continue;
+
+            //String informal = ri.getInformalUnit();
+            if (ri.getUnit() == Unit.CUSTOM) continue;
+
+            double amount = ri.getAmount();
+            Ingredient ingredient = ri.getIngredient();
+            totalCalories +=
+                    ri.getUnit() == Unit.GRAM ?
+                            ingredient.calculateCalories()*amount/100 : ingredient.calculateCalories()*amount*10;
+            totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*1000;
+
+
+        }
+        if(totalMass <= 0.0) return 0.0;
+        return 100*totalCalories/totalMass;
+    }
+
+
+
 }
 
 

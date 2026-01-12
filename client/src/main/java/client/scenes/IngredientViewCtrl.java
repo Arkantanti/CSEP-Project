@@ -103,7 +103,7 @@ public class  IngredientViewCtrl {
             fatLabel.setText(String.format(Locale.US, "%.2f", ingredient.getFat()));
             proteinLabel.setText(String.format(Locale.US, "%.2f", ingredient.getProtein()));
             carbsLabel.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
-            kcalLabel.setText("TODO");
+            kcalLabel.setText(String.valueOf(ingredient.calculateCalories()));
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
         }
     }
