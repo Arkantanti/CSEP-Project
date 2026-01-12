@@ -35,9 +35,11 @@ import java.nio.file.Path;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage shoppingListStage;
 
     private AppViewCtrl appViewCtrl;
     private AddRecipeCtrl addRecipeCtrl;
+    private ShoppingListCtrl shoppingListCtrl;
 
     private MyFXML fxml;
     private boolean firstOpen;
@@ -180,13 +182,25 @@ public class MainCtrl {
      * Opens the shopping list window
      */
     public void openShoppingList(){
-        Pair<ShoppingListCtrl, Parent> shoppingListView = fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
-        Stage stage = new Stage();
-        stage.setTitle("Shopping List");
-        stage.setScene(new Scene(shoppingListView.getValue()));
-        stage.show();
+        if (shoppingListStage == null || shoppingListCtrl == null) {
+            Pair<ShoppingListCtrl, Parent> shoppingListView = fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
+            shoppingListStage = new Stage();
+            shoppingListStage.setTitle("Shopping List");
+            shoppingListStage.setScene(new Scene(shoppingListView.getValue()));
+            shoppingListCtrl = shoppingListView.getKey();
 
-        shoppingListView.getKey().initialize(fxml);
+            shoppingListCtrl.initialize(fxml);
+        }
+        shoppingListStage.show();
+        shoppingListStage.toFront();
+        reloadShoppingList();
+    }
+
+    /**
+     * called when adding new elements to the shopping list to reload it
+     */
+    public void reloadShoppingList(){
+        shoppingListCtrl.loadShoppingList();
     }
 
     /**

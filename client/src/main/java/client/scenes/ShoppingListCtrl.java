@@ -45,7 +45,7 @@ public class ShoppingListCtrl {
     /**
      * loads the shopping List
      */
-    private void loadShoppingList() {
+    public void loadShoppingList() {
         try {
             ConfigManager.save(config);
         }

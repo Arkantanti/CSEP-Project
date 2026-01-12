@@ -480,6 +480,7 @@ public class RecipeViewCtrl {
             }
             notif.setContentText(sb.toString());
             notif.show();
+            mainCtrl.reloadShoppingList();
         }
     }
 }

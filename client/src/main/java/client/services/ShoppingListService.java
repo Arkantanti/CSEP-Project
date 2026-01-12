@@ -65,13 +65,11 @@ public class ShoppingListService {
             else{
                 boolean merged = false;
                 for (RecipeIngredient shoppingListIngredient : config.getShoppingList()){
-                    System.out.println(shoppingListIngredient);
                     if (shoppingListIngredient.getUnit() != Unit.CUSTOM
                             && shoppingListIngredient.getUnit() == i.getUnit()
                             && shoppingListIngredient.getIngredient().getId() ==i.getIngredient().getId()) {
                         shoppingListIngredient.setAmount(shoppingListIngredient.getAmount() + i.getAmount()*amount);
                         merged = true;
-                        System.out.println("Merged!");
                         break;
                     }
                 }
