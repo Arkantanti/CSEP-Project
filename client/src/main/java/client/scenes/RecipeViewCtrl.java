@@ -469,7 +469,7 @@ public class RecipeViewCtrl {
      */
     protected void updateCaloriesDisplay(){
         StringBuilder textToDisplay = new StringBuilder();
-        textToDisplay.append((int)calculateCaloriesForRecipe());
+        textToDisplay.append((int) calculateCaloriesForRecipe());
         textToDisplay.append(" kcal/100g");
         caloriesDisplay.setText(textToDisplay.toString());
     }
@@ -493,10 +493,8 @@ public class RecipeViewCtrl {
             Ingredient ingredient = ri.getIngredient();
             totalCalories +=
                     ri.getUnit() == Unit.GRAM ?
-                            ingredient.calculateCalories()*amount/100 : ingredient.calculateCalories()*amount*10;
+                            ingredient.calculateCalories()*amount : ingredient.calculateCalories()*amount*1000;
             totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*1000;
-
-
         }
         if(totalMass <= 0.0) return 0.0;
         return 100*totalCalories/totalMass;

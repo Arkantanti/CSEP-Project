@@ -31,11 +31,11 @@ public class  IngredientViewCtrl {
     @FXML
     private Label nameLabel;
     @FXML
-    private TextField fatLabel;
+    private TextField fatTf;
     @FXML
-    private TextField proteinLabel;
+    private TextField proteinTf;
     @FXML
-    private TextField carbsLabel;
+    private TextField carbsTf;
     @FXML
     private Label usedCountLabel;
     @FXML
@@ -69,7 +69,7 @@ public class  IngredientViewCtrl {
         // default state is label with text
         nameTextField.setVisible(false);
         nameTextField.setManaged(false);
-        List<TextField> fields = List.of(proteinLabel,carbsLabel,fatLabel);
+        List<TextField> fields = List.of(proteinTf,carbsTf,fatTf);
 
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String newText = change.getControlNewText();
@@ -100,10 +100,10 @@ public class  IngredientViewCtrl {
         this.ingredient = ingredient;
         if (ingredient != null) {
             nameLabel.setText(ingredient.getName());
-            fatLabel.setText(String.format(Locale.US, "%.2f", ingredient.getFat()));
-            proteinLabel.setText(String.format(Locale.US, "%.2f", ingredient.getProtein()));
-            carbsLabel.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
-            kcalLabel.setText(String.valueOf(ingredient.calculateCalories()));
+            fatTf.setText(String.format(Locale.US, "%.2f", ingredient.getFat()));
+            proteinTf.setText(String.format(Locale.US, "%.2f", ingredient.getProtein()));
+            carbsTf.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
+            kcalLabel.setText(String.format(Locale.US, "%.0f kcal/100g",ingredient.calculateCalories()*100));
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
         }
     }
@@ -193,13 +193,13 @@ public class  IngredientViewCtrl {
                     .setScale(2, RoundingMode.HALF_UP)
                     .floatValue();
             switch(tf.getId()) {
-                case "proteinLabel":
+                case "proteinTf":
                     ingredient.setProtein(newValue);
                     break;
-                case "carbsLabel":
+                case "carbsTf":
                     ingredient.setCarbs(newValue);
                     break;
-                case "fatLabel":
+                case "fatTf":
                     ingredient.setFat(newValue);
             }
             server.updateIngredient(ingredient);
