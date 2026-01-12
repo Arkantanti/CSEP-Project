@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.services.RecipeService;
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Recipe;
@@ -29,6 +30,7 @@ public class AddRecipeCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final RecipeService recipeService;
 
     private MyFXML fxml;
 
@@ -57,6 +59,7 @@ public class AddRecipeCtrl {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
+        this.recipeService = appViewCtrl.getRecipeService();
     }
 
     /**
@@ -118,6 +121,11 @@ public class AddRecipeCtrl {
             String name = nameTextField.getText().trim();
             if (name.isBlank()) {
                 showError("Input Error", "Recipe name cannot be empty.");
+                return;
+            }
+
+            if(recipeNameChecker(recipeService.getAllRecipes(), name)){
+                showError("Used Name", "This recipe name is already in use, please choose another.");
                 return;
             }
 
@@ -379,7 +387,6 @@ public class AddRecipeCtrl {
 
     /**
      * function to make sure isSaved is true and random values do not get deleted.
-     * @param boo the value is saved is at now.
      */
     public void setIsSavedTrue(){
         this.isSaved = true;
@@ -391,5 +398,20 @@ public class AddRecipeCtrl {
      */
     public Recipe getRecipe(){
         return this.recipe;
+    }
+
+    /**
+     * function for checking if the name from the recipe is already in the list of all the recipes
+     * @param recipeList the list of all the recipes where the names need to be checked
+     * @param s the name of the recipe
+     * @return true or false depending on if the list contains the recipe name
+     */
+    public boolean recipeNameChecker(List<Recipe> recipeList, String s){
+        for(Recipe recipeName : recipeList){
+            if(recipeName.getName().equals(s)){
+                return true;
+            }
+        }
+        return false;
     }
 }
