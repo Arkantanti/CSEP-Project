@@ -12,3 +12,15 @@
 .info-label {
     -fx-font-size: 20px;
 }
+.add-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+    -fx-padding: 4 12;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.add-button:hover {
+    -fx-background-color: #45a049;
+}

@@ -1,11 +1,9 @@
 package client.scenes;
 
 import client.MyFXML;
-import client.utils.Printer;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
-import commons.Recipe;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,11 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.paint.Color;
 import javafx.util.converter.DoubleStringConverter;
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.UnaryOperator;
@@ -41,7 +37,6 @@ public class  IngredientViewCtrl {
     @FXML
     private Label kcalLabel;
 
-    private MyFXML fxml;
     private final ServerUtils server;
     private boolean editing = false;
     private Ingredient ingredient;
@@ -54,7 +49,7 @@ public class  IngredientViewCtrl {
      * @param server the server utility used for network communication
      */
     @Inject
-    public IngredientViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
+    public IngredientViewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.mainCtrl = mainCtrl;
@@ -96,7 +91,6 @@ public class  IngredientViewCtrl {
      * @param fxml the FXML loader
      */
     public void setIngredient(Ingredient ingredient, MyFXML fxml) {
-        this.fxml = fxml;
         this.ingredient = ingredient;
         if (ingredient != null) {
             nameLabel.setText(ingredient.getName());

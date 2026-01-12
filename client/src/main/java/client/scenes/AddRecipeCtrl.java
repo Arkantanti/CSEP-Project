@@ -379,7 +379,6 @@ public class AddRecipeCtrl {
 
     /**
      * function to make sure isSaved is true and random values do not get deleted.
-     * @param boo the value is saved is at now.
      */
     public void setIsSavedTrue(){
         this.isSaved = true;
