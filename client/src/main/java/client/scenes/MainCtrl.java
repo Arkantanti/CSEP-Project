@@ -23,6 +23,7 @@ import commons.Recipe;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -35,6 +36,7 @@ import java.nio.file.Path;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage secondaryStage;
 
     private AppViewCtrl appViewCtrl;
     private AddRecipeCtrl addRecipeCtrl;
@@ -134,7 +136,7 @@ public class MainCtrl {
     public void showAddIngredient() {
         Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
                 "client", "scenes", "AddIngredient.fxml");
-        addIngredientView.getKey().initialize();
+        addIngredientView.getKey().initialize(false);
         appViewCtrl.setContent(addIngredientView.getValue());
     }
 
@@ -241,6 +243,37 @@ public class MainCtrl {
             pollingService.shutdown();
         } else {
             System.out.println("Tried to shutdown the polling service but it was not initialized.");
+        }
+    }
+
+    /**
+     * Opens a new window with addIngredients view.
+     */
+    public Ingredient showAddIngredientsNewWindow() {
+        secondaryStage = new Stage();
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+                "client", "scenes", "AddIngredient.fxml");
+        AddIngredientCtrl addIngredientCtrl = addIngredientView.getKey();
+        addIngredientCtrl.initialize(true);
+        secondaryStage.setScene(new Scene(addIngredientView.getValue()));
+        secondaryStage.initModality(Modality.APPLICATION_MODAL);
+        secondaryStage.initOwner(primaryStage);
+        secondaryStage.showAndWait();
+
+        if(addIngredientCtrl.getIngredientSaved()) {
+            return addIngredientCtrl.getIngredient();
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * Closes the secondary stage.
+     */
+    public void closeAddIngredientWindow() {
+        if(secondaryStage != null) {
+            secondaryStage.close();
         }
     }
 }
