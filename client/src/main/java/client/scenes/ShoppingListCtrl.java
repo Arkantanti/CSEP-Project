@@ -3,18 +3,14 @@ package client.scenes;
 import client.MyFXML;
 import client.config.Config;
 import client.config.ConfigManager;
-import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Ingredient;
 import commons.RecipeIngredient;
-import commons.Unit;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ShoppingListCtrl {
@@ -49,7 +45,7 @@ public class ShoppingListCtrl {
     /**
      * loads the shopping List
      */
-    private void loadShoppingList() {
+    public void loadShoppingList() {
         try {
             ConfigManager.save(config);
         }
