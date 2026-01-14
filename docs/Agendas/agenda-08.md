@@ -68,6 +68,8 @@
   - Did the meeting follow schedule?
 
 - Question round (2 min)
-  - Discuss potential questions. 
+  - Testing coverage sufficient?
+  - Do we also get graded on how nice the application looks?
+  - Discuss further potential questions. 
   
 - Closure (1 min)
