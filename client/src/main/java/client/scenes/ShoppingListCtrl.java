@@ -1,16 +1,15 @@
 package client.scenes;
 
 import client.MyFXML;
-import client.config.Config;
-import client.config.ConfigManager;
+import client.services.ShoppingListService;
 import com.google.inject.Inject;
-import commons.RecipeIngredient;
+import client.model.ShoppingListItem;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
-
-import java.util.ArrayList;
 
 
 public class ShoppingListCtrl {
@@ -18,17 +17,33 @@ public class ShoppingListCtrl {
     @FXML
     private VBox ingredientListBox;
 
-    private final Config config;
+    @FXML
+    private Button addIngredientButton;
+
+    @FXML
+    private Button addTextButton;
+
+    @FXML
+    private HBox addModeToggle;
+
+    private enum AddMode {
+        INGREDIENT,
+        TEXT
+    }
+
+    private AddMode currentAddMode = AddMode.INGREDIENT;
+
+    private final ShoppingListService shoppingListService;
     private MyFXML fxml;
 
     /**
      * Constructor for ShoppingListCtrl.
      *
-     * @param config the config file to load/save shopping list ingredients
+     * @param shoppingListService the service for managing the shopping list
      */
     @Inject
-    public ShoppingListCtrl(Config config) {
-        this.config = config;
+    public ShoppingListCtrl(ShoppingListService shoppingListService) {
+        this.shoppingListService = shoppingListService;
     }
 
     /**
@@ -36,38 +51,62 @@ public class ShoppingListCtrl {
      */
     public void initialize(MyFXML fxml) {
         this.fxml = fxml;
-        if (config.getShoppingList() == null) {
-            this.config.setShoppingList(new ArrayList<>());
-        }
+        setupAddModeButtons();
         loadShoppingList();
+    }
+
+    /**
+     * Sets up the add mode toggle buttons
+     */
+    private void setupAddModeButtons() {
+        addIngredientButton.setOnAction(e -> switchAddMode(AddMode.INGREDIENT));
+        addTextButton.setOnAction(e -> switchAddMode(AddMode.TEXT));
+        updateAddModeButtons();
+    }
+
+    /**
+     * Switches the add mode and updates button appearance
+     */
+    private void switchAddMode(AddMode mode) {
+        currentAddMode = mode;
+        updateAddModeButtons();
+    }
+
+    /**
+     * Updates the visual state of the add mode toggle buttons
+     */
+    private void updateAddModeButtons() {
+        boolean ingredientMode = (currentAddMode == AddMode.INGREDIENT);
+        if (ingredientMode) {
+            addIngredientButton.getStyleClass().add("active");
+            addTextButton.getStyleClass().remove("active");
+        } else {
+            addTextButton.getStyleClass().add("active");
+            addIngredientButton.getStyleClass().remove("active");
+        }
     }
 
     /**
      * loads the shopping List
      */
     public void loadShoppingList() {
-        try {
-            ConfigManager.save(config);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
         ingredientListBox.getChildren().clear();
-        for (RecipeIngredient ri : this.config.getShoppingList()) {
-            Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class,
+        for (ShoppingListItem item : shoppingListService.getShoppingList()) {
+            Pair<ShoppingListElementCtrl, Parent> element = fxml.load(ShoppingListElementCtrl.class,
                     "client", "scenes", "ShoppingListElement.fxml");
-            item.getKey().initialize(ri, this::loadShoppingList);
-            ingredientListBox.getChildren().add(item.getValue());
+            element.getKey().initialize(item, this::loadShoppingList);
+            ingredientListBox.getChildren().add(element.getValue());
         }
     }
 
     /**
-     * called when the user presses the + button
+     * called when the user presses the add button
      */
     public void onAddShoppingListElement(){
         Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class,
                 "client", "scenes", "ShoppingListElement.fxml");
-        item.getKey().initialize(null, this::loadShoppingList);
+        boolean isTextMode = (currentAddMode == AddMode.TEXT);
+        item.getKey().initialize(null, this::loadShoppingList, isTextMode);
         ingredientListBox.getChildren().add(item.getValue());
         item.getKey().startEditingFromCtrl();
     }
@@ -76,7 +115,7 @@ public class ShoppingListCtrl {
      * clears the shopping list
      */
     public void clear(){
-        this.config.getShoppingList().clear();
+        shoppingListService.clear();
         loadShoppingList();
     }
 
