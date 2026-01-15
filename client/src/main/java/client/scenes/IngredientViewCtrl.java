@@ -1,11 +1,9 @@
 package client.scenes;
 
 import client.MyFXML;
-import client.utils.Printer;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
-import commons.Recipe;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,11 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.paint.Color;
 import javafx.util.converter.DoubleStringConverter;
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.UnaryOperator;
@@ -31,17 +27,16 @@ public class  IngredientViewCtrl {
     @FXML
     private Label nameLabel;
     @FXML
-    private TextField fatLabel;
+    private TextField fatTf;
     @FXML
-    private TextField proteinLabel;
+    private TextField proteinTf;
     @FXML
-    private TextField carbsLabel;
+    private TextField carbsTf;
     @FXML
     private Label usedCountLabel;
     @FXML
     private Label kcalLabel;
 
-    private MyFXML fxml;
     private final ServerUtils server;
     private boolean editing = false;
     private Ingredient ingredient;
@@ -54,7 +49,7 @@ public class  IngredientViewCtrl {
      * @param server the server utility used for network communication
      */
     @Inject
-    public IngredientViewCtrl(ServerUtils server, MainCtrl mainCtrl, Printer printer) {
+    public IngredientViewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.mainCtrl = mainCtrl;
@@ -69,7 +64,7 @@ public class  IngredientViewCtrl {
         // default state is label with text
         nameTextField.setVisible(false);
         nameTextField.setManaged(false);
-        List<TextField> fields = List.of(proteinLabel,carbsLabel,fatLabel);
+        List<TextField> fields = List.of(proteinTf,carbsTf,fatTf);
 
         UnaryOperator<TextFormatter.Change> filter = change -> {
             String newText = change.getControlNewText();
@@ -96,14 +91,13 @@ public class  IngredientViewCtrl {
      * @param fxml the FXML loader
      */
     public void setIngredient(Ingredient ingredient, MyFXML fxml) {
-        this.fxml = fxml;
         this.ingredient = ingredient;
         if (ingredient != null) {
             nameLabel.setText(ingredient.getName());
-            fatLabel.setText(String.format(Locale.US, "%.2f", ingredient.getFat()));
-            proteinLabel.setText(String.format(Locale.US, "%.2f", ingredient.getProtein()));
-            carbsLabel.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
-            kcalLabel.setText(String.valueOf(ingredient.calculateCalories()));
+            fatTf.setText(String.format(Locale.US, "%.2f", ingredient.getFat()));
+            proteinTf.setText(String.format(Locale.US, "%.2f", ingredient.getProtein()));
+            carbsTf.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
+            kcalLabel.setText(String.format(Locale.US, "%.0f kcal/100g",ingredient.calculateCalories()*100));
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
         }
     }
@@ -189,17 +183,17 @@ public class  IngredientViewCtrl {
         if(tf.getText().isEmpty()) {
             tf.setText("0");
         } else {
-            float newValue = new BigDecimal(tf.getText())
+            double newValue = new BigDecimal(tf.getText())
                     .setScale(2, RoundingMode.HALF_UP)
-                    .floatValue();
+                    .doubleValue();
             switch(tf.getId()) {
-                case "proteinLabel":
+                case "proteinTf":
                     ingredient.setProtein(newValue);
                     break;
-                case "carbsLabel":
+                case "carbsTf":
                     ingredient.setCarbs(newValue);
                     break;
-                case "fatLabel":
+                case "fatTf":
                     ingredient.setFat(newValue);
             }
             server.updateIngredient(ingredient);

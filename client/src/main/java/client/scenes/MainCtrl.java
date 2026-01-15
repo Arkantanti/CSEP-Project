@@ -130,6 +130,17 @@ public class MainCtrl {
     }
 
     /**
+     * Sets the content to the addIngredient.fxml.
+     */
+
+    public void showAddIngredient() {
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+                "client", "scenes", "AddIngredient.fxml");
+        addIngredientView.getKey().initialize();
+        appViewCtrl.setContent(addIngredientView.getValue());
+    }
+
+    /**
      * The function to show the addRecipe fxml file
      */
     public void showAddRecipe() {
