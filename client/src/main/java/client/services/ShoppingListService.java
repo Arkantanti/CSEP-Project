@@ -101,6 +101,19 @@ public class ShoppingListService {
     }
 
     /**
+     * Adds a list of items to the shopping list
+     * @param items The list of items to add
+     * @param recipeName the name of the recipe
+     */
+    public void addItems(List<ShoppingListItem> items, String recipeName){
+        for (ShoppingListItem item : items) {
+            item.setRecipeName(recipeName);
+            getShoppingList().add(item);
+        }
+        saveChanges();
+    }
+
+    /**
      * adds a list of ingredients to the shopping list, multiplied by some amount.
      * Each ingredient is added as a separate item with the recipe name included.
      * @param ingredients the list of ingredients to add
