@@ -5,15 +5,12 @@ import client.config.ConfigManager;
 import com.google.inject.Inject;
 import commons.Ingredient;
 import commons.RecipeIngredient;
-import commons.ShoppingListItem;
+import client.model.ShoppingListItem;
 import commons.Unit;
-import org.jvnet.hk2.annotations.Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class ShoppingListService {
     private final Config config;
     private final IngredientService ingredientService;

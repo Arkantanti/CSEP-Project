@@ -4,7 +4,7 @@ import client.services.IngredientService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
-import commons.ShoppingListItem;
+import client.model.ShoppingListItem;
 import commons.Unit;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
