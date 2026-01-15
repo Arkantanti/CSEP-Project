@@ -1,6 +1,6 @@
 package client.config;
 
-import commons.RecipeIngredient;
+import client.model.ShoppingListItem;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -16,7 +16,7 @@ public class Config {
 
     private String serverUrl = "http://localhost:8080/"; //Default value
 
-    private List<RecipeIngredient> shoppingList;
+    private List<ShoppingListItem> shoppingList;
 
     private List<Long> favoriteRecipesIds = new ArrayList<>();
 
@@ -33,11 +33,11 @@ public class Config {
         return serverUrl;
     }
 
-    public List<RecipeIngredient> getShoppingList() {
+    public List<ShoppingListItem> getShoppingList() {
         return shoppingList;
     }
 
-    public void setShoppingList(List<RecipeIngredient> shoppingList) {
+    public void setShoppingList(List<ShoppingListItem> shoppingList) {
         this.shoppingList = shoppingList;
     }
 

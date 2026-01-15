@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
@@ -25,11 +26,12 @@ public class RecipeViewCtrlTest {
         // Constructor stores appViewCtrl immediately, so stub before creating controller
         AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
         when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
+        ShoppingListService sls = mock(ShoppingListService.class);
 
         ServerUtils server = mock(ServerUtils.class);
         Printer printer = mock(Printer.class);
 
-        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager);
+        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager, sls);
     }
 
     private static void setField(Object target, String fieldName, Object value) throws Exception {
