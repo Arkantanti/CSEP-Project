@@ -1,11 +1,10 @@
 package client.scenes;
 
-import client.config.Config;
-import client.config.ConfigManager;
+import client.services.ShoppingListService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
-import commons.RecipeIngredient;
+import commons.ShoppingListItem;
 import commons.Unit;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -44,33 +43,56 @@ public class ShoppingListElementCtrl {
     @FXML
     private Button cancelButton;
 
-    private RecipeIngredient recipeIngredient;
+    private ShoppingListItem shoppingListItem;
+    private boolean isTextMode;
 
     private Runnable updateIngredientList;
 
     private final ServerUtils serverUtils;
-    private final Config config;
+    private final ShoppingListService shoppingListService;
 
     /**
      * constructor to be injected
      * @param serverUtils serverutils to load/delete/edit ingredients
-     * @param config the config
+     * @param shoppingListService the shopping list service
      */
     @Inject
-    public ShoppingListElementCtrl(ServerUtils serverUtils, Config config) {
+    public ShoppingListElementCtrl(ServerUtils serverUtils, ShoppingListService shoppingListService) {
         this.serverUtils = serverUtils;
-        this.config = config;
+        this.shoppingListService = shoppingListService;
     }
 
     /**
-     * initializes the ShoppingElementCtrl
-     * @param recipeIngredient A recipeIngredient containing information about the ingredient and its amount
+     * initializes the ShoppingElementCtrl for an existing item
+     * @param shoppingListItem A shopping list item
      * @param updateIngredientList a function that is called whenever the list should be updated
      */
-    public void initialize(RecipeIngredient recipeIngredient,
+    public void initialize(ShoppingListItem shoppingListItem,
                            Runnable updateIngredientList) {
-        this.recipeIngredient = recipeIngredient;
+        initializeInternal(shoppingListItem, updateIngredientList, shoppingListItem.isTextOnly());
+    }
+
+    /**
+     * initializes the ShoppingElementCtrl for a new item
+     * @param shoppingListItem A shopping list item (must be null for new items)
+     * @param updateIngredientList a function that is called whenever the list should be updated
+     * @param isTextMode true if this should be a text item
+     */
+    public void initialize(ShoppingListItem shoppingListItem,
+                           Runnable updateIngredientList,
+                           boolean isTextMode) {
+        initializeInternal(shoppingListItem, updateIngredientList, isTextMode);
+    }
+
+    /**
+     * Internal initialization method
+     */
+    private void initializeInternal(ShoppingListItem shoppingListItem,
+                                    Runnable updateIngredientList,
+                                    boolean isTextMode) {
+        this.shoppingListItem = shoppingListItem;
         this.updateIngredientList = updateIngredientList;
+        this.isTextMode = isTextMode;
 
         defaultView.setVisible(true);
         defaultView.setManaged(true);
@@ -78,12 +100,19 @@ public class ShoppingListElementCtrl {
         editView.setVisible(false);
         editView.setManaged(false);
 
-        if (recipeIngredient != null) {
-            textLabel.setText(recipeIngredient.formatIngredient());
+        if (shoppingListItem != null) {
+            textLabel.setText(shoppingListItem.formatItem());
         }
         textLabel.setVisible(true);
         textLabel.setManaged(true);
 
+        setupIngredientComboBox();
+    }
+
+    /**
+     * Sets up the ingredient combo box cell factories
+     */
+    private void setupIngredientComboBox() {
         ingredientComboBox.setButtonCell(new ListCell<Ingredient>() {
             @Override
             protected void updateItem(Ingredient item, boolean empty) {
@@ -102,33 +131,58 @@ public class ShoppingListElementCtrl {
     }
 
     /**
-     * starts editing the recipeIngredient
+     * starts editing the shopping list item
      */
     @FXML
     private void onEditClicked() {
         enterEditMode();
 
-        // load data to show
-        if (recipeIngredient.getUnit() != Unit.CUSTOM || recipeIngredient.getInformalUnit() == null) {
-            amountField.setText(String.valueOf(recipeIngredient.getAmount()));
+        if (shoppingListItem == null) {
+            return;
         }
-        else {
-            amountField.setText(recipeIngredient.getInformalUnit());
-        }
-        // Ingredient dropdown
-        int i = ingredientComboBox.getItems().indexOf(recipeIngredient.getIngredient());
-        ingredientComboBox.getSelectionModel().select(i);
 
-        // unit dropdown
-        unitComboBox.getSelectionModel().select(recipeIngredient.getUnit());
+        if (isTextMode) {
+            amountField.setText(shoppingListItem.getText());
+            updateUIForTextMode();
+        } else {
+            // load data to show
+            if (shoppingListItem.getUnit() != Unit.CUSTOM || shoppingListItem.getInformalUnit() == null) {
+                amountField.setText(String.valueOf(shoppingListItem.getAmount()));
+            }
+            else {
+                amountField.setText(shoppingListItem.getInformalUnit());
+            }
+            updateUIForIngredientMode();
+
+            // ingredient dropdown
+            List<Ingredient> ingredients = serverUtils.getIngredients();
+            ingredientComboBox.getItems().setAll(ingredients);
+            if (shoppingListItem.getIngredientId() != null) {
+                Ingredient matchingIngredient = null;
+                for (Ingredient ing : ingredients) {
+                    if (ing.getId() == shoppingListItem.getIngredientId()) {
+                        matchingIngredient = ing;
+                        break;
+                    }
+                }
+                if (matchingIngredient != null) {
+                    ingredientComboBox.getSelectionModel().select(matchingIngredient);
+                }
+            }
+
+            // unit dropdown
+            unitComboBox.getSelectionModel().select(shoppingListItem.getUnit());
+        }
     }
 
     /**
-     * deletes the current recipeIngredient
+     * deletes the current shopping list item
      */
     @FXML
     private void onDeleteClicked() {
-        config.getShoppingList().remove(recipeIngredient);
+        if (shoppingListItem != null) {
+            shoppingListService.removeItem(shoppingListItem);
+        }
         this.updateIngredientList.run();
     }
 
@@ -137,67 +191,84 @@ public class ShoppingListElementCtrl {
      */
     @FXML
     private void onConfirmClicked() {
-        int index = config.getShoppingList().indexOf(recipeIngredient);
-        if (index == -1 && recipeIngredient != null) {
-            updateIngredientList.run();
-            return;
-        }
-
-        Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
-
-        String informalAmount = null;
-        double amount = 0;
-
-        if (unit == Unit.CUSTOM) {
-            informalAmount = amountField.getText();
-        }
-        else{
-            try {
-                amount = Double.parseDouble(amountField.getText());
-            }
-            catch (Exception _) {
-                amount = -1;
-            }
-        }
-
-        Ingredient ingredient = ingredientComboBox.getSelectionModel().getSelectedItem();
-
-        if ((amount <= 0 && unit != Unit.CUSTOM) ||
-                ((informalAmount == null || informalAmount.isEmpty()) && unit == Unit.CUSTOM)) {
+        String text = amountField.getText();
+        if (text == null || text.isBlank()) {
             amountField.styleProperty().set("-fx-text-box-border: red;");
             return;
         }
-        else {
-            amountField.styleProperty().set("-fx-text-box-border: lightgray;");
-        }
 
-        if (ingredient == null){
-            ingredientComboBox.styleProperty().set("-fx-border-color: red; -fx-border-radius: 4;");
-            return;
-        }
-        else{
-            ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
-        }
-
-        if (unit == null) { // user should not be able to set unit as null,
-            return;         // so I will simply not allow that
-        }
-
-        if (recipeIngredient == null){
-            recipeIngredient = new RecipeIngredient(null, ingredient, informalAmount, amount, unit);
-            config.getShoppingList().add(recipeIngredient);
-            try{
-                ConfigManager.save(config);
+        if (isTextMode) {
+            // Text item
+            if (shoppingListItem == null) {
+                shoppingListService.addTextItem(text);
+            } else {
+                shoppingListItem.setText(text);
+                shoppingListService.saveChanges();
             }
-            catch (Exception _) {}
+            textLabel.setText(text);
+        } else {
+            // Ingredient item
+            Ingredient selectedIngredient = ingredientComboBox.getSelectionModel().getSelectedItem();
+            if (selectedIngredient == null) {
+                ingredientComboBox.styleProperty().set("-fx-border-color: red; -fx-border-radius: 4;");
+                return;
+            }
+            else {
+                ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
+            }
+
+            Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
+            if (unit == null) {
+                return;
+            }
+
+            String informalAmount = null;
+            double amount = 0;
+
+            if (unit == Unit.CUSTOM) {
+                informalAmount = text;
+            }
+            else{
+                try {
+                    amount = Double.parseDouble(text);
+                }
+                catch (Exception _) {
+                    amount = -1;
+                }
+            }
+
+            if ((amount <= 0 && unit != Unit.CUSTOM) ||
+                    ((informalAmount == null || informalAmount.isEmpty()) && unit == Unit.CUSTOM)) {
+                amountField.styleProperty().set("-fx-text-box-border: red;");
+                return;
+            }
+            else {
+                amountField.styleProperty().set("-fx-text-box-border: lightgray;");
+            }
+
+            if (shoppingListItem == null) {
+                shoppingListService.addIngredientItem(
+                        selectedIngredient.getId(),
+                        selectedIngredient.getName(),
+                        informalAmount,
+                        amount,
+                        unit,
+                        null // no recipe name when manually adding
+                );
+                // Refresh to get the new item
+                updateIngredientList.run();
+                return;
+            } else {
+                shoppingListItem.setIngredientId(selectedIngredient.getId());
+                shoppingListItem.setIngredientName(selectedIngredient.getName());
+                shoppingListItem.setAmount(amount);
+                shoppingListItem.setUnit(unit);
+                shoppingListItem.setInformalUnit(informalAmount);
+                shoppingListItem.setText(null); // clear text if it was a text item
+                shoppingListService.saveChanges();
+            }
+            textLabel.setText(shoppingListItem.formatItem());
         }
-        else {
-            recipeIngredient.setAmount(amount);
-            recipeIngredient.setUnit(unit);
-            recipeIngredient.setInformalUnit(informalAmount);
-            recipeIngredient.setIngredient(ingredient);
-        }
-        textLabel.setText(recipeIngredient.formatIngredient());
 
         editView.setVisible(false);
         editView.setManaged(false);
@@ -211,8 +282,8 @@ public class ShoppingListElementCtrl {
      */
     @FXML
     private void onCancelClicked() {
-        if (recipeIngredient == null) {
-            updateIngredientList.run(); // removes the recipeIngredient from the list
+        if (shoppingListItem == null) {
+            updateIngredientList.run(); // removes the item from the list
         }
 
         editView.setVisible(false);
@@ -223,13 +294,20 @@ public class ShoppingListElementCtrl {
     }
 
     /**
-     * called when creating a new RecipeIngredient from clicking the +
+     * called when creating a new ShoppingListItem from clicking the +
      */
     public void startEditingFromCtrl() {
         // load data to show
         amountField.setText("");
 
-        unitComboBox.getSelectionModel().select(Unit.GRAM);
+        if (isTextMode) {
+            amountField.setPromptText("Enter text");
+            updateUIForTextMode();
+        } else {
+            amountField.setPromptText("Enter amount");
+            unitComboBox.getSelectionModel().select(Unit.GRAM);
+            updateUIForIngredientMode();
+        }
 
         enterEditMode();
     }
@@ -251,6 +329,34 @@ public class ShoppingListElementCtrl {
         // unit dropdown
         unitComboBox.getItems().setAll(Unit.values());
 
+        // Update UI based on current mode
+        if (isTextMode) {
+            updateUIForTextMode();
+        } else {
+            updateUIForIngredientMode();
+        }
+    }
+
+    /**
+     * Updates UI to show text mode (hides ingredient and unit controls)
+     */
+    private void updateUIForTextMode() {
+        unitComboBox.setVisible(false);
+        unitComboBox.setManaged(false);
+        ingredientComboBox.setVisible(false);
+        ingredientComboBox.setManaged(false);
+        amountField.setPromptText("Enter text");
+    }
+
+    /**
+     * Updates UI to show ingredient mode (shows all controls)
+     */
+    private void updateUIForIngredientMode() {
+        unitComboBox.setVisible(true);
+        unitComboBox.setManaged(true);
+        ingredientComboBox.setVisible(true);
+        ingredientComboBox.setManaged(true);
+        amountField.setPromptText("Enter amount");
     }
 
 }

@@ -1,0 +1,38 @@
+.shopping-list-header {
+    -fx-padding: 0 0 8 0;
+    -fx-border-color: transparent transparent #b0b0b0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: #ffffff;
+}
+
+.shopping-list-title {
+    -fx-text-fill: #333333;
+}
+
+.add-mode-toggle {
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+}
+
+.add-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+    -fx-padding: 4 12;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.add-button:hover {
+    -fx-background-color: #45a049;
+}
+
+.sidebar-toggle.active {
+    -fx-background-color: #d0d0d0;
+    -fx-border-color: #999999;
+}
+
+.recipe-line {
+    -fx-min-width: 100%;
+    -fx-pref-width: 100%;
+}

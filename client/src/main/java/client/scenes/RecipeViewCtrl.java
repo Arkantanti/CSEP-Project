@@ -477,7 +477,7 @@ public class RecipeViewCtrl {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             this.shoppingListService.addIngredients(server.getRecipeIngredients(this.recipe.getId()),
-                    targetServings/baseServings);
+                    targetServings/baseServings, recipe.getName());
             Alert notif = new Alert(Alert.AlertType.INFORMATION);
             notif.setTitle("Success");
             notif.setHeaderText("Success");
