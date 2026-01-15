@@ -93,6 +93,14 @@ public class ShoppingListService {
     }
 
     /**
+     * adds a ShoppingListItem to the shoppingList
+     * @param item the item to add
+     */
+    public void addItem(ShoppingListItem item) {
+        getShoppingList().add(item);
+    }
+
+    /**
      * adds a list of ingredients to the shopping list, multiplied by some amount.
      * Each ingredient is added as a separate item with the recipe name included.
      * @param ingredients the list of ingredients to add

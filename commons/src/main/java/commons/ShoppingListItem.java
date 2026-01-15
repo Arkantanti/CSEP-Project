@@ -60,6 +60,20 @@ public class ShoppingListItem {
     }
 
     /**
+     * Creates a ShoppingListItem from a recipeIngredient
+     * @param recipeIngredient the RecipeIngredient to base this ShoppingListItem off of
+     * @param scalar a multiplier for the recipeIngredient
+     */
+    public ShoppingListItem(RecipeIngredient recipeIngredient, double scalar) {
+        this.ingredientId = recipeIngredient.getId();
+        this.ingredientName = recipeIngredient.getIngredient().getName();
+        this.informalUnit = recipeIngredient.getInformalUnit();
+        this.amount = recipeIngredient.getAmount() * scalar;
+        this.unit = recipeIngredient.getUnit();
+        this.recipeName = recipeIngredient.getRecipe().getName();
+    }
+
+    /**
      * Creates a new ShoppingListItem for a text-only item (unrelated item).
      *
      * @param text the text description of the item (e.g. a box of cereal)
