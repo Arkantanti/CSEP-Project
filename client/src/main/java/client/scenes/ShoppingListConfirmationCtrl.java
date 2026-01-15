@@ -1,11 +1,10 @@
 package client.scenes;
 
-import client.Main;
 import client.MyFXML;
 import client.services.ShoppingListService;
 import com.google.inject.Inject;
 import commons.RecipeIngredient;
-import commons.ShoppingListItem;
+import client.model.ShoppingListItem;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
