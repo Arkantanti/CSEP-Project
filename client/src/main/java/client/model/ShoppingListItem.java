@@ -1,9 +1,10 @@
-package commons;
+package client.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import commons.Unit;
 
 import java.util.Dictionary;
 import java.util.Hashtable;

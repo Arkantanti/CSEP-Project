@@ -3,7 +3,7 @@ package client.scenes;
 import client.MyFXML;
 import client.services.ShoppingListService;
 import com.google.inject.Inject;
-import commons.ShoppingListItem;
+import client.model.ShoppingListItem;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
