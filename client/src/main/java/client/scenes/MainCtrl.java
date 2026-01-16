@@ -204,7 +204,9 @@ public class MainCtrl {
      * called when adding new elements to the shopping list to reload it
      */
     public void reloadShoppingList(){
-        shoppingListCtrl.loadShoppingList();
+        if (shoppingListCtrl != null) {
+            shoppingListCtrl.loadShoppingList();
+        }
     }
 
     /**
