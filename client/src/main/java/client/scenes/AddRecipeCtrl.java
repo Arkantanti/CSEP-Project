@@ -55,11 +55,11 @@ public class AddRecipeCtrl {
      * @param server the server it is linked to
      */
     @Inject
-    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl, AppViewCtrl appViewCtrl, RecipeService recipeService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.appViewCtrl = mainCtrl.getAppViewCtrl();
-        this.recipeService = appViewCtrl.getRecipeService();
+        this.appViewCtrl = appViewCtrl;
+        this.recipeService = recipeService;
     }
 
     /**
@@ -120,12 +120,13 @@ public class AddRecipeCtrl {
             // Make sure the inputs are correct
             String name = nameTextField.getText().trim();
             if (name.isBlank()) {
-                showError("Input Error", "Recipe name cannot be empty.");
+                mainCtrl.showError("Input Error", "Recipe name cannot be empty.");
                 return;
             }
 
-            if(recipeNameChecker(recipeService.getAllRecipes(), name)){
-                showError("Used Name", "This recipe name is already in use, please choose another.");
+            if(mainCtrl.recipeNameChecker(recipeService.getAllRecipes(), name)){
+                mainCtrl.showError("Used Name",
+                        "This recipe name is already in use, please choose another.");
                 return;
             }
 
@@ -133,11 +134,11 @@ public class AddRecipeCtrl {
             try {
                 servings = Integer.parseInt(servingsArea.getText().trim());
                 if (servings < 1) {
-                    showError("Input Error", "Servings must be at least 1.");
+                    mainCtrl.showError("Input Error", "Servings must be at least 1.");
                     return;
                 }
             } catch (NumberFormatException e) {
-                showError("Input Error", "Servings must be a number.");
+                mainCtrl.showError("Input Error", "Servings must be a number.");
                 return;
             }
 
@@ -145,7 +146,7 @@ public class AddRecipeCtrl {
                     preparationsArea.getText().split("\\r?\\n"));
             if (preparationSteps.isEmpty() ||
                     (preparationSteps.size() == 1 && preparationSteps.get(0).isBlank())) {
-                showError("Input Error", "Preparation steps cannot be empty.");
+                mainCtrl.showError("Input Error", "Preparation steps cannot be empty.");
                 return;
             }
             isSaved = true;
@@ -172,7 +173,8 @@ public class AddRecipeCtrl {
             mainCtrl.showRecipe(recipe);
 
         } catch (Exception e) {
-            showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
+            mainCtrl.showError("Error",
+                    "Could not save the recipe. There might be a problem with your server connection.");
         }
     }
 
@@ -225,19 +227,6 @@ public class AddRecipeCtrl {
         } catch (Exception e) {
             System.out.println("There was an error in the saving of the ingredients.");
         }
-    }
-
-    /**
-     * To show an error for if something goes wrong
-     * @param header The head text of the error
-     * @param content The main text of the error
-     */
-    private void showError(String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 
     /**
@@ -398,20 +387,5 @@ public class AddRecipeCtrl {
      */
     public Recipe getRecipe(){
         return this.recipe;
-    }
-
-    /**
-     * function for checking if the name from the recipe is already in the list of all the recipes
-     * @param recipeList the list of all the recipes where the names need to be checked
-     * @param s the name of the recipe
-     * @return true or false depending on if the list contains the recipe name
-     */
-    public boolean recipeNameChecker(List<Recipe> recipeList, String s){
-        for(Recipe recipeName : recipeList){
-            if(recipeName.getName().equals(s)){
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.services.RecipeService;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
@@ -30,8 +31,9 @@ public class RecipeViewCtrlTest {
 
         ServerUtils server = mock(ServerUtils.class);
         Printer printer = mock(Printer.class);
+        RecipeService recipeService = mock(RecipeService.class);
 
-        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager, sls);
+        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager, sls, recipeService);
     }
 
     private static void setField(Object target, String fieldName, Object value) throws Exception {

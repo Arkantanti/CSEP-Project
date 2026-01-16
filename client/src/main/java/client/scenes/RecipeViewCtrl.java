@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.services.RecipeService;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
@@ -67,6 +68,7 @@ public class RecipeViewCtrl {
     private final AppViewCtrl appViewCtrl;
     private final FavoritesManager favoritesManager;
     private final ShoppingListService shoppingListService;
+    private final RecipeService recipeService;
 
     private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
     private int baseServings;
@@ -82,13 +84,14 @@ public class RecipeViewCtrl {
                           MainCtrl mainCtrl,
                           Printer printer,
                           FavoritesManager favoritesManager,
-                          ShoppingListService shoppingListService) {
+                          ShoppingListService shoppingListService, RecipeService recipeService) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.favoritesManager = favoritesManager;
         this.shoppingListService = shoppingListService;
+        this.recipeService = recipeService;
     }
 
     /**
@@ -181,6 +184,12 @@ public class RecipeViewCtrl {
      * Shows the label and hides the text field.
      */
     private void finishEditing() {
+        if(mainCtrl.recipeNameChecker(recipeService.getAllRecipes(), nameTextField.getText())){
+            mainCtrl.showError("Used Name",
+                    "This recipe name is already in use, please choose another.");
+            return;
+        }
+
         editing = false;
         String newName = nameTextField.getText();
 

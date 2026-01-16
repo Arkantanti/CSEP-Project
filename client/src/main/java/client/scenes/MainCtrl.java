@@ -22,12 +22,14 @@ import commons.Ingredient;
 import commons.Recipe;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * The Main Controller that manages the execution flow and scene switching.
@@ -256,5 +258,34 @@ public class MainCtrl {
         } else {
             System.out.println("Tried to shutdown the polling service but it was not initialized.");
         }
+    }
+
+
+    /**
+     * function for checking if the name from the recipe is already in the list of all the recipes
+     * @param recipeList the list of all the recipes where the names need to be checked
+     * @param s the name of the recipe
+     * @return true or false depending on if the list contains the recipe name
+     */
+    public boolean recipeNameChecker(List<Recipe> recipeList, String s){
+        for(Recipe recipeName : recipeList){
+            if(recipeName.getName().equals(s)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * To show an error for if something goes wrong
+     * @param header The head text of the error
+     * @param content The main text of the error
+     */
+    public void showError(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
