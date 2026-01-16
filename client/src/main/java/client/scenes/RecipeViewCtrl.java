@@ -1,21 +1,20 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
 import commons.Ingredient;
 import commons.Recipe;
+import commons.Unit;
 import commons.RecipeIngredient;
 import commons.Unit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class RecipeViewCtrl {
 
@@ -66,6 +66,7 @@ public class RecipeViewCtrl {
     private List<RecipeIngredient> ingredients;
     private final AppViewCtrl appViewCtrl;
     private final FavoritesManager favoritesManager;
+    private final ShoppingListService shoppingListService;
 
     private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
     private int baseServings;
@@ -80,12 +81,14 @@ public class RecipeViewCtrl {
     public RecipeViewCtrl(ServerUtils server,
                           MainCtrl mainCtrl,
                           Printer printer,
-                          FavoritesManager favoritesManager) {
+                          FavoritesManager favoritesManager,
+                          ShoppingListService shoppingListService) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.favoritesManager = favoritesManager;
+        this.shoppingListService = shoppingListService;
     }
 
     /**
@@ -351,12 +354,12 @@ public class RecipeViewCtrl {
         try{
             long recipeId = this.recipe.getId();
             server.deleteRecipe(recipeId);
-            
+
             // Remove from favorites if it was favorited
             if (favoritesManager.isFavorite(recipeId)) {
                 favoritesManager.removeFavorite(recipeId);
             }
-            
+
             appViewCtrl.loadRecipes();
         } catch (Exception e){
             System.out.println("something went wrong.");
@@ -462,6 +465,33 @@ public class RecipeViewCtrl {
         rerenderIngredientsScaled();
     }
 
+    /**
+     * called when the user clicks the Shop button
+     */
+    @FXML
+    public void addToShoppingList(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Adding to shopping list");
+        alert.setHeaderText("You are about to add the ingredients for " + targetServings + " servings of "
+                + recipe.getName() + " to the shopping list.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            this.shoppingListService.addIngredients(server.getRecipeIngredients(this.recipe.getId()),
+                    targetServings/baseServings, recipe.getName());
+            Alert notif = new Alert(Alert.AlertType.INFORMATION);
+            notif.setTitle("Success");
+            notif.setHeaderText("Success");
+            StringBuilder sb = new StringBuilder("Added:\n");
+            for (RecipeIngredient ri : server.getRecipeIngredients(this.recipe.getId())){
+                sb.append(ri.formatIngredientScaled(ri.getAmount()*targetServings/baseServings));
+                sb.append("\n");
+            }
+            notif.setContentText(sb.toString());
+            notif.show();
+            mainCtrl.reloadShoppingList();
+        }
+    }
+
     //calories display
 
     /**
@@ -469,7 +499,7 @@ public class RecipeViewCtrl {
      */
     protected void updateCaloriesDisplay(){
         StringBuilder textToDisplay = new StringBuilder();
-        textToDisplay.append((int)calculateCaloriesForRecipe());
+        textToDisplay.append((int) calculateCaloriesForRecipe());
         textToDisplay.append(" kcal/100g");
         caloriesDisplay.setText(textToDisplay.toString());
     }
@@ -493,10 +523,8 @@ public class RecipeViewCtrl {
             Ingredient ingredient = ri.getIngredient();
             totalCalories +=
                     ri.getUnit() == Unit.GRAM ?
-                            ingredient.calculateCalories()*amount/100 : ingredient.calculateCalories()*amount*10;
+                            ingredient.calculateCalories()*amount : ingredient.calculateCalories()*amount*1000;
             totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*1000;
-
-
         }
         if(totalMass <= 0.0) return 0.0;
         return 100*totalCalories/totalMass;

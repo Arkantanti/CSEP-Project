@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddIngredientCtrl">
+   <content>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0" spacing="12.0" stylesheets="/styles/ingredients-view.css">
+         <children>
+            <HBox maxWidth="1.7976931348623157E308" prefHeight="32.0" prefWidth="520.0" styleClass="recipe-title-section">
+               <children>
+                   <Label fx:id="nameLabel" prefHeight="35.0" prefWidth="312.0" text="Name of the ingredient:">
+                       <font>
+                           <Font size="24.0" />
+                       </font>
+                       <HBox.margin>
+                           <Insets left="10.0" top="5.0" />
+                       </HBox.margin>
+                   </Label>
+                   <TextField fx:id="nameTextField" prefHeight="35.0" promptText="Edit name" style="-fx-font-size: 24px;">
+                       <HBox.margin>
+                           <Insets left="10.0" top="5.0" />
+                       </HBox.margin>
+                   </TextField>
+               </children>
+            </HBox>
+             <Label prefHeight="28.0" prefWidth="200.0" text="Nutrients (g/100g):">
+                 <font>
+                     <Font name="System Bold" size="19.0" />
+                 </font>
+                 <VBox.margin>
+                     <Insets left="10.0" />
+                 </VBox.margin>
+             </Label>
+            <GridPane alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane GridPane.rowIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Carbs: ">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="carbsTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Protein: ">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="proteinTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Fat: ">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="fatTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets right="5.0" />
+                           </GridPane.margin></TextField>
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
+             <HBox>
+                 <children>
+                     <Button fx:id="saveButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onSave" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="✓">
+                         <font>
+                             <Font name="System Bold" size="18.0" />
+                         </font>
+                         <VBox.margin>
+                             <Insets left="10.0" top="5.0" />
+                         </VBox.margin>
+                     </Button>
+                     <Button fx:id="cancelButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="X">
+                         <font>
+                             <Font name="System Bold" size="18.0" />
+                         </font>
+                         <VBox.margin>
+                             <Insets left="10.0" top="5.0" />
+                         </VBox.margin>
+                     </Button>
+                 </children>
+             </HBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

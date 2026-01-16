@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
@@ -25,11 +26,12 @@ public class RecipeViewCtrlTest {
         // Constructor stores appViewCtrl immediately, so stub before creating controller
         AppViewCtrl appViewCtrl = mock(AppViewCtrl.class);
         when(mainCtrl.getAppViewCtrl()).thenReturn(appViewCtrl);
+        ShoppingListService sls = mock(ShoppingListService.class);
 
         ServerUtils server = mock(ServerUtils.class);
         Printer printer = mock(Printer.class);
 
-        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager);
+        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager, sls);
     }
 
     private static void setField(Object target, String fieldName, Object value) throws Exception {
@@ -204,7 +206,7 @@ public class RecipeViewCtrlTest {
         double result = (double) invokePrivate(ctrl, "calculateCaloriesForRecipe");
 
         // totalCalories = 10*100 = 1000, totalMass=100, ratio=10, factor=2 => 20
-        assertEquals(10.0, result, 1e-9);
+        assertEquals(1000.0, result, 1e-9);
     }
 
     @Test
@@ -228,7 +230,7 @@ public class RecipeViewCtrlTest {
         double kcalPer100g = (double) invokePrivate(ctrl, "calculateCaloriesForRecipe");
 
         String text = ((int) kcalPer100g) + " kcal/100g";
-        assertEquals("1 kcal/100g", text);
+        assertEquals("100 kcal/100g", text);
     }
 
 

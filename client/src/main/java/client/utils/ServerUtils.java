@@ -303,6 +303,29 @@ public class ServerUtils {
     }
 
     /**
+     * Adds an Ingredient to the server database and returns one with a valid ID
+     */
+    public Ingredient addIngredient(Ingredient ingredient) {
+        if (ingredient == null) {
+            throw new IllegalArgumentException("Ingredient to add must have a valid ID");
+        }
+        if (ingredient.getId() < 0) {
+            throw new IllegalArgumentException("Ingredient to add must have a valid ID, currently "
+                    + ingredient.getId());
+        }
+        try {
+            return this.client
+                    .target(serverURL)
+                    .path("api/ingredients/")
+                    .request(APPLICATION_JSON)
+                    .post(Entity.entity(ingredient, APPLICATION_JSON), Ingredient.class);
+        }
+        catch (ProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
      * Counts how many recipes an ingredient is used in through a REST endpoint.
      * @param ingredientId Ingredient id to count by.
      * @return The number of recipes the ingredient is used in.
