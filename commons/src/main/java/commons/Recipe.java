@@ -26,6 +26,9 @@ public class Recipe implements Showable{
 
     private String name;
     private int servings;
+    private boolean cheap;
+    private boolean fast;
+    private boolean vegan;
 
     @ElementCollection
     private List<String> preparationSteps;
@@ -45,14 +48,26 @@ public class Recipe implements Showable{
      * @param name             the name of the recipe
      * @param servings         the number of servings this recipe provides
      * @param preparationSteps the list of ordered preparation instructions
+     * @param cheap            whether this recipe is cheap
+     * @param fast             whether this recipe is fast
+     * @param vegan            whether this recipe is vegan
      */
-    public Recipe(String name,
-                  int servings,
-                  List<String> preparationSteps) {
+    public Recipe(String name, int servings, List<String> preparationSteps,
+                  boolean cheap, boolean fast, boolean vegan) {
         this.name = name;
         this.servings = servings;
         this.preparationSteps = preparationSteps;
+        this.cheap = cheap;
+        this.fast = fast;
+        this.vegan = vegan;
     }
+
+
+    public boolean isCheap() { return cheap; }
+
+    public boolean isFast() { return fast; }
+
+    public boolean isVegan() { return vegan; }
 
     public long getId() {
         return id;
@@ -81,6 +96,9 @@ public class Recipe implements Showable{
     public void setPreparationSteps(List<String> preparationSteps) {
         this.preparationSteps = preparationSteps;
     }
+    public void setCheap(boolean cheap) { this.cheap = cheap; }
+    public void setFast(boolean fast) { this.fast = fast; }
+    public void setVegan(boolean vegan) { this.vegan = vegan; }
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
         this.recipeIngredients = recipeIngredients;

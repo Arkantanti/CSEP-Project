@@ -53,7 +53,7 @@ public class RecipeViewCtrlTest {
 
         RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
-        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"));
+        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"),false,false,false);
         recipe.setId(1L);
 
         when(favoritesManager.isFavorite(1L)).thenReturn(false);
@@ -77,7 +77,7 @@ public class RecipeViewCtrlTest {
 
         RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
-        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"));
+        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"),false,false,false);
         recipe.setId(1L);
 
         when(favoritesManager.isFavorite(1L)).thenReturn(true);
@@ -119,7 +119,7 @@ public class RecipeViewCtrlTest {
         RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
         // This must throw BEFORE touching fxml or JavaFX containers
-        Recipe recipe = new Recipe("Test Recipe", 1, null);
+        Recipe recipe = new Recipe("Test Recipe", 1, null,false,false,false);
         recipe.setId(1L);
 
         setField(ctrl, "recipe", recipe);

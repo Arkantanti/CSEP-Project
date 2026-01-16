@@ -56,6 +56,12 @@ public class RecipeViewCtrl {
     private Button favoriteButton;
     @FXML
     private Label caloriesDisplay;
+    @FXML
+    private CheckBox cheapCheckBox;
+    @FXML
+    private CheckBox fastCheckBox;
+    @FXML
+    private CheckBox veganCheckBox;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -100,6 +106,7 @@ public class RecipeViewCtrl {
         // default state is label with text
         nameTextField.setVisible(false);
         nameTextField.setManaged(false);
+        setTagsEditable(false);
 
         servingsScalingInput.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
             if (!isFocused) {
@@ -124,11 +131,18 @@ public class RecipeViewCtrl {
         setServingsField(targetServings);
 
         nameLabel.setText(recipe.getName());
+        cheapCheckBox.setSelected(recipe.isCheap());
+        fastCheckBox.setSelected(recipe.isFast());
+        veganCheckBox.setSelected(recipe.isVegan());
+        if (editing) {
+            finishEditing();
+        }
         loadIngredients();
         loadPreparationSteps(recipe.getPreparationSteps());
         updateFavoriteButton();
         rerenderIngredientsScaled();
         updateCaloriesDisplay();
+
     }
 
     /**
@@ -168,6 +182,7 @@ public class RecipeViewCtrl {
 
         nameTextField.requestFocus();
         nameTextField.selectAll();
+        setTagsEditable(true);
 
         titleEditButton.setText("✔");
         titleEditButton.setTextFill(Color.GREEN);
@@ -183,17 +198,35 @@ public class RecipeViewCtrl {
     private void finishEditing() {
         editing = false;
         String newName = nameTextField.getText();
+        boolean isCheap = cheapCheckBox.isSelected();
+        boolean isFast = fastCheckBox.isSelected();
+        boolean isVegan = veganCheckBox.isSelected();
 
-        if (newName != null && !newName.isBlank()) {
-            nameLabel.setText(newName.trim());
-            // update new title to the server.
-            if (recipe != null) {
+        if (recipe != null) {
+            boolean changed = false;
+
+            // Check Title Change
+            if (newName != null && !newName.isBlank() && !newName.equals(recipe.getName())) {
+                nameLabel.setText(newName.trim());
                 recipe.setName(newName);
+                changed = true;
+            }
+
+            // Check Tags Change
+            if (recipe.isCheap() != isCheap || recipe.isFast() != isFast || recipe.isVegan() != isVegan) {
+                recipe.setCheap(isCheap);
+                recipe.setFast(isFast);
+                recipe.setVegan(isVegan);
+                changed = true;
+            }
+
+            // Only send update to server if something changed
+            if (changed) {
                 server.updateRecipe(recipe);
-                appViewCtrl.loadRecipes();
+                appViewCtrl.loadRecipes(); // Refresh the list sidebar
             }
         }
-
+        setTagsEditable(false);
         nameTextField.setVisible(false);
         nameTextField.setManaged(false);
 
@@ -205,6 +238,15 @@ public class RecipeViewCtrl {
 
         printButton.setVisible(true);
         printButton.setManaged(true);
+    }
+
+    /**
+     * Helper to enable/disable all tag checkboxes
+     */
+    private void setTagsEditable(boolean editable) {
+        cheapCheckBox.setDisable(!editable);
+        fastCheckBox.setDisable(!editable);
+        veganCheckBox.setDisable(!editable);
     }
 
     /**
