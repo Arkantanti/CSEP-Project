@@ -124,7 +124,7 @@ public class AddRecipeCtrl {
                 return;
             }
 
-            if(mainCtrl.recipeNameChecker(recipeService.getAllRecipes(), name)){
+            if(mainCtrl.recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)){
                 mainCtrl.showError("Used Name",
                         "This recipe name is already in use, please choose another.");
                 return;

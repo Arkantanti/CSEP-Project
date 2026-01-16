@@ -267,9 +267,9 @@ public class MainCtrl {
      * @param s the name of the recipe
      * @return true or false depending on if the list contains the recipe name
      */
-    public boolean recipeNameChecker(List<Recipe> recipeList, String s){
+    public boolean recipeNameChecker(List<Recipe> recipeList, String s, Recipe recipeOne){
         for(Recipe recipeName : recipeList){
-            if(recipeName.getName().equals(s)){
+            if(recipeName.getName().equals(s) && (recipeOne.getId() != recipeName.getId())){
                 return true;
             }
         }
