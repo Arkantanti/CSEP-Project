@@ -36,7 +36,7 @@ import java.nio.file.Path;
 public class MainCtrl {
 
     private Stage primaryStage;
-    private Stage secondaryStage;
+    private Stage ingredientAddStage;
     private Stage shoppingListStage;
 
     private AppViewCtrl appViewCtrl;
@@ -196,7 +196,8 @@ public class MainCtrl {
      */
     public void openShoppingList(){
         if (shoppingListStage == null || shoppingListCtrl == null) {
-            Pair<ShoppingListCtrl, Parent> shoppingListView = fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
+            Pair<ShoppingListCtrl, Parent> shoppingListView =
+                    fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
             shoppingListStage = new Stage();
             shoppingListStage.setTitle("Shopping List");
             shoppingListStage.setScene(new Scene(shoppingListView.getValue()));
@@ -238,14 +239,16 @@ public class MainCtrl {
     public AddRecipeCtrl getAddRecipeCtrl() {return addRecipeCtrl; }
 
     /**
-     * Method to load recipes from the main controller so that the main controller acts as the main orchestrator.
-     * This method is also used by the PollingService to reload recipes trough the main controller.
+     * Method to load recipes from the main controller so that
+     * the main controller acts as the main orchestrator.
+     * This method is also used by the PollingService to reload recipes through the main controller.
      */
     public void reloadRecipes() {
         if (appViewCtrl != null) {
             appViewCtrl.loadRecipes();
         } else {
-            System.out.println("Tried to reload recipes from the main controller, but app view controller was not initialized.");
+            System.out.println("Tried to reload recipes from the main controller, " +
+                    "but app view controller was not initialized.");
         }
     }
 
@@ -264,15 +267,15 @@ public class MainCtrl {
      * Opens a new window with addIngredients view.
      */
     public Ingredient showAddIngredientsNewWindow() {
-        secondaryStage = new Stage();
+        ingredientAddStage = new Stage();
         Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
                 "client", "scenes", "AddIngredient.fxml");
         AddIngredientCtrl addIngredientCtrl = addIngredientView.getKey();
         addIngredientCtrl.initialize(true);
-        secondaryStage.setScene(new Scene(addIngredientView.getValue()));
-        secondaryStage.initModality(Modality.APPLICATION_MODAL);
-        secondaryStage.initOwner(primaryStage);
-        secondaryStage.showAndWait();
+        ingredientAddStage.setScene(new Scene(addIngredientView.getValue()));
+        ingredientAddStage.initModality(Modality.APPLICATION_MODAL);
+        ingredientAddStage.initOwner(primaryStage);
+        ingredientAddStage.showAndWait();
 
         if(addIngredientCtrl.getIngredientSaved()) {
             return addIngredientCtrl.getIngredient();
@@ -286,8 +289,8 @@ public class MainCtrl {
      * Closes the secondary stage.
      */
     public void closeAddIngredientWindow() {
-        if(secondaryStage != null) {
-            secondaryStage.close();
+        if(ingredientAddStage != null) {
+            ingredientAddStage.close();
         }
     }
 }
