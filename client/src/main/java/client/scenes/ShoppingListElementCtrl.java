@@ -115,12 +115,6 @@ public class ShoppingListElementCtrl {
         editView.setManaged(false);
 
         if (shoppingListItem != null) {
-            if (!shoppingListItem.isTextOnly()) { // on opening, ingredientName would be Null for some reason.
-                Ingredient i = ingredientService.getIngredientById(shoppingListItem.getIngredientId());
-                if (i != null) {
-                    shoppingListItem.setIngredientName(i.getName());
-                }
-            }
             textLabel.setText(shoppingListItem.formatItem());
         }
         textLabel.setVisible(true);

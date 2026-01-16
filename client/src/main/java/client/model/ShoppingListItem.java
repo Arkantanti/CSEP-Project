@@ -180,6 +180,10 @@ public class ShoppingListItem {
         this.ingredientId = ingredientId;
     }
 
+    public String getIngredientName(){
+        return this.ingredientName;
+    }
+
     public void setIngredientName(String ingredientName) {
         this.ingredientName = ingredientName;
     }
