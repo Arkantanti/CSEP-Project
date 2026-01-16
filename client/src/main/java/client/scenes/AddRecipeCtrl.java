@@ -9,6 +9,7 @@ import commons.RecipeIngredient;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
@@ -38,7 +39,6 @@ public class AddRecipeCtrl {
     private TextField nameTextField;
     @FXML
     private TextField servingsArea;
-
     @FXML
     private TextArea preparationsArea;
 
@@ -55,10 +55,10 @@ public class AddRecipeCtrl {
      * @param server the server it is linked to
      */
     @Inject
-    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl, AppViewCtrl appViewCtrl, RecipeService recipeService) {
+    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl, RecipeService recipeService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.appViewCtrl = appViewCtrl;
+        this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.recipeService = recipeService;
     }
 

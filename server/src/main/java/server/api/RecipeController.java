@@ -80,6 +80,14 @@ public class RecipeController {
                 || recipe.getPreparationSteps() == null) {
             return ResponseEntity.badRequest().build();
         }
+
+        //check for the database when the name is the same
+        for(Recipe recipeName : getAll()){
+            if((recipe.getName().equals(recipeName.getName()))){
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
         Recipe saved = repo.save(recipe);
         return ResponseEntity.ok(saved);
     }
@@ -103,6 +111,13 @@ public class RecipeController {
     public ResponseEntity<Recipe> update(@PathVariable long id, @RequestBody Recipe recipe) {
         if (id < 0) {
             return ResponseEntity.badRequest().build();
+        }
+
+        for(Recipe recipeName : getAll()){
+            if((recipe.getName().equals(recipeName.getName())) &&
+                    (recipeName.getId() != recipe.getId())){
+                return ResponseEntity.badRequest().build();
+            }
         }
 
         if (recipe == null
