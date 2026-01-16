@@ -275,6 +275,7 @@ public class MainCtrl {
         ingredientAddStage.setScene(new Scene(addIngredientView.getValue()));
         ingredientAddStage.initModality(Modality.APPLICATION_MODAL);
         ingredientAddStage.initOwner(primaryStage);
+        ingredientAddStage.setTitle("Add Ingredient");
         ingredientAddStage.showAndWait();
 
         if(addIngredientCtrl.getIngredientSaved()) {
