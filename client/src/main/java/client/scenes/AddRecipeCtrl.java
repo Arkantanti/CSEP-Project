@@ -84,7 +84,7 @@ public class AddRecipeCtrl {
     @FXML
     private void onAddRecipeIngredient(){
         // If no recipe exists yet, create it from current fields
-        if (recipe == null || isCloneMode) {
+        if (recipe == null) {
             String name = nameTextField.getText().trim();
             if (name.isEmpty()) {
                 name = "New Recipe";
@@ -110,15 +110,8 @@ public class AddRecipeCtrl {
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
 
-            if (isCloneMode) {
-                recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
-                isCloneMode = false;
+            recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
 
-                saveAllIngredientsToServer(recipe);
-                showIngredients();
-            } else {
-                recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
-            }
         }
 
         Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
@@ -178,6 +171,7 @@ public class AddRecipeCtrl {
                 // If not first create the recipe.
                 recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
             } else if (isCloneMode && recipe.getId() == 0) {
+                // to make sure that the clone gets properly added.
                 recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
                 isCloneMode = false;
             } else {
@@ -284,6 +278,11 @@ public class AddRecipeCtrl {
         );
         // Load and clone the ingredients
         cloneIngredients(originalRecipe);
+
+        recipe = server.add(this.recipe);
+
+        saveAllIngredientsToServer(recipe);
+        showIngredients();
     }
 
     /**
