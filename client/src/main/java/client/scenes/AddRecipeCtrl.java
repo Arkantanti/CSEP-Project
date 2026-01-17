@@ -9,7 +9,6 @@ import commons.RecipeIngredient;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
@@ -81,7 +80,14 @@ public class AddRecipeCtrl {
         // If no recipe exists yet, create it from current fields
         if (recipe == null) {
             String name = nameTextField.getText().trim();
-            if (name.isEmpty()) name = "New Recipe";
+            if (name.isEmpty()) {
+                name = "New Recipe";
+            }
+
+            if(mainCtrl.recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)){
+                mainCtrl.showError("Name Used.", "This name is already in use.");
+                return;
+            }
 
             int servings = 1;
             try {

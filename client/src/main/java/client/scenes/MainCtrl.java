@@ -269,9 +269,16 @@ public class MainCtrl {
      */
     public boolean recipeNameChecker(List<Recipe> recipeList, String s, Recipe recipeOne){
         for(Recipe recipeName : recipeList){
-            if(recipeName.getName().equals(s) && (recipeOne.getId() != recipeName.getId())){
-                return true;
+            if(recipeOne != null){
+                if(recipeName.getName().equals(s) && (recipeOne.getId() != recipeName.getId())){
+                    return true;
+                }
+            } else {
+                if(recipeName.getName().equals(s)){
+                    return true;
+                }
             }
+
         }
         return false;
     }
