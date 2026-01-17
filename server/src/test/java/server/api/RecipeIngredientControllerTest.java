@@ -37,8 +37,8 @@ class RecipeIngredientControllerTest {
         RecipeRepository recipeRepo = new RecipeRepositoryTest();
         IngredientRepository ingredientRepo = new IngredientRepositoryTest();
 
-        r1 = recipeRepo.save(new Recipe("Pancakes", 4, List.of("step 1","step 2")));
-        r2 = recipeRepo.save(new Recipe("Spaghetti", 3, List.of("step 3","step 4")));
+        r1 = recipeRepo.save(new Recipe("Pancakes", 4, List.of("step 1","step 2"),false,false,false));
+        r2 = recipeRepo.save(new Recipe("Spaghetti", 3, List.of("step 3","step 4"),false,false,false));
 
         ing1 = ingredientRepo.save(new Ingredient("Chilli", 3, 1, 1.2));
         ing2 = ingredientRepo.save(new Ingredient("Potato", 3, 1, 1.2));

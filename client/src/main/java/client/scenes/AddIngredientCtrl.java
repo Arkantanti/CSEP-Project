@@ -33,6 +33,9 @@ public class AddIngredientCtrl {
     private final AppViewCtrl appViewCtrl;
     private final MainCtrl mainCtrl;
 
+    private boolean separateWindow;
+    private boolean ingredientSaved;
+
     /**
      * Constructor for IngredientViewCtrl.
      *
@@ -50,7 +53,9 @@ public class AddIngredientCtrl {
      * This method initializes the base properties for the IngredientView
      */
     @FXML
-    public void initialize() {
+    public void initialize(boolean separateWindow) {
+        this.separateWindow = separateWindow;
+        this.ingredientSaved = false;
 
         List<TextField> fields = List.of(proteinTf,carbsTf,fatTf);
         UnaryOperator<TextFormatter.Change> filter = change -> {
@@ -132,7 +137,11 @@ public class AddIngredientCtrl {
      * Exits the ingredient adding view.
      */
     public void onCancel(){
-        mainCtrl.showDefaultView();
+        if(separateWindow) {
+            mainCtrl.closeAddIngredientWindow();
+        } else {
+            mainCtrl.showDefaultView();
+        }
     }
 
     /**
@@ -141,8 +150,21 @@ public class AddIngredientCtrl {
     @FXML
     public void onSave() {
         this.ingredient = server.addIngredient(ingredient);
-        appViewCtrl.loadIngredients();
-        mainCtrl.showIngredient(ingredient);
+        ingredientSaved = true;
+        if(separateWindow) {
+            mainCtrl.closeAddIngredientWindow();
+        } else {
+            appViewCtrl.loadIngredients();
+            mainCtrl.showIngredient(ingredient);
+        }
+    }
+
+    public boolean getIngredientSaved() {
+        return ingredientSaved;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
     }
 }
 

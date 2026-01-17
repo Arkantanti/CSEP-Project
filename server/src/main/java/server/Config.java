@@ -91,11 +91,16 @@ public class Config {
 
         // 2. Create Recipes
         Recipe pancake = recipeRepo.save(new Recipe("Pancakes", 4,
-                List.of("Mix ingredients", "Fry in pan", "Serve hot")));
+                List.of("Mix ingredients", "Fry in pan", "Serve hot"),
+                true, true, false));
+
         Recipe tomatoSoup = recipeRepo.save(new Recipe("Tomato Soup", 2,
-                List.of("Boil Water", "Add Tomato")));
+                List.of("Boil Water", "Add Tomato"),
+                true, true, true));
+
         Recipe grilledCheese = recipeRepo.save(new Recipe("Grilled Cheese", 1,
-                List.of("Toast Bread", "Melt Cheese")));
+                List.of("Toast Bread", "Melt Cheese"),
+                true, true, false));
 
         // 3. Create RecipeIngredients for Pancakes
         recipeIngredientRepo.save(new RecipeIngredient(pancake,
@@ -182,45 +187,45 @@ public class Config {
     private Recipe[] seedLargeRecipes(RecipeRepository recipeRepo) {
         Recipe[] recipes = new Recipe[20];
         recipes[0] = recipeRepo.save(new Recipe("Pancakes", 4,
-                List.of("Mix ingredients", "Fry in pan", "Serve hot")));
+                List.of("Mix ingredients", "Fry in pan", "Serve hot"), true, true, false));
         recipes[1] = recipeRepo.save(new Recipe("Tomato Soup", 2,
-                List.of("Boil Water", "Add Tomato")));
+                List.of("Boil Water", "Add Tomato"), true, true, true));
         recipes[2] = recipeRepo.save(new Recipe("Grilled Cheese", 1,
-                List.of("Toast Bread", "Melt Cheese")));
+                List.of("Toast Bread", "Melt Cheese"), true, true, false));
         recipes[3] = recipeRepo.save(new Recipe("Caesar Salad", 2,
-                List.of("Chop lettuce", "Add dressing", "Top with croutons")));
+                List.of("Chop lettuce", "Add dressing", "Top with croutons"), false, true, false));
         recipes[4] = recipeRepo.save(new Recipe("Spaghetti Carbonara", 4,
-                List.of("Boil pasta", "Fry bacon", "Mix with eggs and cheese", "Combine and serve")));
+                List.of("Boil pasta", "Fry bacon", "Mix with eggs and cheese", "Combine and serve"), false, false, false));
         recipes[5] = recipeRepo.save(new Recipe("Chicken Stir Fry", 3,
-                List.of("Cut chicken", "Heat oil in wok", "Stir fry chicken and vegetables", "Add soy sauce")));
+                List.of("Cut chicken", "Heat oil in wok", "Stir fry chicken and vegetables", "Add soy sauce"), false, true, false));
         recipes[6] = recipeRepo.save(new Recipe("Beef Stew", 6,
-                List.of("Brown beef", "Add vegetables", "Add broth", "Simmer for 2 hours")));
+                List.of("Brown beef", "Add vegetables", "Add broth", "Simmer for 2 hours"), false, false, false));
         recipes[7] = recipeRepo.save(new Recipe("Mashed Potatoes", 4,
-                List.of("Boil potatoes", "Mash with butter and milk", "Season with salt and pepper")));
+                List.of("Boil potatoes", "Mash with butter and milk", "Season with salt and pepper"), true, true, false));
         recipes[8] = recipeRepo.save(new Recipe("Chocolate Cake", 8,
-                List.of("Mix dry ingredients", "Add wet ingredients", "Bake at 180C for 30 minutes")));
+                List.of("Mix dry ingredients", "Add wet ingredients", "Bake at 180C for 30 minutes"), false, false, false));
         recipes[9] = recipeRepo.save(new Recipe("Tuna Salad", 2,
-                List.of("Mix tuna with mayo", "Add chopped vegetables", "Serve on lettuce")));
+                List.of("Mix tuna with mayo", "Add chopped vegetables", "Serve on lettuce"), true, true, false));
         recipes[10] = recipeRepo.save(new Recipe("Mushroom Risotto", 4,
-                List.of("Saute mushrooms", "Add rice", "Gradually add broth", "Stir continuously")));
+                List.of("Saute mushrooms", "Add rice", "Gradually add broth", "Stir continuously"), false, false, false)); // Often has butter/parm
         recipes[11] = recipeRepo.save(new Recipe("Greek Salad", 4,
-                List.of("Chop vegetables", "Add olives and feta", "Dress with olive oil and lemon")));
+                List.of("Chop vegetables", "Add olives and feta", "Dress with olive oil and lemon"), true, true, false));
         recipes[12] = recipeRepo.save(new Recipe("Fried Rice", 3,
-                List.of("Cook rice", "Fry with vegetables", "Add soy sauce and egg")));
+                List.of("Cook rice", "Fry with vegetables", "Add soy sauce and egg"), true, true, false));
         recipes[13] = recipeRepo.save(new Recipe("Eggs Benedict", 2,
-                List.of("Toast bread", "Poach eggs", "Make hollandaise sauce", "Assemble")));
+                List.of("Toast bread", "Poach eggs", "Make hollandaise sauce", "Assemble"), false, false, false));
         recipes[14] = recipeRepo.save(new Recipe("French Toast", 2,
-                List.of("Whisk eggs and milk", "Dip bread", "Fry until golden")));
+                List.of("Whisk eggs and milk", "Dip bread", "Fry until golden"), true, true, false));
         recipes[15] = recipeRepo.save(new Recipe("Garlic Bread", 4,
-                List.of("Mix butter with garlic", "Spread on bread", "Bake until crispy")));
+                List.of("Mix butter with garlic", "Spread on bread", "Bake until crispy"), true, true, false));
         recipes[16] = recipeRepo.save(new Recipe("Chicken Soup", 6,
-                List.of("Boil chicken", "Add vegetables", "Season and simmer")));
+                List.of("Boil chicken", "Add vegetables", "Season and simmer"), true, false, false));
         recipes[17] = recipeRepo.save(new Recipe("Bacon Wrapped Chicken", 4,
-                List.of("Wrap chicken with bacon", "Season", "Bake at 200C for 25 minutes")));
+                List.of("Wrap chicken with bacon", "Season", "Bake at 200C for 25 minutes"), false, false, false));
         recipes[18] = recipeRepo.save(new Recipe("Spinach Omelette", 1,
-                List.of("Beat eggs", "Saute spinach", "Pour eggs and fold")));
+                List.of("Beat eggs", "Saute spinach", "Pour eggs and fold"), true, true, false));
         recipes[19] = recipeRepo.save(new Recipe("Carrot Cake", 10,
-                List.of("Grate carrots", "Mix with batter", "Bake at 175C for 40 minutes")));
+                List.of("Grate carrots", "Mix with batter", "Bake at 175C for 40 minutes"), false, false, false)); // Eggs usually
         return recipes;
     }
 

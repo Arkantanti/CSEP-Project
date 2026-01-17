@@ -23,7 +23,7 @@ class RecipeControllerTest {
     @Test
     void searchRecipes_ValidQuery_ReturnsMatches() {
         // Setup: Add a specific recipe to search for
-        Recipe applePie = new Recipe("Apple Pie", 4, List.of("Bake"));
+        Recipe applePie = new Recipe("Apple Pie", 4, List.of("Bake"), true, false, true);
         repo.save(applePie);
 
         // Test: Search for "Apple"
@@ -48,9 +48,9 @@ class RecipeControllerTest {
         repo = new RecipeRepositoryTest();
         controller = new RecipeController(repo);// uncommit this to test
 
-        r1 = new Recipe("Pancakes", 2, null);
-        r2 = new Recipe("Tomato Soup", 4, null);
-        r3 = new Recipe("Burrito", 3, null);
+        r1 = new Recipe("Pancakes", 2, null, true, true, false);
+        r2 = new Recipe("Tomato Soup", 4, null, true, true, true);
+        r3 = new Recipe("Burrito", 3, null, false, true, false);
 
         repo.save(r1);
         repo.save(r2);
@@ -74,7 +74,8 @@ class RecipeControllerTest {
 
     @Test
     void addRecipe_ValidRecipe_ReturnsSaved() {
-        Recipe r4 = new Recipe("Salad", 2, List.of("step1"));
+        // Change "" to "Salad"
+        Recipe r4 = new Recipe("Salad", 2, List.of("step1"), false, false, false);
 
         ResponseEntity<Recipe> result = controller.add(r4);
         System.out.println(result);
@@ -84,7 +85,7 @@ class RecipeControllerTest {
 
     @Test
     void addRecipe_InvalidRecipe_ReturnsBad() {
-        Recipe r4 = new Recipe("", 2, List.of("step1"));
+        Recipe r4 = new Recipe("", 2, List.of("step1"), false, false, false);
 
         ResponseEntity<Recipe> result = controller.add(r4);
         assertEquals(400, result.getStatusCode().value());
@@ -92,7 +93,7 @@ class RecipeControllerTest {
 
     @Test
     void updateRecipe_Valid() {
-        Recipe updated = new Recipe("Better Pancakes", 2, List.of("", "here"));
+        Recipe updated = new Recipe("Better Pancakes", 2, List.of("", "here"), true, true, false);
         ResponseEntity<Recipe> result = controller.update(r1.getId(), updated);
 
         assertEquals(200, result.getStatusCode().value());
@@ -101,7 +102,7 @@ class RecipeControllerTest {
 
     @Test
     void updateRecipe_InvalidId_ReturnsNotFound() {
-        Recipe updated = new Recipe("X", 2, List.of("hre"));
+        Recipe updated = new Recipe("X", 2, List.of("hre"), false, false, false);
 
         ResponseEntity<Recipe> result = controller.update(999, updated);
 
