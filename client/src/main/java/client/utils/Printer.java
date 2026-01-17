@@ -5,6 +5,7 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
+import client.model.ShoppingListItem;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import commons.Unit;
@@ -45,6 +46,21 @@ public class Printer {
         }
         output.append("\n\nHAVE A GOOD MEAL!!");
 
+        return output.toString();
+    }
+
+    /**
+     * Transforms a shopping list into a String with markdown notation.
+     *
+     * @param items list of shopping list items to be saved in markdown
+     * @return String with markdown formatted description of the shopping list
+     */
+    public String createShoppingListOutputString(List<ShoppingListItem> items) {
+        StringBuilder output = new StringBuilder();
+        output.append("## Shopping List\n\n");
+        for (ShoppingListItem item : items) {
+            output.append(" - ").append(item.formatItem()).append("\n");
+        }
         return output.toString();
     }
 
