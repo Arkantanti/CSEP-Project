@@ -122,6 +122,6 @@ public class Ingredient implements Showable{
      * @return number of calories of 1g of this Ingredient
      */
     public double calculateCalories() {
-        return 9*getFat() +  4*getProtein() + 4*getCarbs();
+        return (9*getFat() +  4*getProtein() + 4*getCarbs())/100;
     }
 }

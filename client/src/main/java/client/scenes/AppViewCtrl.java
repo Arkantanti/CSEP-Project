@@ -99,7 +99,7 @@ public class AppViewCtrl implements Initializable {
 
         // Button Actions (Preserving logic from "Theirs")
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
-        refreshButton.setOnAction(e -> refresh()); // Calls the public refresh method
+        refreshButton.setOnAction(e -> refreshData()); // Calls the public refresh method
 
         recipesButton.setOnAction(e -> switchToMode(ViewMode.RECIPES));
         favoritesButton.setOnAction(e -> switchToMode(ViewMode.FAVORITES));
@@ -182,21 +182,13 @@ public class AppViewCtrl implements Initializable {
     }
 
     /**
-     * Refreshes the current view.
-     * <p>
-     * Delegates to {@link #refreshData()}. Added for compatibility with other controllers.
-     */
-    public void refresh() {
-        refreshData();
-    }
-
-    /**
      * Refreshes the data displayed in the list based on the current mode and search query.
      * <p>
      * This method delegates the actual data fetching to {@link RecipeService} or
      * {@link IngredientService} and ensures the UI is updated on the JavaFX Application Thread.
      */
     public void refreshData() {
+        itemsList.getSelectionModel().clearSelection();
         String query = (searchField != null) ? searchField.getText() : "";
         boolean isSearch = (query != null && !query.isBlank());
 
@@ -207,15 +199,18 @@ public class AppViewCtrl implements Initializable {
                 case FAVORITES:
                     items = isSearch ? recipeService.searchFavoriteRecipes(query)
                             : recipeService.getFavoriteRecipes();
+                    additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
                     break;
                 case INGREDIENTS:
                     items = isSearch ? ingredientService.searchIngredients(query)
                             : ingredientService.getAllIngredients();
+                    additionButton.setOnAction(e -> mainCtrl.showAddIngredient());
                     break;
                 case RECIPES:
                 default:
                     items = isSearch ? recipeService.searchRecipes(query)
                             : recipeService.getAllRecipes();
+                    additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
                     break;
             }
 

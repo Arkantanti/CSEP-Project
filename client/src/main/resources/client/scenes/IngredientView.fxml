@@ -53,7 +53,7 @@
                   </Button>
                </children>
             </HBox>
-             <Label prefHeight="28.0" prefWidth="113.0" text="Nutrients:">
+             <Label prefHeight="28.0" prefWidth="200.0" text="Nutrients (g/100g):">
                  <font>
                      <Font name="System Bold" size="19.0" />
                  </font>
@@ -86,7 +86,7 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="carbsLabel" maxWidth="1.7976931348623157E308" styleClass="second-info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
+                        <TextField fx:id="carbsTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                   <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -103,7 +103,7 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="proteinLabel" maxWidth="1.7976931348623157E308" styleClass="second-info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
+                        <TextField fx:id="proteinTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                   <GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -120,7 +120,7 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="fatLabel" maxWidth="1.7976931348623157E308" styleClass="second-info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1">
+                        <TextField fx:id="fatTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1">
                            <GridPane.margin>
                               <Insets right="5.0" />
                            </GridPane.margin></TextField>
@@ -159,12 +159,12 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="usedCountLabel" maxWidth="60.0" styleClass="second-info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
+                        <Label fx:id="usedCountLabel" maxWidth="60.0" styleClass="info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                   <GridPane GridPane.columnIndex="1">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
@@ -176,7 +176,7 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="kcalLabel" maxWidth="1.7976931348623157E308" styleClass="second-info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1">
+                        <Label fx:id="kcalLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1">
                            <GridPane.margin>
                               <Insets right="5.0" />
                            </GridPane.margin></Label>

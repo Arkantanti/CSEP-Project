@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxWidth="1.7976931348623157E308" prefHeight="0.0" spacing="5" styleClass="recipe-line" stylesheets="/styles/editable-item.css" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.RecipeIngredientCtrl">
+<HBox maxWidth="1.7976931348623157E308" prefHeight="0.0" spacing="5" styleClass="recipe-line" stylesheets="/styles/editable-item.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.RecipeIngredientCtrl">
 
     <children>
       <HBox fx:id="defaultView" prefHeight="100.0" prefWidth="200.0">
@@ -48,6 +48,14 @@
                   <Insets right="10.0" top="2.0" />
                </HBox.margin>
             </ComboBox>
+            <Button fx:id="addIngredientButton" minHeight="30.0" minWidth="30.0" onAction="#onAddIngredient" prefHeight="30.0" prefWidth="30.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="+" textFill="#2f06ff">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="2.0" top="2.0" />
+               </HBox.margin>
+            </Button>
               <Button fx:id="confirmButton" minHeight="30.0" minWidth="30.0" onAction="#onConfirmClicked" prefHeight="30.0" prefWidth="30.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✔" textFill="LIME">
                <font>
                   <Font size="16.0" />

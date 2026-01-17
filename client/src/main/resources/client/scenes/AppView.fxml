@@ -26,7 +26,7 @@
                   <Font size="25.0" />
                </font>
             </Label>
-            <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#refresh" prefHeight="23.0" prefWidth="14.0" text="↺">
+            <Button fx:id="refreshButton" mnemonicParsing="false" prefHeight="23.0" prefWidth="14.0" text="↺">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>

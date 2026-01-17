@@ -24,6 +24,7 @@ import commons.RecipeIngredient;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -37,6 +38,7 @@ import java.util.List;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage ingredientAddStage;
     private Stage shoppingListStage;
     private Stage shoppingListConfirmationStage;
 
@@ -134,6 +136,17 @@ public class MainCtrl {
     }
 
     /**
+     * Sets the content to the addIngredient.fxml.
+     */
+
+    public void showAddIngredient() {
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+                "client", "scenes", "AddIngredient.fxml");
+        addIngredientView.getKey().initialize(false);
+        appViewCtrl.setContent(addIngredientView.getValue());
+    }
+
+    /**
      * The function to show the addRecipe fxml file
      */
     public void showAddRecipe() {
@@ -187,7 +200,8 @@ public class MainCtrl {
      */
     public void openShoppingList(){
         if (shoppingListStage == null || shoppingListCtrl == null) {
-            Pair<ShoppingListCtrl, Parent> shoppingListView = fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
+            Pair<ShoppingListCtrl, Parent> shoppingListView =
+                    fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
             shoppingListStage = new Stage();
             shoppingListStage.setTitle("Shopping List");
             shoppingListStage.setScene(new Scene(shoppingListView.getValue()));
@@ -231,14 +245,16 @@ public class MainCtrl {
     public AddRecipeCtrl getAddRecipeCtrl() {return addRecipeCtrl; }
 
     /**
-     * Method to load recipes from the main controller so that the main controller acts as the main orchestrator.
-     * This method is also used by the PollingService to reload recipes trough the main controller.
+     * Method to load recipes from the main controller so that
+     * the main controller acts as the main orchestrator.
+     * This method is also used by the PollingService to reload recipes through the main controller.
      */
     public void reloadRecipes() {
         if (appViewCtrl != null) {
             appViewCtrl.loadRecipes();
         } else {
-            System.out.println("Tried to reload recipes from the main controller, but app view controller was not initialized.");
+            System.out.println("Tried to reload recipes from the main controller, " +
+                    "but app view controller was not initialized.");
         }
     }
 
@@ -250,6 +266,38 @@ public class MainCtrl {
             pollingService.shutdown();
         } else {
             System.out.println("Tried to shutdown the polling service but it was not initialized.");
+        }
+    }
+
+    /**
+     * Opens a new window with addIngredients view.
+     */
+    public Ingredient showAddIngredientsNewWindow() {
+        ingredientAddStage = new Stage();
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+                "client", "scenes", "AddIngredient.fxml");
+        AddIngredientCtrl addIngredientCtrl = addIngredientView.getKey();
+        addIngredientCtrl.initialize(true);
+        ingredientAddStage.setScene(new Scene(addIngredientView.getValue()));
+        ingredientAddStage.initModality(Modality.APPLICATION_MODAL);
+        ingredientAddStage.initOwner(primaryStage);
+        ingredientAddStage.setTitle("Add Ingredient");
+        ingredientAddStage.showAndWait();
+
+        if(addIngredientCtrl.getIngredientSaved()) {
+            return addIngredientCtrl.getIngredient();
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * Closes the secondary stage.
+     */
+    public void closeAddIngredientWindow() {
+        if(ingredientAddStage != null) {
+            ingredientAddStage.close();
         }
     }
 
