@@ -109,6 +109,7 @@ public class AddRecipeCtrl {
             boolean isCheap = cheapCheckBox.isSelected();
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
+
             if (isCloneMode) {
                 recipe = new Recipe(name, servings, steps, isCheap, isFast, isVegan);
             } else {
@@ -262,7 +263,7 @@ public class AddRecipeCtrl {
         this.isCloneMode = true;
 
         // Set the values that have changed to the clone
-        nameTextField.setText(originalRecipe.getName());
+        nameTextField.setText(originalRecipe.getName() + " - Clone");
         servingsArea.setText(String.valueOf(originalRecipe.getServings()));
         preparationsArea.setText(String.join("\n", originalRecipe.getPreparationSteps()));
         cheapCheckBox.setSelected(originalRecipe.isCheap());
@@ -270,7 +271,7 @@ public class AddRecipeCtrl {
         veganCheckBox.setSelected(originalRecipe.isVegan());
 
         this.recipe = new Recipe(
-                originalRecipe.getName(),
+                (originalRecipe.getName() + " - Clone"),
                 originalRecipe.getServings(),
                 new ArrayList<>(originalRecipe.getPreparationSteps()),
                 originalRecipe.isCheap(),
