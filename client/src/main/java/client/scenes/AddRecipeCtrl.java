@@ -84,7 +84,7 @@ public class AddRecipeCtrl {
     @FXML
     private void onAddRecipeIngredient(){
         // If no recipe exists yet, create it from current fields
-        if (recipe == null) {
+        if (recipe == null || isCloneMode) {
             String name = nameTextField.getText().trim();
             if (name.isEmpty()) {
                 name = "New Recipe";
@@ -111,7 +111,11 @@ public class AddRecipeCtrl {
             boolean isVegan = veganCheckBox.isSelected();
 
             if (isCloneMode) {
-                recipe = new Recipe(name, servings, steps, isCheap, isFast, isVegan);
+                recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
+                isCloneMode = false;
+
+                saveAllIngredientsToServer(recipe);
+                showIngredients();
             } else {
                 recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
             }
