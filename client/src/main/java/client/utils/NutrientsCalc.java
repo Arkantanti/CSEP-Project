@@ -12,7 +12,8 @@ public class NutrientsCalc {
     /**
      * Logic for calculating the amount of calories for this Recipe.
      * This logic assumes that 1g = 1mL.
-     * @return amount of calories or 0.0 in case of invalid ingredient's mass
+     * @param ingredients ingredient list with calculateCalories method returning in unit kcal/g
+     * @return amount of calories or 0.0 in case of invalid ingredient's mass (kcal/100g)
      */
     public double calculateCaloriesForRecipe(List<RecipeIngredient> ingredients) {
         double totalCalories = 0;
@@ -54,9 +55,10 @@ public class NutrientsCalc {
             double mass = ri.getUnit() == Unit.GRAM ? amount : amount*1000;
             totalCarbs += ingredient.getCarbs() * mass;
             totalProtein += ingredient.getProtein() * mass;
-            totalFat += ingredient.getProtein() * mass;
+            totalFat += ingredient.getFat() * mass;
             totalMass += mass;
         }
+        if (totalMass <= 0.0) return new double[]{0.0, 0.0, 0.0};
         totalCarbs = totalCarbs/totalMass;
         totalProtein = totalProtein/totalMass;
         totalFat = totalFat/totalMass;
