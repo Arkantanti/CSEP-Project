@@ -1,9 +1,6 @@
 package client.services;
 
-import client.utils.ServerUtils;
-import com.google.inject.Inject;
 import commons.Ingredient;
-import commons.Recipe;
 import commons.RecipeIngredient;
 import commons.Unit;
 
@@ -11,16 +8,6 @@ import java.util.List;
 
 public class NutrientsCalc {
 
-    private final ServerUtils server;
-
-    /**
-     * Constructor.
-     * @param serverUtils Reference to the serverUtils class.
-     */
-    @Inject
-    public NutrientsCalc(ServerUtils serverUtils) {
-        this.server = serverUtils;
-    }
 
     /**
      * Logic for calculating the amount of calories for this Recipe.
