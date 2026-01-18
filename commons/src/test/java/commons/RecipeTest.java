@@ -18,9 +18,9 @@ class RecipeTest {
     @BeforeEach
     void setUp() {
         List<String> steps = new ArrayList<>(Arrays.asList("Step 1", "Step 2"));
-        recipe = new Recipe("Cake", 4, steps);
-        recipe2 = new Recipe("Bread", 2, steps);
-        recipeSame = new Recipe("Cake", 4, new ArrayList<>(steps));
+        recipe = new Recipe("Cake", 4, steps, false, false, false);
+        recipe2 = new Recipe("Bread", 2, steps, true, true, true);
+        recipeSame = new Recipe("Cake", 4, new ArrayList<>(steps), false, false, false);
     }
 
     @Test
@@ -94,5 +94,26 @@ class RecipeTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertTrue(result.contains("Cake"));
+    }
+    @Test
+    void testBooleans() {
+        assertFalse(recipe.isCheap());
+        assertFalse(recipe.isFast());
+        assertFalse(recipe.isVegan());
+
+        assertTrue(recipe2.isCheap());
+        assertTrue(recipe2.isFast());
+        assertTrue(recipe2.isVegan());
+    }
+
+    @Test
+    void setBooleans() {
+        recipe.setCheap(true);
+        recipe.setFast(true);
+        recipe.setVegan(true);
+
+        assertTrue(recipe.isCheap());
+        assertTrue(recipe.isFast());
+        assertTrue(recipe.isVegan());
     }
 }

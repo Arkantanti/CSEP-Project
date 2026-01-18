@@ -26,6 +26,12 @@ public class AddRecipeCtrl {
     private Button saveButton;
     @FXML
     private Button cancelButton;
+    @FXML
+    private CheckBox cheapCheckBox;
+    @FXML
+    private CheckBox fastCheckBox;
+    @FXML
+    private CheckBox veganCheckBox;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -91,11 +97,13 @@ public class AddRecipeCtrl {
             if (!preparationsArea.getText().isEmpty()) {
                 steps = Arrays.asList(preparationsArea.getText().split("\\r?\\n"));
             }
-
+            boolean isCheap = cheapCheckBox.isSelected();
+            boolean isFast = fastCheckBox.isSelected();
+            boolean isVegan = veganCheckBox.isSelected();
             if (isCloneMode) {
-                recipe = new Recipe(name, servings, steps);
+                recipe = new Recipe(name, servings, steps, isCheap, isFast, isVegan);
             } else {
-                recipe = server.add(new Recipe(name, servings, steps));
+                recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
             }
         }
 
@@ -116,6 +124,9 @@ public class AddRecipeCtrl {
         try {
             // Make sure the inputs are correct
             String name = nameTextField.getText().trim();
+            boolean isCheap = cheapCheckBox.isSelected();
+            boolean isFast = fastCheckBox.isSelected();
+            boolean isVegan = veganCheckBox.isSelected();
             if (name.isBlank()) {
                 showError("Input Error", "Recipe name cannot be empty.");
                 return;
@@ -145,12 +156,15 @@ public class AddRecipeCtrl {
             // Check if a recipe exists before adding the ingredients.
             if (recipe == null) {
                 // If not first create the recipe.
-                recipe = server.add(new Recipe(name, servings, preparationSteps));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
             } else if (isCloneMode && recipe.getId() == 0) {
-                recipe = server.add(new Recipe(name, servings, preparationSteps));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
                 isCloneMode = false;
             } else {
                 // Update the existing recipe.
+                recipe.setCheap(isCheap);
+                recipe.setFast(isFast);
+                recipe.setVegan(isVegan);
                 recipe.setName(name);
                 recipe.setServings(servings);
                 recipe.setPreparationSteps(preparationSteps);
@@ -248,13 +262,18 @@ public class AddRecipeCtrl {
         nameTextField.setText(originalRecipe.getName());
         servingsArea.setText(String.valueOf(originalRecipe.getServings()));
         preparationsArea.setText(String.join("\n", originalRecipe.getPreparationSteps()));
+        cheapCheckBox.setSelected(originalRecipe.isCheap());
+        fastCheckBox.setSelected(originalRecipe.isFast());
+        veganCheckBox.setSelected(originalRecipe.isVegan());
 
         this.recipe = new Recipe(
                 originalRecipe.getName(),
                 originalRecipe.getServings(),
-                new ArrayList<>(originalRecipe.getPreparationSteps())
+                new ArrayList<>(originalRecipe.getPreparationSteps()),
+                originalRecipe.isCheap(),
+                originalRecipe.isFast(),
+                originalRecipe.isVegan()
         );
-
         // Load and clone the ingredients
         cloneIngredients(originalRecipe);
     }
@@ -269,6 +288,9 @@ public class AddRecipeCtrl {
         ingredientsContainer.getChildren().clear();
         recipe = null;
         isCloneMode = false;
+        cheapCheckBox.setSelected(false);
+        fastCheckBox.setSelected(false);
+        veganCheckBox.setSelected(false);
     }
 
     /**
