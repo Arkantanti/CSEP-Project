@@ -67,8 +67,6 @@
                         <Insets left="40.0" />
                      </HBox.margin>
                   </Button>
-               </children>
-                <children>
                     <Button fx:id="deleteButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" onAction="#deleteRecipe" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="🗑">
                         <font>
                             <Font size="22.0" />
