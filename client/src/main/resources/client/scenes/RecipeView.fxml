@@ -160,7 +160,7 @@
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="servingsScalingInput" onAction="#onServingsEnter" prefHeight="26.0" prefWidth="151.0" promptText="Number of portions" />
+                  <TextField fx:id="servingsScalingInput" onAction="#applyServingsFromField" prefHeight="26.0" prefWidth="151.0" promptText="Number of portions" />
                   <Button fx:id="resetServingsButton" mnemonicParsing="false" onAction="#resetServingsScaling" text="Reset">
                      <HBox.margin>
                         <Insets left="10.0" />
