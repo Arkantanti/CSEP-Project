@@ -1,4 +1,4 @@
-package client.services;
+package client.utils;
 
 import commons.Ingredient;
 import commons.RecipeIngredient;

@@ -1,16 +1,12 @@
 package client.scenes;
 
-import client.services.NutrientsCalc;
+import client.utils.NutrientsCalc;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
-import commons.Ingredient;
 import commons.Recipe;
-import commons.RecipeIngredient;
-import commons.Unit;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Label;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;

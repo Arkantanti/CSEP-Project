@@ -1,16 +1,13 @@
 package client.scenes;
 
 import client.MyFXML;
-import client.services.NutrientsCalc;
+import client.utils.NutrientsCalc;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
-import commons.Ingredient;
 import commons.Recipe;
-import commons.Unit;
 import commons.RecipeIngredient;
-import commons.Unit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,30 +26,21 @@ import java.util.Optional;
 
 public class RecipeViewCtrl {
 
-    @FXML
-    private Button titleEditButton;
-    @FXML
-    private TextField nameTextField;
-    @FXML
-    private Label nameLabel;
-    @FXML
-    private VBox ingredientsContainer;
-    @FXML
-    private VBox preparationsContainer;
-    @FXML
-    private Button printButton;
-    @FXML
-    private TextField servingsScalingInput;
-    @FXML
-    private Button favoriteButton;
-    @FXML
-    private Label caloriesDisplay;
-    @FXML
-    private CheckBox cheapCheckBox;
-    @FXML
-    private CheckBox fastCheckBox;
-    @FXML
-    private CheckBox veganCheckBox;
+    @FXML private Button titleEditButton;
+    @FXML private TextField nameTextField;
+    @FXML private Label nameLabel;
+    @FXML private VBox ingredientsContainer;
+    @FXML private VBox preparationsContainer;
+    @FXML private Button printButton;
+    @FXML private TextField servingsScalingInput;
+    @FXML private Button favoriteButton;
+    @FXML private Label caloriesDisplay;
+    @FXML private CheckBox cheapCheckBox;
+    @FXML private CheckBox fastCheckBox;
+    @FXML private CheckBox veganCheckBox;
+    @FXML private Label fatLabel;
+    @FXML private Label carbsLabel;
+    @FXML private Label proteinLabel;
 
     private MyFXML fxml;
     private final ServerUtils server;

@@ -16,11 +16,10 @@
 package client;
 
 import client.config.Config;
-import client.services.NutrientsCalc;
+import client.utils.NutrientsCalc;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
-import client.scenes.AppViewCtrl;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
