@@ -35,4 +35,31 @@ public class NutrientsCalc {
         if(totalMass <= 0.0) return 0.0;
         return 100*totalCalories/totalMass;
     }
+
+    /**
+     * Calculates the total amounts of nutrients for a list of ingredients.
+     * @param ingredients List of RecipeIngredients.
+     * @return 3 element array with double sums.
+     */
+    public double[] calculateNutrients(List<RecipeIngredient> ingredients) {
+        double totalCarbs = 0;
+        double totalProtein = 0;
+        double totalFat = 0;
+        double totalMass = 0;
+        for(RecipeIngredient ri: ingredients) {
+            if(ri == null) continue;
+            if(ri.getIngredient() == null || ri.getUnit() == Unit.CUSTOM) continue;
+            double amount = ri.getAmount();
+            Ingredient ingredient = ri.getIngredient();
+            double mass = ri.getUnit() == Unit.GRAM ? amount : amount*1000;
+            totalCarbs += ingredient.getCarbs() * mass;
+            totalProtein += ingredient.getProtein() * mass;
+            totalFat += ingredient.getProtein() * mass;
+            totalMass += mass;
+        }
+        totalCarbs = totalCarbs/totalMass;
+        totalProtein = totalProtein/totalMass;
+        totalFat = totalFat/totalMass;
+        return new double[]{totalCarbs, totalProtein, totalFat};
+    }
 }

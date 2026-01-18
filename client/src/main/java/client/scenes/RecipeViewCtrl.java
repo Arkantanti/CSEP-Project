@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class RecipeViewCtrl {
@@ -124,7 +125,10 @@ public class RecipeViewCtrl {
         updateFavoriteButton();
         rerenderIngredientsScaled();
         updateCaloriesDisplay();
-
+        double[] nutrients = nutrientsCalc.calculateNutrients(ingredients);
+        carbsLabel.setText(String.format(Locale.US, "%.2f", nutrients[0]));
+        proteinLabel.setText(String.format(Locale.US, "%.2f", nutrients[1]));
+        fatLabel.setText(String.format(Locale.US, "%.2f", nutrients[2]));
     }
 
     /**
