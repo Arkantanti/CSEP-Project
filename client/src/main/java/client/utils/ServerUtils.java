@@ -287,7 +287,8 @@ public class ServerUtils {
             throw new IllegalArgumentException("Recipe Ingredient to add must have a valid ID");
         }
         if (recipeIngredient.getId() < 0) {
-            throw new IllegalArgumentException("Recipe Ingredient to add must have a valid ID, currently "
+            throw new IllegalArgumentException("Recipe Ingredient" +
+                    " to add must have a valid ID, currently "
                     + recipeIngredient.getId());
         }
         try {
@@ -295,7 +296,8 @@ public class ServerUtils {
                     .target(serverURL)
                     .path("api/recipeingredients/")
                     .request(APPLICATION_JSON)
-                    .post(Entity.entity(recipeIngredient, APPLICATION_JSON), RecipeIngredient.class);
+                    .post(Entity.entity(recipeIngredient,
+                            APPLICATION_JSON), RecipeIngredient.class);
         }
         catch (ProcessingException e) {
             return null;

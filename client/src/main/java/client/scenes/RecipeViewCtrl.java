@@ -213,7 +213,8 @@ public class RecipeViewCtrl {
             }
 
             // Check Tags Change
-            if (recipe.isCheap() != isCheap || recipe.isFast() != isFast || recipe.isVegan() != isVegan) {
+            if (recipe.isCheap() != isCheap
+                    || recipe.isFast() != isFast || recipe.isVegan() != isVegan) {
                 recipe.setCheap(isCheap);
                 recipe.setFast(isFast);
                 recipe.setVegan(isVegan);
@@ -250,7 +251,8 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * Loads ingredients from the server into the ingredients container using EditableItem components.
+     * Loads ingredients from the
+     * server into the ingredients container using EditableItem components.
      */
     private void loadIngredients() {
         ingredientsContainer.getChildren().clear();
@@ -514,11 +516,13 @@ public class RecipeViewCtrl {
     public void addToShoppingList(){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Adding to shopping list");
-        alert.setHeaderText("You are about to add the ingredients for " + targetServings + " servings of "
+        alert.setHeaderText("You are about t" +
+                "o add the ingredients for " + targetServings + " servings of "
                 + recipe.getName() + " to the shopping list.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            this.shoppingListService.addIngredients(server.getRecipeIngredients(this.recipe.getId()),
+            this.shoppingListService.addIngredients(
+                    server.getRecipeIngredients(this.recipe.getId()),
                     targetServings/baseServings, recipe.getName());
             Alert notif = new Alert(Alert.AlertType.INFORMATION);
             notif.setTitle("Success");
@@ -565,7 +569,8 @@ public class RecipeViewCtrl {
             Ingredient ingredient = ri.getIngredient();
             totalCalories +=
                     ri.getUnit() == Unit.GRAM ?
-                            ingredient.calculateCalories()*amount : ingredient.calculateCalories()*amount*1000;
+                            ingredient.calculateCalories()*amount
+                            : ingredient.calculateCalories()*amount*1000;
             totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*1000;
         }
         if(totalMass <= 0.0) return 0.0;

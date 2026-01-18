@@ -26,7 +26,7 @@ import client.config.Config;
 import client.config.ConfigManager;
 import com.google.inject.Injector;
 
-import client.scenes.AppViewCtrl;
+
 import client.scenes.MainCtrl;
 import client.utils.FavoritesManager;
 import client.utils.ServerUtils;
@@ -97,7 +97,8 @@ public class Main extends Application {
         var mainCtrl = injector.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, fxml, favoritesManager);
 
-        // Shutdown handler to clean up polling service or additional thread services that will be implementend in the future.
+        // Shutdown handler to clean up polling
+        // service or additional thread services that will be implementend in the future.
         primaryStage.setOnCloseRequest(event -> {
             mainCtrl.shutdown();
             Platform.exit();

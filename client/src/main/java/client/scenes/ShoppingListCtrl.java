@@ -52,7 +52,8 @@ public class ShoppingListCtrl {
      * @param printer the printer utility for PDF generation
      */
     @Inject
-    public ShoppingListCtrl(ShoppingListService shoppingListService, MainCtrl mainCtrl, Printer printer) {
+    public ShoppingListCtrl(ShoppingListService shoppingListService,
+                            MainCtrl mainCtrl, Printer printer) {
         this.shoppingListService = shoppingListService;
         this.mainCtrl = mainCtrl;
         this.printer = printer;
@@ -140,7 +141,8 @@ public class ShoppingListCtrl {
             return;
         }
         try {
-            String markdown = printer.createShoppingListOutputString(shoppingListService.getShoppingList());
+            String markdown = printer.createShoppingListOutputString(
+                    shoppingListService.getShoppingList());
             printer.markdownToPDF(path, markdown);
         } catch (IOException e) {
             e.printStackTrace();

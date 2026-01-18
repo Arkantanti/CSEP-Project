@@ -57,7 +57,8 @@ public class ShoppingListElementCtrl {
      * @param shoppingListService the shopping list service
      */
     @Inject
-    public ShoppingListElementCtrl(ServerUtils serverUtils, ShoppingListService shoppingListService) {
+    public ShoppingListElementCtrl(ServerUtils serverUtils,
+                                   ShoppingListService shoppingListService) {
         this.serverUtils = serverUtils;
         this.shoppingListService = shoppingListService;
     }
@@ -146,7 +147,8 @@ public class ShoppingListElementCtrl {
             updateUIForTextMode();
         } else {
             // load data to show
-            if (shoppingListItem.getUnit() != Unit.CUSTOM || shoppingListItem.getInformalUnit() == null) {
+            if (shoppingListItem.getUnit() != Unit.CUSTOM
+                    || shoppingListItem.getInformalUnit() == null) {
                 amountField.setText(String.valueOf(shoppingListItem.getAmount()));
             }
             else {
@@ -208,9 +210,11 @@ public class ShoppingListElementCtrl {
             textLabel.setText(text);
         } else {
             // Ingredient item
-            Ingredient selectedIngredient = ingredientComboBox.getSelectionModel().getSelectedItem();
+            Ingredient selectedIngredient =
+                    ingredientComboBox.getSelectionModel().getSelectedItem();
             if (selectedIngredient == null) {
-                ingredientComboBox.styleProperty().set("-fx-border-color: red; -fx-border-radius: 4;");
+                ingredientComboBox.styleProperty().set(
+                        "-fx-border-color: red; -fx-border-radius: 4;");
                 return;
             }
             else {

@@ -44,7 +44,8 @@ public class ShoppingListItem {
      *                       "1 clove"). May be null.
      * @param amount         the numeric amount of the ingredient
      * @param unit           the unit of the amount
-     * @param recipeName     the name of the recipe this ingredient comes from. Null for text-based items, may be null for ingredient-based items.
+     * @param recipeName     the name of the recipe this ingredient comes from.
+     *                       Null for text-based items, may be null for ingredient-based items.
      */
     public ShoppingListItem(Long ingredientId,
                             String ingredientName,
@@ -84,7 +85,8 @@ public class ShoppingListItem {
     /**
      * Formats this item for display.
      *
-     * @return a formatted string representation of this shopping list item, e.g. 100g salt (from: Recipe 1)
+     * @return a formatted string representation of this shopping list item,
+     * e.g. 100g salt (from: Recipe 1)
      */
     public String formatItem() {
         if (isTextOnly()) {

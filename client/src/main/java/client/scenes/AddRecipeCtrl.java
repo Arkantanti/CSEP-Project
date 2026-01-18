@@ -156,9 +156,11 @@ public class AddRecipeCtrl {
             // Check if a recipe exists before adding the ingredients.
             if (recipe == null) {
                 // If not first create the recipe.
-                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
+                recipe = server.add(new Recipe(name, servings,
+                        preparationSteps, isCheap, isFast, isVegan));
             } else if (isCloneMode && recipe.getId() == 0) {
-                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
+                recipe = server.add(new Recipe(name, servings,
+                        preparationSteps, isCheap, isFast, isVegan));
                 isCloneMode = false;
             } else {
                 // Update the existing recipe.
@@ -178,7 +180,9 @@ public class AddRecipeCtrl {
             mainCtrl.showRecipe(recipe);
 
         } catch (Exception e) {
-            showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
+            showError("Error",
+                    "Could not save the recipe. " +
+                            "There might be a problem with your server connection.");
         }
     }
 
@@ -192,11 +196,13 @@ public class AddRecipeCtrl {
 
             for (javafx.scene.Node node : ingredientsContainer.getChildren()) {
                 Object controller = node.getUserData();
-                if (controller instanceof RecipeIngredientCtrl ctrl) {
+                if (controller instanceof
+                        RecipeIngredientCtrl ctrl) {
                     RecipeIngredient ri = ctrl.getRecipeIngredient();
 
                     if (ri != null && ri.getIngredient() != null) {
-                        if (ri.getRecipe() == null || ri.getRecipe().getId() != targetRecipe.getId()) {
+                        if (ri.getRecipe() == null
+                                || ri.getRecipe().getId() != targetRecipe.getId()) {
                             ri.setRecipe(targetRecipe);
                         }
                         ingredientsToSave.add(ri);
@@ -208,7 +214,8 @@ public class AddRecipeCtrl {
             if (!ingredientsToSave.isEmpty()) {
                 if (targetRecipe.getId() > 0) {
                     // Delete all existing ingredients to prevent duplicates
-                    List<RecipeIngredient> existing = server.getRecipeIngredients(targetRecipe.getId());
+                    List<RecipeIngredient> existing =
+                            server.getRecipeIngredients(targetRecipe.getId());
                     if (existing != null) {
                         for (RecipeIngredient old : existing) {
                             server.deleteRecipeIngredient(old.getId());
@@ -300,7 +307,8 @@ public class AddRecipeCtrl {
         if (originalRecipe == null || fxml == null) return;
 
         // Get ingredients from the original recipe
-        List<RecipeIngredient> originalIngredients = server.getRecipeIngredients(originalRecipe.getId());
+        List<RecipeIngredient> originalIngredients =
+                server.getRecipeIngredients(originalRecipe.getId());
 
         if (originalIngredients == null || originalIngredients.isEmpty()) {
             return;

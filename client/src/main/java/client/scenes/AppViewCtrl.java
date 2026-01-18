@@ -126,7 +126,8 @@ public class AppViewCtrl implements Initializable {
                 } else {
                     String name = item.getName();
                     // Add visual indicator for favorites
-                    if (item instanceof Recipe && favoritesManager.isFavorite(((Recipe) item).getId())) {
+                    if (item instanceof Recipe
+                            && favoritesManager.isFavorite(((Recipe) item).getId())) {
                         name += " ★";
                     }
                     setText(name);
