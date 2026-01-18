@@ -126,9 +126,9 @@ public class RecipeViewCtrl {
         rerenderIngredientsScaled();
         updateCaloriesDisplay();
         double[] nutrients = nutrientsCalc.calculateNutrients(ingredients);
-        carbsLabel.setText(String.format(Locale.US, "%.2f", nutrients[0]));
-        proteinLabel.setText(String.format(Locale.US, "%.2f", nutrients[1]));
-        fatLabel.setText(String.format(Locale.US, "%.2f", nutrients[2]));
+        carbsLabel.setText(String.format(Locale.US, "Carbs: %.2f g/100g", nutrients[0]));
+        proteinLabel.setText(String.format(Locale.US, "Protein: %.2f g/100g", nutrients[1]));
+        fatLabel.setText(String.format(Locale.US, "Fat: %.2f g/100g", nutrients[2]));
     }
 
     /**
@@ -516,7 +516,8 @@ public class RecipeViewCtrl {
      * Updates the calories display based on the database's list of ingredients
      */
     protected void updateCaloriesDisplay(){
-        String textToDisplay = (int) nutrientsCalc.calculateCaloriesForRecipe(ingredients) +
+        String textToDisplay = "Calories: "
+                + (int) nutrientsCalc.calculateCaloriesForRecipe(ingredients) +
                 " kcal/100g";
         caloriesDisplay.setText(textToDisplay);
     }

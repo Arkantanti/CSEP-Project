@@ -198,28 +198,11 @@
                  <rowConstraints>
                      <RowConstraints />
                  </rowConstraints>
-                 <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0">
-                     <columnConstraints>
-                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Carbs: " />
-                     <Label fx:id="carbsLabel"  maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="1" />
-                 </GridPane>
-                 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0">
-                     <columnConstraints>
-                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Protein: " />
-                     <Label fx:id="proteinLabel"  maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="1" />
-                 </GridPane>
+                 <Label fx:id="carbsLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="0" />
+                 <Label fx:id="proteinLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="1" />
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
              </GridPane>
              <GridPane alignment="CENTER">
                  <columnConstraints>
@@ -229,21 +212,10 @@
                  <rowConstraints>
                      <RowConstraints />
                  </rowConstraints>
-                 <GridPane GridPane.columnIndex="0" GridPane.rowIndex="0">
-                     <columnConstraints>
-                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Fat: " />
-                     <Label fx:id="fatLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="1" />
-                 </GridPane>
-                 <Label fx:id="caloriesDisplay" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="- kcal/100g" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                 </Label>
+                <Label fx:id="fatLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="0" />
+                <Label fx:id="caloriesDisplay" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="1" />
                  <VBox.margin>
-                     <Insets bottom="35.0" />
+                     <Insets bottom="35.0" left="10.0" />
                  </VBox.margin>
              </GridPane>
          </children>
