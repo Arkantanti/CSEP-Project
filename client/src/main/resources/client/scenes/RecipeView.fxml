@@ -164,12 +164,12 @@
                      </HBox.margin>
                   </Label>
                   <TextField fx:id="servingsScalingInput" onAction="#applyServingsFromField" prefHeight="26.0" prefWidth="151.0" promptText="Number of portions" />
-                  <Button fx:id="resetServingsButton" mnemonicParsing="false" onAction="#resetServingsScaling" text="Reset">
+                  <Button fx:id="resetServingsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetServingsScaling" text="Reset" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#addToShoppingList" text="Shop">
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToShoppingList" text="Shop" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
