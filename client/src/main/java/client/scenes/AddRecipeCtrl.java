@@ -188,55 +188,72 @@ public class AddRecipeCtrl {
 
     /**
      * Save all ingredients to the server.
+     * Orchestrator method: complexity = 2 (Base + Catch).
      */
     private void saveAllIngredientsToServer(Recipe targetRecipe) {
         try {
-            //Collect the ingredients.
-            List<RecipeIngredient> ingredientsToSave = new ArrayList<>();
-
-            for (javafx.scene.Node node : ingredientsContainer.getChildren()) {
-                Object controller = node.getUserData();
-                if (controller instanceof
-                        RecipeIngredientCtrl ctrl) {
-                    RecipeIngredient ri = ctrl.getRecipeIngredient();
-
-                    if (ri != null && ri.getIngredient() != null) {
-                        if (ri.getRecipe() == null
-                                || ri.getRecipe().getId() != targetRecipe.getId()) {
-                            ri.setRecipe(targetRecipe);
-                        }
-                        ingredientsToSave.add(ri);
-                    }
-                }
-            }
-
-            // Only delete old ingredients if we have new ones to save
-            if (!ingredientsToSave.isEmpty()) {
-                if (targetRecipe.getId() > 0) {
-                    // Delete all existing ingredients to prevent duplicates
-                    List<RecipeIngredient> existing =
-                            server.getRecipeIngredients(targetRecipe.getId());
-                    if (existing != null) {
-                        for (RecipeIngredient old : existing) {
-                            server.deleteRecipeIngredient(old.getId());
-                        }
-                    }
-                }
-
-                // Input the recipes again
-                for (RecipeIngredient ingredient : ingredientsToSave) {
-                    RecipeIngredient fresh = new RecipeIngredient(
-                            targetRecipe,
-                            ingredient.getIngredient(),
-                            ingredient.getInformalUnit(),
-                            ingredient.getAmount(),
-                            ingredient.getUnit()
-                    );
-                    server.addRecipeIngredient(fresh);
-                }
-            }
+            List<RecipeIngredient> ingredientsToSave = collectIngredientsFromUI(targetRecipe);
+            syncIngredientsWithServer(targetRecipe, ingredientsToSave);
         } catch (Exception e) {
             System.out.println("There was an error in the saving of the ingredients.");
+        }
+    }
+
+    /**
+     * Iterates through the UI nodes to collect valid RecipeIngredients.
+     * Complexity = 5 (Base + For + InstanceOf + NullCheck + NullCheck).
+     */
+    private List<RecipeIngredient> collectIngredientsFromUI(Recipe targetRecipe) {
+        List<RecipeIngredient> ingredientsToSave = new ArrayList<>();
+
+        for (javafx.scene.Node node : ingredientsContainer.getChildren()) {
+            if (node.getUserData() instanceof RecipeIngredientCtrl ctrl) {
+                RecipeIngredient ri = ctrl.getRecipeIngredient();
+
+                if (ri != null && ri.getIngredient() != null) {
+                    // We can blindly set the recipe here.
+                    // If it was already set, this is a harmless idempotent operation.
+                    // This removes the complexity of checking IDs before setting.
+                    ri.setRecipe(targetRecipe);
+                    ingredientsToSave.add(ri);
+                }
+            }
+        }
+        return ingredientsToSave;
+    }
+
+    /**
+     * Handles the database deletion and insertion logic.
+     * Complexity = 6 (Base + EmptyCheck + IdCheck + ExistingCheck + ForDelete + ForAdd).
+     */
+    private void syncIngredientsWithServer(Recipe targetRecipe,
+                                           List<RecipeIngredient> ingredientsToSave) {
+        if (ingredientsToSave.isEmpty()) {
+            return;
+        }
+
+        if (targetRecipe.getId() > 0) {
+            // Delete all existing ingredients to prevent duplicates
+            List<RecipeIngredient> existing =
+                    server.getRecipeIngredients(targetRecipe.getId());
+
+            if (existing != null) {
+                for (RecipeIngredient old : existing) {
+                    server.deleteRecipeIngredient(old.getId());
+                }
+            }
+        }
+
+        // Input the recipes again
+        for (RecipeIngredient ingredient : ingredientsToSave) {
+            RecipeIngredient fresh = new RecipeIngredient(
+                    targetRecipe,
+                    ingredient.getIngredient(),
+                    ingredient.getInformalUnit(),
+                    ingredient.getAmount(),
+                    ingredient.getUnit()
+            );
+            server.addRecipeIngredient(fresh);
         }
     }
 

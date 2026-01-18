@@ -189,7 +189,8 @@ public class ShoppingListElementCtrl {
     }
 
     /**
-     * called when the user confirms their edits
+     * Called when the user confirms their edits.
+     * Orchestrator method: Complexity = 4.
      */
     @FXML
     private void onConfirmClicked() {
@@ -199,8 +200,8 @@ public class ShoppingListElementCtrl {
             return;
         }
 
+        boolean success;
         if (isTextMode) {
-            // Text item
             if (shoppingListItem == null) {
                 shoppingListService.addTextItem(text);
             } else {
@@ -208,77 +209,86 @@ public class ShoppingListElementCtrl {
                 shoppingListService.saveChanges();
             }
             textLabel.setText(text);
+            success = true;
         } else {
-            // Ingredient item
-            Ingredient selectedIngredient =
-                    ingredientComboBox.getSelectionModel().getSelectedItem();
-            if (selectedIngredient == null) {
-                ingredientComboBox.styleProperty().set(
-                        "-fx-border-color: red; -fx-border-radius: 4;");
-                return;
-            }
-            else {
-                ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
-            }
-
-            Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
-            if (unit == null) {
-                return;
-            }
-
-            String informalAmount = null;
-            double amount = 0;
-
-            if (unit == Unit.CUSTOM) {
-                informalAmount = text;
-            }
-            else{
-                try {
-                    amount = Double.parseDouble(text);
-                }
-                catch (Exception _) {
-                    amount = -1;
-                }
-            }
-
-            if ((amount <= 0 && unit != Unit.CUSTOM) ||
-                    ((informalAmount == null || informalAmount.isEmpty()) && unit == Unit.CUSTOM)) {
-                amountField.styleProperty().set("-fx-text-box-border: red;");
-                return;
-            }
-            else {
-                amountField.styleProperty().set("-fx-text-box-border: lightgray;");
-            }
-
-            if (shoppingListItem == null) {
-                shoppingListService.addIngredientItem(
-                        selectedIngredient.getId(),
-                        selectedIngredient.getName(),
-                        informalAmount,
-                        amount,
-                        unit,
-                        null // no recipe name when manually adding
-                );
-                // Refresh to get the new item
-                updateIngredientList.run();
-                return;
-            } else {
-                shoppingListItem.setIngredientId(selectedIngredient.getId());
-                shoppingListItem.setIngredientName(selectedIngredient.getName());
-                shoppingListItem.setAmount(amount);
-                shoppingListItem.setUnit(unit);
-                shoppingListItem.setInformalUnit(informalAmount);
-                shoppingListItem.setText(null); // clear text if it was a text item
-                shoppingListService.saveChanges();
-            }
-            textLabel.setText(shoppingListItem.formatItem());
+            success = handleIngredientEdit(text);
         }
 
-        editView.setVisible(false);
-        editView.setManaged(false);
+        if (success) {
+            editView.setVisible(false);
+            editView.setManaged(false);
+            defaultView.setVisible(true);
+            defaultView.setManaged(true);
+        }
+    }
 
-        defaultView.setVisible(true);
-        defaultView.setManaged(true);
+    /**
+     * Validates ingredient inputs and prepares data for saving.
+     * Complexity = 6.
+     */
+    private boolean handleIngredientEdit(String text) {
+        Ingredient ingredient = ingredientComboBox.getSelectionModel().getSelectedItem();
+        if (ingredient == null) {
+            ingredientComboBox.styleProperty().set(
+                    "-fx-border-color: red; -fx-border-radius: 4;");
+            return false;
+        }
+        ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
+
+        Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
+        if (unit == null) return false;
+
+        double amount = 0;
+        String informalAmount = null;
+        boolean isValid = true;
+
+        if (unit == Unit.CUSTOM) {
+            informalAmount = text;
+            if (text.isBlank()) isValid = false;
+        } else {
+            try {
+                amount = Double.parseDouble(text);
+                if (amount <= 0) isValid = false;
+            } catch (NumberFormatException e) {
+                isValid = false;
+            }
+        }
+
+        if (!isValid) {
+            amountField.styleProperty().set("-fx-text-box-border: red;");
+            return false;
+        }
+
+        amountField.styleProperty().set("-fx-text-box-border: lightgray;");
+        saveIngredientToServer(ingredient, amount, unit, informalAmount);
+        return true;
+    }
+
+    /**
+     * Persists the valid ingredient data to the service.
+     * Complexity = 2.
+     */
+    private void saveIngredientToServer(Ingredient ingredient, double amount,
+                                        Unit unit, String informalAmount) {
+        if (shoppingListItem == null) {
+            shoppingListService.addIngredientItem(
+                    ingredient.getId(),
+                    ingredient.getName(),
+                    informalAmount,
+                    amount,
+                    unit,
+                    null); // no recipe name when manually adding
+            updateIngredientList.run();
+        } else {
+            shoppingListItem.setIngredientId(ingredient.getId());
+            shoppingListItem.setIngredientName(ingredient.getName());
+            shoppingListItem.setAmount(amount);
+            shoppingListItem.setUnit(unit);
+            shoppingListItem.setInformalUnit(informalAmount);
+            shoppingListItem.setText(null);
+            shoppingListService.saveChanges();
+            textLabel.setText(shoppingListItem.formatItem());
+        }
     }
 
     /**
