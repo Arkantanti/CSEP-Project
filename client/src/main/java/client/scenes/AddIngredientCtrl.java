@@ -3,7 +3,9 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
+import commons.IngredientCategory;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -27,6 +29,8 @@ public class AddIngredientCtrl {
     private TextField proteinTf;
     @FXML
     private TextField carbsTf;
+    @FXML
+    private ComboBox<IngredientCategory> categoryComboBox;
 
     private final ServerUtils server;
     private Ingredient ingredient;
@@ -93,6 +97,7 @@ public class AddIngredientCtrl {
             fatTf.setText(String.format(Locale.US, "%.2f", ingredient.getFat()));
             proteinTf.setText(String.format(Locale.US, "%.2f", ingredient.getProtein()));
             carbsTf.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
+            categoryComboBox.setValue(ingredient.getCategory());
         }
     }
 
@@ -149,6 +154,11 @@ public class AddIngredientCtrl {
      */
     @FXML
     public void onSave() {
+        if (categoryComboBox.getValue() != null) {
+            ingredient.setCategory(categoryComboBox.getValue());
+        } else {
+            ingredient.setCategory(IngredientCategory.UNCATEGORIZED);
+        }
         this.ingredient = server.addIngredient(ingredient);
         ingredientSaved = true;
         if(separateWindow) {
