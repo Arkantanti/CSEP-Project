@@ -33,7 +33,6 @@ public class ShoppingListCategorySectionCtrl {
     private Function<Void, Void> onUpdate;
     private Function<ShoppingListItem, Void> onAddItem;
     private Function<ShoppingListItem, Void> onDeleteItem;
-    private boolean isTextMode;
 
     /**
      * constructor for ShoppingListCategorySectionCtrl.
@@ -65,7 +64,6 @@ public class ShoppingListCategorySectionCtrl {
         this.onUpdate = onUpdate;
         this.onAddItem = onAddItem;
         this.onDeleteItem = onDeleteItem;
-        this.isTextMode = isTextMode;
 
         String categoryName = category.name();
         categoryLabel.setText(categoryName.charAt(0) + categoryName.substring(1).toLowerCase());
