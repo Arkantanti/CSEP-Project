@@ -31,6 +31,9 @@ public class Ingredient implements Showable{
     private double protein;
     private double carbs;
 
+    @Enumerated(EnumType.STRING)
+    private IngredientCategory category;
+
     /**
      * Creates a new Ingredient object with the given name and nutritional values
      * per 100 grams.
@@ -48,6 +51,29 @@ public class Ingredient implements Showable{
         this.fat = fat;
         this.protein = protein;
         this.carbs = carbs;
+        this.category = IngredientCategory.UNCATEGORIZED;
+    }
+
+    /**
+     * Creates a new Ingredient object with the given name, nutritional values
+     * per 100 grams, and category.
+     *
+     * @param name    the name of the ingredient
+     * @param fat     the amount of fat per 100 grams of the ingredient
+     * @param protein the amount of protein per 100 grams of the ingredient
+     * @param carbs   the amount of carbohydrates per 100 grams of the ingredient
+     * @param category the category of the ingredient
+     */
+    public Ingredient(String name,
+                      double fat,
+                      double protein,
+                      double carbs,
+                      IngredientCategory category) {
+        this.name = name;
+        this.fat = fat;
+        this.protein = protein;
+        this.carbs = carbs;
+        this.category = category;
     }
 
     /**
@@ -96,6 +122,14 @@ public class Ingredient implements Showable{
 
     public void setCarbs(double carbs){
         this.carbs = carbs;
+    }
+
+    public IngredientCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(IngredientCategory category) {
+        this.category = category;
     }
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients){
