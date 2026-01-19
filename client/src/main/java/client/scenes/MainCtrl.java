@@ -20,6 +20,7 @@ import client.utils.FavoritesManager;
 import client.utils.FavoritesPollingService;
 import commons.Ingredient;
 import commons.Recipe;
+import commons.RecipeIngredient;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
@@ -29,6 +30,7 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * The Main Controller that manages the execution flow and scene switching.
@@ -38,10 +40,12 @@ public class MainCtrl {
     private Stage primaryStage;
     private Stage ingredientAddStage;
     private Stage shoppingListStage;
+    private Stage shoppingListConfirmationStage;
 
     private AppViewCtrl appViewCtrl;
     private AddRecipeCtrl addRecipeCtrl;
     private ShoppingListCtrl shoppingListCtrl;
+    private ShoppingListConfirmationCtrl shoppingListConfirmationCtrl;
 
     private MyFXML fxml;
     private boolean firstOpen;
@@ -214,7 +218,9 @@ public class MainCtrl {
      * called when adding new elements to the shopping list to reload it
      */
     public void reloadShoppingList(){
-        shoppingListCtrl.loadShoppingList();
+        if (shoppingListCtrl != null) {
+            shoppingListCtrl.loadShoppingList();
+        }
     }
 
     /**
@@ -293,5 +299,26 @@ public class MainCtrl {
         if(ingredientAddStage != null) {
             ingredientAddStage.close();
         }
+    }
+
+    /**
+     * opens the shopping list confirmation stage for the given ingredient list
+     * @param ingredients the list of ingredients will be shown
+     * @param scalar a scaling value for the ingredients
+     * @param recipeName the name of the recipe
+     */
+    public void openShoppingListConfirmation(List<RecipeIngredient> ingredients, double scalar, String recipeName) {
+        if (shoppingListConfirmationCtrl == null || shoppingListConfirmationStage == null){
+            Pair<ShoppingListConfirmationCtrl, Parent> shoppingListConfirmation = fxml.load(ShoppingListConfirmationCtrl.class, "client", "scenes", "ShoppingListConfirmation.fxml");
+            shoppingListConfirmationStage = new Stage();
+            shoppingListConfirmationStage.setTitle("Shopping List Confirmation");
+            shoppingListConfirmationStage.setScene(new Scene(shoppingListConfirmation.getValue()));
+            shoppingListConfirmationCtrl = shoppingListConfirmation.getKey();
+
+            shoppingListConfirmationCtrl.initialize(fxml, shoppingListConfirmationStage);
+        }
+        shoppingListConfirmationStage.show();
+        shoppingListConfirmationStage.toFront();
+        shoppingListConfirmationCtrl.loadList(ingredients, scalar, recipeName);
     }
 }

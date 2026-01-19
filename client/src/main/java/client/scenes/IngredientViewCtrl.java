@@ -5,10 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.util.converter.DoubleStringConverter;
 
@@ -16,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 public class  IngredientViewCtrl {
@@ -166,13 +164,29 @@ public class  IngredientViewCtrl {
      * Uses ServerUtils to delete an ingredient.
      */
     public void deleteIngredient(){
-        try{
-            server.deleteIngredient(this.ingredient.getId());
-            appViewCtrl.loadIngredients();
-        } catch (Exception e){
-            System.out.println("something went wrong.");
+        long count = server.recipeCount(ingredient.getId());
+        boolean delete = true;
+        if(count > 0){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete Ingredient");
+            alert.setHeaderText(null);
+            String recipesPart = count>1 ? " different recipes" : " recipe";
+            String message = ingredient.getName()+" is used in "+count+recipesPart+
+                    ". Are you sure you want to delete it?";
+            alert.setContentText(message);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            delete = !(result.isPresent() && result.get() == ButtonType.CANCEL);
         }
-        mainCtrl.showDefaultView();
+        if(delete) {
+            try {
+                server.deleteIngredient(this.ingredient.getId());
+                appViewCtrl.loadIngredients();
+            } catch (Exception e) {
+                System.out.println("something went wrong.");
+            }
+            mainCtrl.showDefaultView();
+        }
     }
 
     /**

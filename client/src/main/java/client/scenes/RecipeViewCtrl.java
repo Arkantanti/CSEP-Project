@@ -490,26 +490,8 @@ public class RecipeViewCtrl {
      */
     @FXML
     public void addToShoppingList(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Adding to shopping list");
-        alert.setHeaderText("You are about to add the ingredients for " + targetServings + " servings of "
-                + recipe.getName() + " to the shopping list.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            this.shoppingListService.addIngredients(server.getRecipeIngredients(this.recipe.getId()),
-                    targetServings/baseServings, recipe.getName());
-            Alert notif = new Alert(Alert.AlertType.INFORMATION);
-            notif.setTitle("Success");
-            notif.setHeaderText("Success");
-            StringBuilder sb = new StringBuilder("Added:\n");
-            for (RecipeIngredient ri : server.getRecipeIngredients(this.recipe.getId())){
-                sb.append(ri.formatIngredientScaled(ri.getAmount()*targetServings/baseServings));
-                sb.append("\n");
-            }
-            notif.setContentText(sb.toString());
-            notif.show();
-            mainCtrl.reloadShoppingList();
-        }
+        mainCtrl.openShoppingListConfirmation(server.getRecipeIngredients(this.recipe.getId()),
+                targetServings/baseServings, recipe.getName());
     }
 
     /**
