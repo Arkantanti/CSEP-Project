@@ -82,6 +82,9 @@ public class AddIngredientCtrl {
         });
         nameTextField.setOnAction(e -> this.onStopEditingText());
 
+        categoryComboBox.getItems().setAll(IngredientCategory.values());
+        categoryComboBox.setValue(IngredientCategory.UNCATEGORIZED);
+
         setIngredient(new Ingredient("NewIngredient",0,0,0));
     }
 
