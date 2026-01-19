@@ -142,6 +142,8 @@ public class ShoppingListElementCtrl {
                 setText((empty || item == null) ? null : item.getName());
             }
         });
+
+
     }
 
     /**
@@ -169,20 +171,10 @@ public class ShoppingListElementCtrl {
             updateUIForIngredientMode();
 
             // ingredient dropdown
-            List<Ingredient> ingredients = serverUtils.getIngredients();
+            List<Ingredient> ingredients = ingredientService.getAllIngredients();
             ingredientComboBox.getItems().setAll(ingredients);
-            if (shoppingListItem.getIngredientId() != null) {
-                Ingredient matchingIngredient = null;
-                for (Ingredient ing : ingredients) {
-                    if (ing.getId() == shoppingListItem.getIngredientId()) {
-                        matchingIngredient = ing;
-                        break;
-                    }
-                }
-                if (matchingIngredient != null) {
-                    ingredientComboBox.getSelectionModel().select(matchingIngredient);
-                }
-            }
+            Ingredient i = ingredientService.getIngredientById(shoppingListItem.getIngredientId());
+            ingredientComboBox.getSelectionModel().select(i);
 
             // unit dropdown
             unitComboBox.getSelectionModel().select(shoppingListItem.getUnit());
