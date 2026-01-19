@@ -16,6 +16,8 @@
 package client;
 
 import client.config.Config;
+import client.scenes.ShoppingListConfirmationCtrl;
+import client.scenes.ShoppingListCtrl;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;

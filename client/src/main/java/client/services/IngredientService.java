@@ -33,6 +33,15 @@ public class IngredientService {
     }
 
     /**
+     * Gets a specific ingredient by id, null if non-existant
+     * @param id the id of the target ingredient
+     * @return An ingredient with the requested id, else null
+     */
+    public Ingredient getIngredientById(long id) {
+        return server.getIngredients().stream().filter(e -> e.getId() == id).findFirst().orElse(null);
+    }
+
+    /**
      * Searches ingredients (client-side filtering), sorted alphabetically.
      */
     public List<Ingredient> searchIngredients(String query) {
