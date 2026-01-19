@@ -186,6 +186,29 @@ public class ServerUtils {
     }
 
     /**
+     * retrieves an ingredient by its ID from the server
+     *
+     * @param id the ID of the ingredient to retrieve
+     * @return the Ingredient object if found. Otherwise returns null.
+     */
+    public Ingredient getIngredientById(long id) {
+        try {
+            Response response = this.client
+                    .target(serverURL).path("api/ingredients/" + id)
+                    .request(APPLICATION_JSON)
+                    .get();
+
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(Ingredient.class);
+            }
+            return null;
+        } catch (ProcessingException e) {
+            System.out.println("Could not retrieve ingredient by ID: ");
+            return null;
+        }
+    }
+
+    /**
      * This function is for deleting recipes
      * @param id The id of the recipe that needs to be deleted
      * @return The deletion of the recipe in the client

@@ -5,6 +5,7 @@ import client.services.ShoppingListService;
 import client.utils.Printer;
 import com.google.inject.Inject;
 import client.model.ShoppingListItem;
+import commons.IngredientCategory;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -16,6 +17,8 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ShoppingListCtrl {
@@ -32,12 +35,16 @@ public class ShoppingListCtrl {
     @FXML
     private HBox addModeToggle;
 
+    @FXML
+    private Button toggleGroupingButton;
+
     private enum AddMode {
         INGREDIENT,
         TEXT
     }
 
     private AddMode currentAddMode = AddMode.INGREDIENT;
+    private boolean groupedView = true;
 
     private final ShoppingListService shoppingListService;
     private final MainCtrl mainCtrl;
@@ -64,6 +71,7 @@ public class ShoppingListCtrl {
     public void initialize(MyFXML fxml) {
         this.fxml = fxml;
         setupAddModeButtons();
+        updateGroupingButtonStyle();
         loadShoppingList();
     }
 
@@ -103,6 +111,58 @@ public class ShoppingListCtrl {
      */
     public void loadShoppingList() {
         ingredientListBox.getChildren().clear();
+        if (groupedView) {
+            loadShoppingListGrouped();
+        } else {
+            loadShoppingListFlat();
+        }
+    }
+
+    /**
+     * loads the shopping list in grouped mode by category
+     */
+    private void loadShoppingListGrouped() {
+        List<ShoppingListItem> allItems = shoppingListService.getShoppingList();
+
+        for (IngredientCategory category : IngredientCategory.values()) {
+            List<ShoppingListItem> categoryItems = new ArrayList<>();
+            for (ShoppingListItem item : allItems) {
+                IngredientCategory itemCategory = shoppingListService.getCategoryForItem(item);
+                if (itemCategory == category) {
+                    categoryItems.add(item);
+                }
+            }
+
+            if (!categoryItems.isEmpty()) {
+                Pair<ShoppingListCategorySectionCtrl, Parent> section = fxml.load(
+                        ShoppingListCategorySectionCtrl.class,
+                        "client", "scenes", "ShoppingListCategorySection.fxml");
+                section.getKey().initialize(category, categoryItems, fxml,
+                        (_) -> {
+                            loadShoppingList();
+                            shoppingListService.saveChanges();
+                            return null;
+                        },
+                        (ShoppingListItem itemToAdd) -> {
+                            shoppingListService.addItem(itemToAdd);
+                            shoppingListService.saveChanges();
+                            return null;
+                        },
+                        (ShoppingListItem itemToRemove) -> {
+                            shoppingListService.removeItem(itemToRemove);
+                            shoppingListService.saveChanges();
+                            return null;
+                        },
+                        currentAddMode == AddMode.TEXT);
+                ingredientListBox.getChildren().add(section.getValue());
+            }
+        }
+    }
+
+    /**
+     * loads the shopping list in flat mode
+     */
+    private void loadShoppingListFlat() {
         for (ShoppingListItem item : shoppingListService.getShoppingList()) {
             createListElement(item);
         }
@@ -154,6 +214,29 @@ public class ShoppingListCtrl {
     }
 
     /**
+     * toggles between grouped and flat view
+     */
+    @FXML
+    public void toggleGrouping() {
+        groupedView = !groupedView;
+        updateGroupingButtonStyle();
+        loadShoppingList();
+    }
+
+    /**
+     * Updates the visual style of the grouping toggle button based on current state
+     */
+    private void updateGroupingButtonStyle() {
+        if (groupedView) {
+            toggleGroupingButton.getStyleClass().add("active");
+            toggleGroupingButton.setText("Grouped");
+        } else {
+            toggleGroupingButton.getStyleClass().remove("active");
+            toggleGroupingButton.setText("Group");
+        }
+    }
+
+    /**
      * exports the printable shopping list to pdf
      */
     public void print(){
@@ -162,7 +245,7 @@ public class ShoppingListCtrl {
             return;
         }
         try {
-            String markdown = printer.createShoppingListOutputString(shoppingListService.getShoppingList());
+            String markdown = printer.createShoppingListOutputString(shoppingListService.getShoppingList(), shoppingListService);
             printer.markdownToPDF(path, markdown);
         } catch (IOException e) {
             e.printStackTrace();

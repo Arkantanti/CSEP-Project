@@ -67,7 +67,7 @@ public class ShoppingListItem {
      * @param scalar a multiplier for the recipeIngredient
      */
     public ShoppingListItem(RecipeIngredient recipeIngredient, double scalar) {
-        this.ingredientId = recipeIngredient.getId();
+        this.ingredientId = recipeIngredient.getIngredient().getId();
         this.ingredientName = recipeIngredient.getIngredient().getName();
         this.informalUnit = recipeIngredient.getInformalUnit();
         this.amount = recipeIngredient.getAmount() * scalar;
