@@ -1,6 +1,6 @@
 package client.scenes;
 
-import client.services.ShoppingListService;
+import client.services.IngredientService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class ShoppingListElementCtrl {
     @FXML
@@ -46,52 +47,65 @@ public class ShoppingListElementCtrl {
     private ShoppingListItem shoppingListItem;
     private boolean isTextMode;
 
-    private Runnable updateIngredientList;
+    private Function<Void, Void> onUpdate;
+    private Function<ShoppingListItem, Void> onDeleteIngredient;
+    private Function<ShoppingListItem, Void> onAddIngredient;
 
     private final ServerUtils serverUtils;
-    private final ShoppingListService shoppingListService;
+    private final IngredientService ingredientService;
 
     /**
      * constructor to be injected
      * @param serverUtils serverutils to load/delete/edit ingredients
-     * @param shoppingListService the shopping list service
      */
     @Inject
-    public ShoppingListElementCtrl(ServerUtils serverUtils, ShoppingListService shoppingListService) {
+    public ShoppingListElementCtrl(ServerUtils serverUtils, IngredientService ingredientService) {
         this.serverUtils = serverUtils;
-        this.shoppingListService = shoppingListService;
+        this.ingredientService = ingredientService;
     }
 
     /**
      * initializes the ShoppingElementCtrl for an existing item
      * @param shoppingListItem A shopping list item
-     * @param updateIngredientList a function that is called whenever the list should be updated
+     * @param onUpdate A function that is called whenever (an item in) the list has changed
+     * @param onAddIngredient A function to call when adding a new element to the list
+     * @param onDeleteIngredient A function to call when a specific element should be removed from the list
      */
     public void initialize(ShoppingListItem shoppingListItem,
-                           Runnable updateIngredientList) {
-        initializeInternal(shoppingListItem, updateIngredientList, shoppingListItem.isTextOnly());
+                           Function<Void, Void> onUpdate,
+                           Function<ShoppingListItem, Void> onAddIngredient,
+                           Function<ShoppingListItem, Void> onDeleteIngredient) {
+        initializeInternal(shoppingListItem, onUpdate, onAddIngredient, onDeleteIngredient, shoppingListItem.isTextOnly());
     }
 
     /**
      * initializes the ShoppingElementCtrl for a new item
      * @param shoppingListItem A shopping list item (must be null for new items)
-     * @param updateIngredientList a function that is called whenever the list should be updated
+     * @param onUpdate A function that is called whenever (an item in) the list has changed
+     * @param onAddIngredient A function to call when adding a new element to the list
+     * @param onDeleteIngredient A function to call when a specific element should be removed from the list
      * @param isTextMode true if this should be a text item
      */
     public void initialize(ShoppingListItem shoppingListItem,
-                           Runnable updateIngredientList,
+                           Function<Void, Void> onUpdate,
+                           Function<ShoppingListItem, Void> onAddIngredient,
+                           Function<ShoppingListItem, Void> onDeleteIngredient,
                            boolean isTextMode) {
-        initializeInternal(shoppingListItem, updateIngredientList, isTextMode);
+        initializeInternal(shoppingListItem, onUpdate, onAddIngredient, onDeleteIngredient, isTextMode);
     }
 
     /**
      * Internal initialization method
      */
     private void initializeInternal(ShoppingListItem shoppingListItem,
-                                    Runnable updateIngredientList,
+                                    Function<Void, Void> onUpdate,
+                                    Function<ShoppingListItem, Void> onAddIngredient,
+                                    Function<ShoppingListItem, Void> onDeleteIngredient,
                                     boolean isTextMode) {
         this.shoppingListItem = shoppingListItem;
-        this.updateIngredientList = updateIngredientList;
+        this.onUpdate = onUpdate;
+        this.onAddIngredient = onAddIngredient;
+        this.onDeleteIngredient = onDeleteIngredient;
         this.isTextMode = isTextMode;
 
         defaultView.setVisible(true);
@@ -181,9 +195,9 @@ public class ShoppingListElementCtrl {
     @FXML
     private void onDeleteClicked() {
         if (shoppingListItem != null) {
-            shoppingListService.removeItem(shoppingListItem);
+            onDeleteIngredient.apply(shoppingListItem);
         }
-        this.updateIngredientList.run();
+        this.onUpdate.apply(null);
     }
 
     /**
@@ -200,10 +214,10 @@ public class ShoppingListElementCtrl {
         if (isTextMode) {
             // Text item
             if (shoppingListItem == null) {
-                shoppingListService.addTextItem(text);
+                onAddIngredient.apply(new ShoppingListItem(text));
             } else {
                 shoppingListItem.setText(text);
-                shoppingListService.saveChanges();
+                onUpdate.apply(null);
             }
             textLabel.setText(text);
         } else {
@@ -247,16 +261,15 @@ public class ShoppingListElementCtrl {
             }
 
             if (shoppingListItem == null) {
-                shoppingListService.addIngredientItem(
+                onAddIngredient.apply(new ShoppingListItem(
                         selectedIngredient.getId(),
                         selectedIngredient.getName(),
                         informalAmount,
                         amount,
                         unit,
-                        null // no recipe name when manually adding
-                );
+                        null));
                 // Refresh to get the new item
-                updateIngredientList.run();
+                onUpdate.apply(null);
                 return;
             } else {
                 shoppingListItem.setIngredientId(selectedIngredient.getId());
@@ -265,7 +278,7 @@ public class ShoppingListElementCtrl {
                 shoppingListItem.setUnit(unit);
                 shoppingListItem.setInformalUnit(informalAmount);
                 shoppingListItem.setText(null); // clear text if it was a text item
-                shoppingListService.saveChanges();
+                onUpdate.apply(null);
             }
             textLabel.setText(shoppingListItem.formatItem());
         }
@@ -283,7 +296,7 @@ public class ShoppingListElementCtrl {
     @FXML
     private void onCancelClicked() {
         if (shoppingListItem == null) {
-            updateIngredientList.run(); // removes the item from the list
+            onUpdate.apply(null); // removes the item from the list
         }
 
         editView.setVisible(false);

@@ -104,10 +104,7 @@ public class ShoppingListCtrl {
     public void loadShoppingList() {
         ingredientListBox.getChildren().clear();
         for (ShoppingListItem item : shoppingListService.getShoppingList()) {
-            Pair<ShoppingListElementCtrl, Parent> element = fxml.load(ShoppingListElementCtrl.class,
-                    "client", "scenes", "ShoppingListElement.fxml");
-            element.getKey().initialize(item, this::loadShoppingList);
-            ingredientListBox.getChildren().add(element.getValue());
+            createListElement(item);
         }
     }
 
@@ -115,12 +112,37 @@ public class ShoppingListCtrl {
      * called when the user presses the add button
      */
     public void onAddShoppingListElement(){
+        Pair<ShoppingListElementCtrl, Parent> element = createListElement(null);
+        element.getKey().startEditingFromCtrl();
+    }
+
+    /**
+     * helper function to create&init shoppinglistElements
+     * @param baseItem the item to create for
+     * @return the created ShoppingListElementCtrl/Parent pair
+     */
+    private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
         Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class,
                 "client", "scenes", "ShoppingListElement.fxml");
-        boolean isTextMode = (currentAddMode == AddMode.TEXT);
-        item.getKey().initialize(null, this::loadShoppingList, isTextMode);
+        boolean isTextMode = baseItem == null ? (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
+        item.getKey().initialize(baseItem,
+                (_) -> {                        // onUpdate
+                    loadShoppingList();
+                    shoppingListService.saveChanges();
+                    return null;
+                },
+                (ShoppingListItem itemToAdd) -> {    // onAddItem
+                    shoppingListService.addItem(itemToAdd);
+                    shoppingListService.saveChanges();
+                    return null;
+                },
+                (ShoppingListItem itemToRemove) -> {    // onDeleteItem
+                    shoppingListService.removeItem(itemToRemove);
+                    return null;
+                },
+                isTextMode);
         ingredientListBox.getChildren().add(item.getValue());
-        item.getKey().startEditingFromCtrl();
+        return item;
     }
 
     /**
