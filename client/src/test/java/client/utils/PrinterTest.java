@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,9 +26,9 @@ class PrinterTest {
 
     @BeforeEach
     public void setup() {
-        Ingredient i1 = new Ingredient("Butter",0,0,0);
-        Ingredient i2 = new Ingredient("Bread",0,0,0);
-        Ingredient i3 = new Ingredient("Cheese",0,0,0);
+        Ingredient i1 = new Ingredient("Butter",0,0,0, Set.of());
+        Ingredient i2 = new Ingredient("Bread",0,0,0, Set.of());
+        Ingredient i3 = new Ingredient("Cheese",0,0,0, Set.of());
         recipe = new Recipe("Pancakes", 4, List.of("step1", "step2", "step3"),false,false,false);
         RecipeIngredient ri1 = new RecipeIngredient(recipe,i1,null,70, Unit.GRAM);
         RecipeIngredient ri2 = new RecipeIngredient(recipe,i2,"pinches",2, Unit.CUSTOM);

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import server.database.*;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,9 +41,9 @@ class RecipeIngredientControllerTest {
         r1 = recipeRepo.save(new Recipe("Pancakes", 4, List.of("step 1","step 2"),false,false,false));
         r2 = recipeRepo.save(new Recipe("Spaghetti", 3, List.of("step 3","step 4"),false,false,false));
 
-        ing1 = ingredientRepo.save(new Ingredient("Chilli", 3, 1, 1.2));
-        ing2 = ingredientRepo.save(new Ingredient("Potato", 3, 1, 1.2));
-        ing3 = ingredientRepo.save(new Ingredient("Oil", 10, 1, 1.2));
+        ing1 = ingredientRepo.save(new Ingredient("Chilli", 3, 1, 1.2, Set.of()));
+        ing2 = ingredientRepo.save(new Ingredient("Potato", 3, 1, 1.2, Set.of()));
+        ing3 = ingredientRepo.save(new Ingredient("Oil", 10, 1, 1.2, Set.of()));
 
         ri1 = repo.save(new RecipeIngredient(r1, ing2, null, 4, Unit.GRAM));
         ri2 = repo.save(new RecipeIngredient(r2, ing1, null, 3, Unit.GRAM));

@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.UnaryOperator;
 
 public class AddIngredientCtrl {
@@ -78,7 +79,7 @@ public class AddIngredientCtrl {
         });
         nameTextField.setOnAction(e -> this.onStopEditingText());
 
-        setIngredient(new Ingredient("NewIngredient",0,0,0));
+        setIngredient(new Ingredient("NewIngredient",0,0,0, Set.of()));
     }
 
     /**
