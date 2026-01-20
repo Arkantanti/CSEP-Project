@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static commons.Recipe.recipeNameChecker;
+
 public class AddRecipeCtrl {
     @FXML
     private Label nameLabel;
@@ -90,7 +92,7 @@ public class AddRecipeCtrl {
                 name = "New Recipe";
             }
 
-            if(this.recipe.recipeNameChecker(recipeService.getAllRecipes(), name)){
+            if(recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)){
                 mainCtrl.showError("Name Used.", "This name is already in use.");
                 return;
             }
@@ -139,7 +141,7 @@ public class AddRecipeCtrl {
                 return;
             }
 
-            if(this.recipe.recipeNameChecker(recipeService.getAllRecipes(), name)){
+            if(recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)){
                 mainCtrl.showError("Used Name",
                         "This recipe name is already in use, please choose another.");
                 return;

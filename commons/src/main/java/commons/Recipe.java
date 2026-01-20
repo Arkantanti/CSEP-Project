@@ -141,10 +141,10 @@ public class Recipe implements Showable{
      * @param s the name of the recipe
      * @return true or false depending on if the list contains the recipe name
      */
-    public boolean recipeNameChecker(List<Recipe> recipeList, String s){
+    public static boolean recipeNameChecker(List<Recipe> recipeList, String s, Recipe recipeOne){
         for(Recipe recipeName : recipeList){
             if (recipeName.getName().trim().equalsIgnoreCase(s.trim()) &&
-                    (this.getId() != recipeName.getId())) {
+                    (recipeOne.getId() != recipeName.getId())) {
                 return true;
             }
 
