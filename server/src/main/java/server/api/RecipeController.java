@@ -83,7 +83,7 @@ public class RecipeController {
 
         //check for the database when the name is the same
         for(Recipe recipeName : getAll()){
-            if((recipe.getName().equals(recipeName.getName()))){
+            if((recipe.getName().trim().equalsIgnoreCase(recipeName.getName().trim()))){
                 return ResponseEntity.badRequest().build();
             }
         }
