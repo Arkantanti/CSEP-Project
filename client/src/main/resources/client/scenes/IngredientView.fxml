@@ -81,7 +81,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Carbs: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Carbs: ">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -98,7 +98,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Protein: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Protein: ">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -115,7 +115,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Fat: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Fat: ">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -154,7 +154,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Used in: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Used in: ">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -171,7 +171,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Kcal: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Kcal: ">
                            <font>
                               <Font size="20.0" />
                            </font>

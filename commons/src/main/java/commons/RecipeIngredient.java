@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -168,17 +169,12 @@ public class RecipeIngredient {
             case CUSTOM -> "";
         };
 
-        if (unit != Unit.CUSTOM) {
-            s.append(amount / Math.pow(10, magnitude)).append(" ")
+        if (unit != Unit.CUSTOM || informalUnit == null) {
+            s.append(String.format(Locale.US,"%.2f",amount / Math.pow(10, magnitude))).append(" ")
                     .append(metricPrefixes.get(magnitude)).append(unitChar);
         }
         else {
-            if (informalUnit != null) {
-                s.append(informalUnit);
-            }
-            else {
-                s.append(amount);
-            }
+            s.append(informalUnit);
         }
         s.append(" ").append(ingredient.getName());
         return s.toString();
