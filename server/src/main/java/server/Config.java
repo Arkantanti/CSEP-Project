@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Random;
 
 import commons.Ingredient;
+import commons.IngredientCategory;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import commons.Unit;
@@ -82,12 +83,12 @@ public class Config {
         System.out.println("Loading small dataset...");
 
         // 1. Create Ingredients
-        Ingredient flour = ingredientRepo.save(new Ingredient("Flour", 1.0, 10.0, 76.0));
-        Ingredient sugar = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0));
-        Ingredient egg = ingredientRepo.save(new Ingredient("Egg", 11.0, 13.0, 1.1));
-        Ingredient tomato = ingredientRepo.save(new Ingredient("Tomato", 0.2, 0.9, 3.9));
-        Ingredient bread = ingredientRepo.save(new Ingredient("Bread", 3.2, 9.0, 49.0));
-        Ingredient cheese = ingredientRepo.save(new Ingredient("Cheese", 25.0, 25.0, 1.3));
+        Ingredient flour = ingredientRepo.save(new Ingredient("Flour", 1.0, 10.0, 76.0, IngredientCategory.PANTRY));
+        Ingredient sugar = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0, IngredientCategory.PANTRY));
+        Ingredient egg = ingredientRepo.save(new Ingredient("Egg", 11.0, 13.0, 1.1, IngredientCategory.DAIRY));
+        Ingredient tomato = ingredientRepo.save(new Ingredient("Tomato", 0.2, 0.9, 3.9, IngredientCategory.VEGETABLES));
+        Ingredient bread = ingredientRepo.save(new Ingredient("Bread", 3.2, 9.0, 49.0, IngredientCategory.BAKERY));
+        Ingredient cheese = ingredientRepo.save(new Ingredient("Cheese", 25.0, 25.0, 1.3, IngredientCategory.DAIRY));
 
         // 2. Create Recipes
         Recipe pancake = recipeRepo.save(new Recipe("Pancakes", 4,
@@ -144,36 +145,36 @@ public class Config {
      */
     private Ingredient[] seedLargeIngredients(IngredientRepository ingredientRepo) {
         Ingredient[] ingredients = new Ingredient[30];
-        ingredients[0] = ingredientRepo.save(new Ingredient("Flour", 10.0, 1.0, 76.0));
-        ingredients[1] = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0));
-        ingredients[2] = ingredientRepo.save(new Ingredient("Egg", 13.0, 11.0, 1.1));
-        ingredients[3] = ingredientRepo.save(new Ingredient("Tomato", 0.9, 0.2, 3.9));
-        ingredients[4] = ingredientRepo.save(new Ingredient("Bread", 9.0, 3.2, 49.0));
-        ingredients[5] = ingredientRepo.save(new Ingredient("Cheese", 25.0, 33.0, 1.3));
-        ingredients[6] = ingredientRepo.save(new Ingredient("Milk", 3.4, 1.0, 5.0));
-        ingredients[7] = ingredientRepo.save(new Ingredient("Butter", 0.9, 81.0, 0.1));
-        ingredients[8] = ingredientRepo.save(new Ingredient("Salt", 0.0, 0.0, 0.0));
-        ingredients[9] = ingredientRepo.save(new Ingredient("Pepper", 11.0, 3.3, 64.0));
-        ingredients[10] = ingredientRepo.save(new Ingredient("Chicken", 31.0, 3.6, 0.0));
-        ingredients[11] = ingredientRepo.save(new Ingredient("Beef", 26.0, 15.0, 0.0));
-        ingredients[12] = ingredientRepo.save(new Ingredient("Pasta", 13.0, 1.5, 75.0));
-        ingredients[13] = ingredientRepo.save(new Ingredient("Rice", 2.7, 0.3, 28.0));
-        ingredients[14] = ingredientRepo.save(new Ingredient("Potato", 2.0, 0.1, 17.0));
-        ingredients[15] = ingredientRepo.save(new Ingredient("Onion", 1.1, 0.1, 9.3));
-        ingredients[16] = ingredientRepo.save(new Ingredient("Garlic", 6.4, 0.5, 33.0));
-        ingredients[17] = ingredientRepo.save(new Ingredient("Carrot", 0.9, 0.2, 10.0));
-        ingredients[18] = ingredientRepo.save(new Ingredient("Lettuce", 1.4, 0.2, 2.9));
-        ingredients[19] = ingredientRepo.save(new Ingredient("Cucumber", 0.7, 0.1, 3.6));
-        ingredients[20] = ingredientRepo.save(new Ingredient("Olive Oil", 0.0, 100.0, 0.0));
-        ingredients[21] = ingredientRepo.save(new Ingredient("Lemon", 1.1, 0.3, 9.3));
-        ingredients[22] = ingredientRepo.save(new Ingredient("Chocolate", 7.5, 30.0, 59.0));
-        ingredients[23] = ingredientRepo.save(new Ingredient("Vanilla Extract", 0.0, 0.0, 13.0));
-        ingredients[24] = ingredientRepo.save(new Ingredient("Bacon", 37.0, 42.0, 1.4));
-        ingredients[25] = ingredientRepo.save(new Ingredient("Mushroom", 3.1, 0.3, 3.3));
-        ingredients[26] = ingredientRepo.save(new Ingredient("Spinach", 2.9, 0.4, 3.6));
-        ingredients[27] = ingredientRepo.save(new Ingredient("Tuna", 30.0, 1.0, 0.0));
-        ingredients[28] = ingredientRepo.save(new Ingredient("Soy Sauce", 8.1, 0.0, 4.9));
-        ingredients[29] = ingredientRepo.save(new Ingredient("Ginger", 1.8, 0.8, 18.0));
+        ingredients[0] = ingredientRepo.save(new Ingredient("Flour", 10.0, 1.0, 76.0, IngredientCategory.PANTRY));
+        ingredients[1] = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0, IngredientCategory.PANTRY));
+        ingredients[2] = ingredientRepo.save(new Ingredient("Egg", 13.0, 11.0, 1.1, IngredientCategory.DAIRY));
+        ingredients[3] = ingredientRepo.save(new Ingredient("Tomato", 0.9, 0.2, 3.9, IngredientCategory.VEGETABLES));
+        ingredients[4] = ingredientRepo.save(new Ingredient("Bread", 9.0, 3.2, 49.0, IngredientCategory.BAKERY));
+        ingredients[5] = ingredientRepo.save(new Ingredient("Cheese", 25.0, 33.0, 1.3, IngredientCategory.DAIRY));
+        ingredients[6] = ingredientRepo.save(new Ingredient("Milk", 3.4, 1.0, 5.0, IngredientCategory.DAIRY));
+        ingredients[7] = ingredientRepo.save(new Ingredient("Butter", 0.9, 81.0, 0.1, IngredientCategory.DAIRY));
+        ingredients[8] = ingredientRepo.save(new Ingredient("Salt", 0.0, 0.0, 0.0, IngredientCategory.SPICES));
+        ingredients[9] = ingredientRepo.save(new Ingredient("Pepper", 11.0, 3.3, 64.0, IngredientCategory.SPICES));
+        ingredients[10] = ingredientRepo.save(new Ingredient("Chicken", 31.0, 3.6, 0.0, IngredientCategory.MEAT));
+        ingredients[11] = ingredientRepo.save(new Ingredient("Beef", 26.0, 15.0, 0.0, IngredientCategory.MEAT));
+        ingredients[12] = ingredientRepo.save(new Ingredient("Pasta", 13.0, 1.5, 75.0, IngredientCategory.PANTRY));
+        ingredients[13] = ingredientRepo.save(new Ingredient("Rice", 2.7, 0.3, 28.0, IngredientCategory.PANTRY));
+        ingredients[14] = ingredientRepo.save(new Ingredient("Potato", 2.0, 0.1, 17.0, IngredientCategory.VEGETABLES));
+        ingredients[15] = ingredientRepo.save(new Ingredient("Onion", 1.1, 0.1, 9.3, IngredientCategory.VEGETABLES));
+        ingredients[16] = ingredientRepo.save(new Ingredient("Garlic", 6.4, 0.5, 33.0, IngredientCategory.VEGETABLES));
+        ingredients[17] = ingredientRepo.save(new Ingredient("Carrot", 0.9, 0.2, 10.0, IngredientCategory.VEGETABLES));
+        ingredients[18] = ingredientRepo.save(new Ingredient("Lettuce", 1.4, 0.2, 2.9, IngredientCategory.VEGETABLES));
+        ingredients[19] = ingredientRepo.save(new Ingredient("Cucumber", 0.7, 0.1, 3.6, IngredientCategory.VEGETABLES));
+        ingredients[20] = ingredientRepo.save(new Ingredient("Olive Oil", 0.0, 100.0, 0.0, IngredientCategory.PANTRY));
+        ingredients[21] = ingredientRepo.save(new Ingredient("Lemon", 1.1, 0.3, 9.3, IngredientCategory.FRUIT));
+        ingredients[22] = ingredientRepo.save(new Ingredient("Chocolate", 7.5, 30.0, 59.0, IngredientCategory.PANTRY));
+        ingredients[23] = ingredientRepo.save(new Ingredient("Vanilla Extract", 0.0, 0.0, 13.0, IngredientCategory.SPICES));
+        ingredients[24] = ingredientRepo.save(new Ingredient("Bacon", 37.0, 42.0, 1.4, IngredientCategory.MEAT));
+        ingredients[25] = ingredientRepo.save(new Ingredient("Mushroom", 3.1, 0.3, 3.3, IngredientCategory.VEGETABLES));
+        ingredients[26] = ingredientRepo.save(new Ingredient("Spinach", 2.9, 0.4, 3.6, IngredientCategory.VEGETABLES));
+        ingredients[27] = ingredientRepo.save(new Ingredient("Tuna", 30.0, 1.0, 0.0, IngredientCategory.FISH));
+        ingredients[28] = ingredientRepo.save(new Ingredient("Soy Sauce", 8.1, 0.0, 4.9, IngredientCategory.CONDIMENTS));
+        ingredients[29] = ingredientRepo.save(new Ingredient("Ginger", 1.8, 0.8, 18.0, IngredientCategory.SPICES));
         return ingredients;
     }
 

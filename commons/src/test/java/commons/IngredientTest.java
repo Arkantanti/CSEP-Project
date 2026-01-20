@@ -101,4 +101,10 @@ class IngredientTest {
         assertFalse(result.isEmpty());
         assertTrue(result.contains("fat"));
     }
+
+    @Test
+    void calculateCalories_returnsKcalPerGram() {
+        double result = ingredient.calculateCalories();
+        assertEquals(7.26, result, 1e-9);
+    }
 }
