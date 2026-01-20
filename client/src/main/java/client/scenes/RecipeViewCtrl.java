@@ -199,7 +199,7 @@ public class RecipeViewCtrl {
      * Shows the label and hides the text field.
      */
     private void finishEditing() {
-        if(mainCtrl.recipeNameChecker(recipeService.getAllRecipes(), nameTextField.getText(), this.recipe)){
+        if(this.recipe.recipeNameChecker(recipeService.getAllRecipes(), nameTextField.getText())){
             mainCtrl.showError("Used Name",
                     "This recipe name is already in use, please choose another.");
             return;

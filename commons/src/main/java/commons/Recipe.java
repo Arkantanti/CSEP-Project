@@ -134,4 +134,21 @@ public class Recipe implements Showable{
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
+
+    /**
+     * function for checking if the name from the recipe is already in the list of all the recipes
+     * @param recipeList the list of all the recipes where the names need to be checked
+     * @param s the name of the recipe
+     * @return true or false depending on if the list contains the recipe name
+     */
+    public boolean recipeNameChecker(List<Recipe> recipeList, String s){
+        for(Recipe recipeName : recipeList){
+            if (recipeName.getName().trim().equalsIgnoreCase(s) &&
+                    (this.getId() != recipeName.getId())) {
+                return true;
+            }
+
+        }
+        return false;
+    }
 }

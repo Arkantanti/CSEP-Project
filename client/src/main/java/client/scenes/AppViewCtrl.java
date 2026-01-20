@@ -278,12 +278,4 @@ public class AppViewCtrl implements Initializable {
             alert.showAndWait();
         });
     }
-
-    /**
-     * function to get access to the recipe service class.
-     * @return the recipe service
-     */
-    public RecipeService getRecipeService() {
-        return recipeService;
-    }
 }

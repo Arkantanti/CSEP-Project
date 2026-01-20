@@ -265,29 +265,6 @@ public class MainCtrl {
         }
     }
 
-
-    /**
-     * function for checking if the name from the recipe is already in the list of all the recipes
-     * @param recipeList the list of all the recipes where the names need to be checked
-     * @param s the name of the recipe
-     * @return true or false depending on if the list contains the recipe name
-     */
-    public boolean recipeNameChecker(List<Recipe> recipeList, String s, Recipe recipeOne){
-        for(Recipe recipeName : recipeList){
-            if(recipeOne != null){
-                if(recipeName.getName().equals(s) && (recipeOne.getId() != recipeName.getId())){
-                    return true;
-                }
-            } else {
-                if(recipeName.getName().equals(s)){
-                    return true;
-                }
-            }
-
-        }
-        return false;
-    }
-
     /**
      * To show an error for if something goes wrong
      * @param header The head text of the error
