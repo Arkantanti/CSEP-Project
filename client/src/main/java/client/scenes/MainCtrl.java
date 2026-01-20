@@ -16,8 +16,10 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.services.WebsocketService;
 import client.utils.FavoritesManager;
 import client.utils.FavoritesPollingService;
+import com.google.inject.Inject;
 import commons.Ingredient;
 import commons.Recipe;
 import javafx.scene.Parent;
@@ -47,6 +49,17 @@ public class MainCtrl {
     private boolean firstOpen;
     private FavoritesPollingService pollingService;
 
+    private WebsocketService websocketService;
+
+    /**
+     * Injected Constructor
+     * @param websocketService the websocket service
+     */
+    @Inject
+    public MainCtrl(WebsocketService websocketService){
+        this.websocketService = websocketService;
+    }
+
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
@@ -68,6 +81,8 @@ public class MainCtrl {
         pollingService = new FavoritesPollingService(favoritesManager);
         pollingService.setMainCtrl(this);
         pollingService.startPollingService();
+
+        websocketService.initialize(appViewCtrl, this);
     }
 
     /**
@@ -105,6 +120,8 @@ public class MainCtrl {
         if(firstOpen){
             switchFirstOpen();
         }
+
+        websocketService.setRecipeViewCtrl(recipeView.getKey());
     }
 
     /**
