@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -42,7 +43,7 @@ public class RecipeViewCtrl {
     @FXML private Label fatLabel;
     @FXML private Label carbsLabel;
     @FXML private Label proteinLabel;
-    @FXML private HBox hboxAllergens;
+    @FXML private FlowPane hboxAllergens;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -140,7 +141,6 @@ public class RecipeViewCtrl {
         for(Allergen allergen : allergens) {
             Label label = new Label(allergen.getDisplayName());
             label.getStyleClass().add("allergen-label");
-            HBox.setMargin(label, new Insets(0, 6, 0, 6));
             label.setStyle("-fx-background-color:" + allergen.getColor()+";");
             hboxAllergens.getChildren().add(label);
         }

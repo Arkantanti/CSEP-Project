@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.layout.FlowPane?>
 <ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.RecipeViewCtrl">
    <content>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
@@ -226,10 +227,18 @@
                   <Font name="System Bold" size="19.0" />
               </font>
           </Label>
-          <HBox fx:id="hboxAllergens" prefHeight="40.0" prefWidth="200.0">
-               <VBox.margin>
-                  <Insets bottom="25.0" />
-               </VBox.margin></HBox>
+             <FlowPane fx:id="hboxAllergens"
+                       hgap="6"
+                       vgap="6"
+                       prefHeight="80"
+                       prefWrapLength="180">
+                 <padding>
+                     <Insets left="10" right="10"/>
+                 </padding>
+                 <VBox.margin>
+                     <Insets bottom="25.0" />
+                 </VBox.margin>
+             </FlowPane>
          </children>
       </VBox>
    </content>

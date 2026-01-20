@@ -62,7 +62,7 @@
 }
 .allergen-label {
     -fx-text-fill: white;
-    -fx-max-height: infinity;
+    -fx-pref-height: 30;
     -fx-background-radius: 5;
     -fx-padding: 0 3 0 3;
     -fx-font-weight: 700;

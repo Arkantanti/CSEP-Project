@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.converter.DoubleStringConverter;
@@ -37,7 +38,7 @@ public class  IngredientViewCtrl {
     @FXML
     private Label kcalLabel;
     @FXML
-    private HBox hboxAllergens;
+    private FlowPane hboxAllergens;
     @FXML
     private Button addAllergenButton;
 
@@ -126,7 +127,6 @@ public class  IngredientViewCtrl {
             for(Allergen allergen : ingredient.getAllergens()) {
                 Label label = new Label(allergen.getDisplayName());
                 label.getStyleClass().add("allergen-label");
-                HBox.setMargin(label, new Insets(0, 6, 0, 6));
                 label.setStyle("-fx-background-color:" + allergen.getColor()+";");
                 hboxAllergens.getChildren().addFirst(label);
                 selectedAllergens.add(allergen);
@@ -274,7 +274,6 @@ public class  IngredientViewCtrl {
 
         Label label = new Label(a.getDisplayName());
         label.getStyleClass().add("allergen-label");
-        HBox.setMargin(label, new Insets(0, 6, 0, 6));
         label.setStyle("-fx-background-color:" + a.getColor()+";");
         hboxAllergens.getChildren().addFirst(label);
         ingredient.setAllergens(selectedAllergens);
