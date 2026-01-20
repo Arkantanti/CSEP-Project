@@ -95,7 +95,7 @@ public class WebsocketService implements WebSocket.Listener {
                     }
                     case SyncEvent.RecipeContentUpdated recipeContentUpdated -> {
                         if (recipeViewCtrl != null && recipeViewCtrl.getRecipe().getId() == recipeContentUpdated.getRecipeId()) {
-                            recipeViewCtrl.loadRecipe(recipeContentUpdated.getRecipe());
+                            recipeViewCtrl.loadRecipe(recipeContentUpdated.getRecipe(), false);
                         }
                         appViewCtrl.refreshData();
                     }
