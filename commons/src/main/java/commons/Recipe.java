@@ -57,7 +57,7 @@ public class Recipe implements Showable{
                   boolean cheap, boolean fast, boolean vegan) {
         this.name = name;
         this.servings = servings;
-        this.preparationSteps = new ArrayList<>(preparationSteps);
+        this.preparationSteps = preparationSteps==null ? null : new ArrayList<>(preparationSteps);
         this.cheap = cheap;
         this.fast = fast;
         this.vegan = vegan;
@@ -83,10 +83,11 @@ public class Recipe implements Showable{
     }
 
     public List<String> getPreparationSteps() {
-        return new ArrayList<>(preparationSteps);
+        return preparationSteps==null ? null : new ArrayList<>(preparationSteps);
     }
 
-    public List<RecipeIngredient> getRecipeIngredients() {return new ArrayList<>(recipeIngredients);}
+    public List<RecipeIngredient> getRecipeIngredients() {
+        return recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);}
 
     public void setName(String name){ this.name = name;}
 
@@ -95,14 +96,14 @@ public class Recipe implements Showable{
     public void setServings(int servings){ this.servings = servings; }
 
     public void setPreparationSteps(List<String> preparationSteps) {
-        this.preparationSteps = new ArrayList<>(preparationSteps);
+        this.preparationSteps = preparationSteps==null ? null : new ArrayList<>(preparationSteps);
     }
     public void setCheap(boolean cheap) { this.cheap = cheap; }
     public void setFast(boolean fast) { this.fast = fast; }
     public void setVegan(boolean vegan) { this.vegan = vegan; }
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-        this.recipeIngredients = new ArrayList<>(recipeIngredients);
+        this.recipeIngredients = recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);
     }
 
     /**

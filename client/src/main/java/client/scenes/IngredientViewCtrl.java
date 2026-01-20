@@ -3,9 +3,11 @@ package client.scenes;
 import client.MyFXML;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Allergen;
 import commons.Ingredient;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.converter.DoubleStringConverter;
 
@@ -34,6 +36,8 @@ public class  IngredientViewCtrl {
     private Label usedCountLabel;
     @FXML
     private Label kcalLabel;
+    @FXML
+    private HBox hboxAllergens;
 
     private final ServerUtils server;
     private boolean editing = false;
@@ -97,6 +101,12 @@ public class  IngredientViewCtrl {
             carbsTf.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
             kcalLabel.setText(String.format(Locale.US, "%.0f kcal/100g",ingredient.calculateCalories()*100));
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
+            for(Allergen allergen : ingredient.getAllergens()) {
+                Label label = new Label(allergen.getDisplayName());
+                label.getStyleClass().add("allergen-label");
+                label.setStyle("-fx-background-color:" + allergen.getColor()+";");
+                hboxAllergens.getChildren().add(label);
+            }
         }
     }
 

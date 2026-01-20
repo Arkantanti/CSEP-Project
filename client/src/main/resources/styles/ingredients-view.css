@@ -21,3 +21,7 @@
 .add-button:hover {
     -fx-background-color: #45a049;
 }
+.allergen-label {
+    -fx-text-fill: white;
+    -fx-max-height: infinity;
+}
