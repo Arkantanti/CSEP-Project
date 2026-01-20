@@ -192,7 +192,14 @@
                   <Font name="System Bold" size="19.0" />
                </font>
             </Label>
-            <HBox fx:id="hboxAllergens" prefHeight="40.0" prefWidth="200.0" />
+            <HBox fx:id="hboxAllergens" prefHeight="40.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="addAllergenButton" mnemonicParsing="false" onAction="#addAllergen" styleClass="allergen-button" text="+/-">
+                     <HBox.margin>
+                        <Insets left="6.0" right="6.0" />
+                     </HBox.margin>
+                  </Button>
+               </children></HBox>
          </children>
       </VBox>
    </content>

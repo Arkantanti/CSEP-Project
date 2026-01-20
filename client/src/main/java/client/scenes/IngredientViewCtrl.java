@@ -7,6 +7,7 @@ import commons.Allergen;
 import commons.Ingredient;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -14,9 +15,7 @@ import javafx.util.converter.DoubleStringConverter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class  IngredientViewCtrl {
@@ -39,12 +38,17 @@ public class  IngredientViewCtrl {
     private Label kcalLabel;
     @FXML
     private HBox hboxAllergens;
+    @FXML
+    private Button addAllergenButton;
 
     private final ServerUtils server;
     private boolean editing = false;
     private Ingredient ingredient;
     private final AppViewCtrl appViewCtrl;
     private final MainCtrl mainCtrl;
+
+    private ContextMenu allergenMenu;
+    private final Set<Allergen> selectedAllergens;
 
     /**
      * Constructor for IngredientViewCtrl.
@@ -56,6 +60,7 @@ public class  IngredientViewCtrl {
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.mainCtrl = mainCtrl;
+        this.selectedAllergens = new HashSet<>();
     }
 
     /**
@@ -85,6 +90,22 @@ public class  IngredientViewCtrl {
             });
             tf.setOnAction(e -> this.onStopEditing(tf));
         }
+
+        allergenMenu = new ContextMenu();
+
+        for (Allergen a : Allergen.values()) {
+            CheckMenuItem item = new CheckMenuItem(a.getDisplayName());
+
+            item.setOnAction(e -> {
+                if (item.isSelected()) {
+                    addChip(a);
+                } else {
+                    removeChip(a);
+                }
+            });
+
+            allergenMenu.getItems().add(item);
+        }
     }
 
     /**
@@ -107,8 +128,17 @@ public class  IngredientViewCtrl {
                 label.getStyleClass().add("allergen-label");
                 HBox.setMargin(label, new Insets(0, 6, 0, 6));
                 label.setStyle("-fx-background-color:" + allergen.getColor()+";");
-                hboxAllergens.getChildren().add(label);
+                hboxAllergens.getChildren().addFirst(label);
+                selectedAllergens.add(allergen);
             }
+            allergenMenu.getItems().forEach(item -> {
+                CheckMenuItem c = (CheckMenuItem) item;
+                if (selectedAllergens.stream()
+                        .map(Allergen::getDisplayName).toList().contains(c.getText())) {
+                    c.setSelected(true);
+                }
+            });
+
         }
     }
 
@@ -226,6 +256,46 @@ public class  IngredientViewCtrl {
             appViewCtrl.loadIngredients();
         }
     }
+
+    /**
+     * Adds a new allergen and refreshes the view.
+     */
+    public void addAllergen() {
+        allergenMenu.show(addAllergenButton, Side.BOTTOM, 0, 0);
+    }
+
+
+    /**
+     * Adds a new allergen
+     * @param a Allergen reference to add.
+     */
+    private void addChip(Allergen a) {
+        if (!selectedAllergens.add(a)) return;
+
+        Label label = new Label(a.getDisplayName());
+        label.getStyleClass().add("allergen-label");
+        HBox.setMargin(label, new Insets(0, 6, 0, 6));
+        label.setStyle("-fx-background-color:" + a.getColor()+";");
+        hboxAllergens.getChildren().addFirst(label);
+        ingredient.setAllergens(selectedAllergens);
+        server.updateIngredient(ingredient);
+    }
+
+    /**
+     * Removes an allergen.
+     * @param a Allergen reference.
+     */
+    private void removeChip(Allergen a) {
+        selectedAllergens.remove(a);
+
+        hboxAllergens.getChildren().removeIf(node ->
+                node instanceof Label &&
+                        ((Label) node).getText().equals(a.getDisplayName())
+        );
+        ingredient.setAllergens(selectedAllergens);
+        server.updateIngredient(ingredient);
+    }
+
 }
 
 

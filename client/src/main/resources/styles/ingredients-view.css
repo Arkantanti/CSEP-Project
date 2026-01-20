@@ -29,3 +29,20 @@
     -fx-font-weight: 700;
     -fx-font-size: 13;
 }
+.allergen-button {
+    -fx-max-height: infinity;
+    -fx-pref-width: 30;
+
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-background-color: white;
+    -fx-border-color: black;
+
+    -fx-padding: 0 3 0 3;
+    -fx-font-weight: 700;
+    -fx-font-size: 13;
+}
+.allergen-button:hover {
+    -fx-background-color: #eeeeee;
+    -fx-cursor: hand;
+}
