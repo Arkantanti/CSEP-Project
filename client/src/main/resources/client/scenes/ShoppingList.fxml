@@ -10,16 +10,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="700.0" maxWidth="412.0" minHeight="200.0" minWidth="412.0" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ShoppingListCtrl" stylesheets="/styles/shopping-list.css">
+<BorderPane maxHeight="700.0" maxWidth="412.0" minHeight="200.0" minWidth="412.0" stylesheets="/styles/shopping-list.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ShoppingListCtrl">
    <top>
       <HBox styleClass="shopping-list-header" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Shopping List" styleClass="shopping-list-title">
+            <Label styleClass="shopping-list-title" text="%txt.shoppingList">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
                <HBox.margin>
-                  <Insets left="10.0" top="10.0" bottom="10.0" />
+                  <Insets bottom="10.0" left="10.0" top="10.0" />
                </HBox.margin>
             </Label>
          </children>
@@ -28,28 +28,28 @@
    <bottom>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <items>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#clear" text="Clear" />
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#print" text="Print" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#clear" text="%btn.clear" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#print" text="%btn.print" />
          </items>
       </ToolBar>
    </bottom>
    <center>
-      <ScrollPane hbarPolicy="NEVER" fitToWidth="true" BorderPane.alignment="CENTER">
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
          <content>
-            <VBox prefHeight="200.0" fillWidth="true">
+            <VBox fillWidth="true" prefHeight="200.0">
                <children>
                   <VBox fx:id="ingredientListBox" fillWidth="true" spacing="2.0" />
                   <HBox fx:id="addModeToggle" spacing="5.0" styleClass="add-mode-toggle">
                      <children>
-                        <Button fx:id="addIngredientButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="120.0" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="Add Ingredient">
+                        <Button fx:id="addIngredientButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="120.0" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="%btn.addIngredient">
                            <font>
                               <Font size="12.0" />
                            </font>
                         </Button>
-                        <Button fx:id="addTextButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="120.0" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="Add Text Item">
+                        <Button fx:id="addTextButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="120.0" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="%btn.addText">
                            <font>
                               <Font size="12.0" />
                            </font>
@@ -61,7 +61,7 @@
                         </Button>
                      </children>
                      <VBox.margin>
-                        <Insets left="10.0" top="5.0" bottom="5.0" />
+                        <Insets bottom="5.0" left="10.0" top="5.0" />
                      </VBox.margin>
                   </HBox>
                </children>

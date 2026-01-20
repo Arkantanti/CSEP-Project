@@ -13,19 +13,19 @@
             <children>
             <AnchorPane prefHeight="340.0" prefWidth="200.0">
                <children>
-                  <Label layoutX="39.0" layoutY="33.0" text="Use tabs to switch between Ingredients and Recipes views">
+                  <Label layoutX="39.0" layoutY="33.0" text="%txt.tabsExplanation">
                      <font>
-                        <Font name="Lucida Sans Demibold Italic" size="15.0" />
+                        <Font name="Segoe UI Bold Italic" size="15.0" />
                      </font>
                   </Label>
-                  <Label layoutX="43.0" layoutY="296.0" text="You may also add new entries using the + button">
+                  <Label layoutX="43.0" layoutY="296.0" text="%txt.addBtnExplanation">
                      <font>
-                        <Font name="Lucida Sans Demibold Italic" size="15.0" />
+                        <Font name="Segoe UI Bold Italic" size="15.0" />
                      </font>
                   </Label>
-                  <Label layoutX="117.0" layoutY="170.0" text="Feel free to explore the contents from the list">
+                  <Label layoutX="117.0" layoutY="170.0" text="%txt.contentExplanation">
                      <font>
-                        <Font name="Lucida Sans Demibold Italic" size="15.0" />
+                        <Font name="Segoe UI Bold Italic" size="15.0" />
                      </font>
                   </Label>
                   <Line endX="-103.29290771484375" endY="-0.18579864501953125" layoutX="128.0" layoutY="20.0" startX="-65.0" startY="4.399993896484375" />

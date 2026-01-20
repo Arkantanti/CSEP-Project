@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ResourceBundle;
 
 import com.google.inject.Injector;
 
@@ -57,6 +58,28 @@ public class MyFXML {
     public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
         try {
             var loader = new FXMLLoader(getLocation(parts), null, null,
+                    new MyFactory(), StandardCharsets.UTF_8);
+            Parent parent = loader.load();
+            T ctrl = loader.getController();
+            return new Pair<>(ctrl, parent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Loads an FXML file and returns the controller and the root node.
+     *
+     * @param <T>   the type of the controller
+     * @param c     the class of the controller
+     * @param resources specifies files for a chosen language
+     * @param parts the path components to the FXML file
+     * @return a Pair containing the controller instance and the root Parent node
+     * @throws RuntimeException if the FXML file cannot be loaded
+     */
+    public <T> Pair<T, Parent> load(Class<T> c, ResourceBundle resources, String... parts) {
+        try {
+            var loader = new FXMLLoader(getLocation(parts), resources, null,
                     new MyFactory(), StandardCharsets.UTF_8);
             Parent parent = loader.load();
             T ctrl = loader.getController();

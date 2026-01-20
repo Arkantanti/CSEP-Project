@@ -99,7 +99,7 @@ public class AddRecipeCtrl {
             }
         }
 
-        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "RecipeIngredient.fxml");
         item.getKey().initialize(null, recipe, this::showIngredients);
 
@@ -297,7 +297,7 @@ public class AddRecipeCtrl {
                     originalIngredient.getUnit()
             );
 
-            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                     "client", "scenes", "RecipeIngredient.fxml");
             item.getKey().initialize(clonedIngredient, recipe, this::showIngredients);
             item.getValue().setUserData(item.getKey());
@@ -358,7 +358,7 @@ public class AddRecipeCtrl {
                 //To make sure the ingredients are set on the correct recipe.
                 ri.setRecipe(recipe);
 
-                Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                         "client", "scenes", "RecipeIngredient.fxml");
                 item.getKey().initialize(ri, recipe, this::showIngredients);
 

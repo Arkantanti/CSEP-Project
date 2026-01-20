@@ -20,14 +20,19 @@ import client.utils.FavoritesManager;
 import client.utils.FavoritesPollingService;
 import commons.Ingredient;
 import commons.Recipe;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 /**
  * The Main Controller that manages the execution flow and scene switching.
@@ -45,6 +50,10 @@ public class MainCtrl {
     private boolean firstOpen;
     private FavoritesPollingService pollingService;
 
+    private Locale locale = Locale.ENGLISH;
+    private final Preferences prefs = Preferences.userNodeForPackage(MainCtrl.class);
+    private String flagPath = "/images/UK-flag.png";
+
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
@@ -58,6 +67,9 @@ public class MainCtrl {
         this.primaryStage = primaryStage;
         this.fxml = fxml;
         this.firstOpen = true;
+
+        locale = Locale.forLanguageTag(prefs.get("lang", "en"));
+        flagPath = prefs.get("flagPath", "/images/UK-flag.png");
 
         showAppView();
         primaryStage.show();
@@ -74,11 +86,13 @@ public class MainCtrl {
      */
     public void showAppView() {
         primaryStage.setTitle("FoodPal");
-        var overview = fxml.load(AppViewCtrl.class,
+        var overview = fxml.load(AppViewCtrl.class, bundle(),
                 "client", "scenes", "AppView.fxml");
 
         this.appViewCtrl = overview.getKey();
         primaryStage.setScene(new Scene(overview.getValue()));
+
+        appViewCtrl.applyLanguageIcon(flagPath);
     }
 
     /**
@@ -96,7 +110,7 @@ public class MainCtrl {
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
-        Pair<RecipeViewCtrl, Parent> recipeView = fxml.load(RecipeViewCtrl.class,
+        Pair<RecipeViewCtrl, Parent> recipeView = fxml.load(RecipeViewCtrl.class, bundle(),
                 "client", "scenes", "RecipeView.fxml");
         recipeView.getKey().setRecipe(recipe, fxml);
         appViewCtrl.setContent(recipeView.getValue());
@@ -120,7 +134,7 @@ public class MainCtrl {
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
-        Pair<IngredientViewCtrl, Parent> ingredientView = fxml.load(IngredientViewCtrl.class,
+        Pair<IngredientViewCtrl, Parent> ingredientView = fxml.load(IngredientViewCtrl.class, bundle(),
                 "client", "scenes", "IngredientView.fxml");
         ingredientView.getKey().setIngredient(ingredient, fxml);
         appViewCtrl.setContent(ingredientView.getValue());
@@ -134,7 +148,7 @@ public class MainCtrl {
      */
 
     public void showAddIngredient() {
-        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class, bundle(),
                 "client", "scenes", "AddIngredient.fxml");
         addIngredientView.getKey().initialize();
         appViewCtrl.setContent(addIngredientView.getValue());
@@ -150,7 +164,7 @@ public class MainCtrl {
             addRecipeCtrl.deleter(addRecipeCtrl.getRecipe().getId());
             addRecipeCtrl.setIsSavedTrue();
         }
-        Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class,
+        Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class, bundle(),
                 "client", "scenes", "AddRecipe.fxml");
         this.addRecipeCtrl = addRecipeView.getKey();
         addRecipeCtrl.initialize(fxml);
@@ -162,7 +176,7 @@ public class MainCtrl {
      * and then a recipe gets added and canceled immediately.
      */
     public void showDefaultView(){
-        Pair<RecipeViewCtrl, Parent> defaultScreen = fxml.load(RecipeViewCtrl.class,
+        Pair<RecipeViewCtrl, Parent> defaultScreen = fxml.load(RecipeViewCtrl.class, bundle(),
                 "client", "scenes", "DefaultView.fxml");
         appViewCtrl.setContent(defaultScreen.getValue());
     }
@@ -194,13 +208,14 @@ public class MainCtrl {
      */
     public void openShoppingList(){
         if (shoppingListStage == null || shoppingListCtrl == null) {
-            Pair<ShoppingListCtrl, Parent> shoppingListView = fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
+            Pair<ShoppingListCtrl, Parent> shoppingListView = fxml.load(ShoppingListCtrl.class, bundle(),
+                    "client", "scenes", "ShoppingList.fxml");
             shoppingListStage = new Stage();
             shoppingListStage.setTitle("Shopping List");
             shoppingListStage.setScene(new Scene(shoppingListView.getValue()));
             shoppingListCtrl = shoppingListView.getKey();
 
-            shoppingListCtrl.initialize(fxml);
+            shoppingListCtrl.initialize(fxml, getBundle());
         }
         shoppingListStage.show();
         shoppingListStage.toFront();
@@ -256,5 +271,67 @@ public class MainCtrl {
         } else {
             System.out.println("Tried to shutdown the polling service but it was not initialized.");
         }
+    }
+
+    /**
+     * Resets the app to the default view and applies language change
+     * @param locale path to the properties file
+     * @param flagPath path to the flag's image
+     */
+    public void changeLanguageAndReset(Locale locale, String flagPath) {
+        setLocale(locale);
+        setFlagPath(flagPath);
+        showAppView();
+        showDefaultView();
+    }
+
+    /**
+     * Provides file with encoded labels
+     * @return ResourceBundle file with hardcoded text in chosen language
+     */
+    private ResourceBundle bundle() {
+        return ResourceBundle.getBundle("i18n.messages", locale);
+    }
+
+    /**
+     * Provides file with encoded labels for other Controllers
+     * @return ResourceBundle file with hardcoded text in chosen language
+     */
+    public ResourceBundle getBundle() {
+        return ResourceBundle.getBundle("i18n.messages", locale);
+    }
+
+    /**
+     * Setter method for updating path to the Properties file
+     * @param locale Locale with path to the file
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+        prefs.put("lang", locale.toLanguageTag());
+    }
+
+    /**
+     * Getter for the Locale variable
+     * @return Locale for chosen language
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Setter for path to a flag's image
+     * @param flagPath path to the chosen language flag's image
+     */
+    public void setFlagPath(String flagPath) {
+        this.flagPath = flagPath;
+        prefs.put("flagPath", flagPath);
+    }
+
+    /**
+     * Getter for the flag path
+     * @return String of the path to the image
+     */
+    public String getFlagPath() {
+        return flagPath;
     }
 }

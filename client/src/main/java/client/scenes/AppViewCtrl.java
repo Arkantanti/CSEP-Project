@@ -13,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -20,6 +22,7 @@ import javafx.scene.layout.StackPane;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -66,6 +69,8 @@ public class AppViewCtrl implements Initializable {
     @FXML private Button refreshButton;
     @FXML private Button favoritesButton;
     @FXML private HBox overListHBox;
+    @FXML private MenuButton languageMenu;
+    @FXML private ImageView languageIcon;
 
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
@@ -278,4 +283,37 @@ public class AppViewCtrl implements Initializable {
             alert.showAndWait();
         });
     }
+
+    /**
+     * Triggered when UK flag is clicked.
+     */
+    @FXML
+    private void setLangEN() {
+        mainCtrl.changeLanguageAndReset(Locale.ENGLISH, "/images/UK-flag.png");
+    }
+
+    /**
+     * Triggered when NL flag is clicked.
+     */
+    @FXML
+    private void setLangNL() {
+        mainCtrl.changeLanguageAndReset(Locale.forLanguageTag("nl-NL"), "/images/DUTCH-flag.png");
+    }
+
+    /**
+     * Triggered when PL flag is clicked.
+     */
+    @FXML
+    private void setLangPL() {
+        mainCtrl.changeLanguageAndReset(Locale.forLanguageTag("pl-PL"), "/images/POLAND-flag.png");
+    }
+
+    /**
+     * Helper method for updatnig the flag icon on the language menu.
+     * @param flagPath the path to the flag's image
+     */
+    public void applyLanguageIcon(String flagPath) {
+        languageIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream(flagPath)));
+    }
+
 }

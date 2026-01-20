@@ -11,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
+import java.util.ResourceBundle;
+
 
 public class ShoppingListCtrl {
 
@@ -36,6 +38,9 @@ public class ShoppingListCtrl {
     private final ShoppingListService shoppingListService;
     private MyFXML fxml;
 
+    private ResourceBundle bundle;
+
+
     /**
      * Constructor for ShoppingListCtrl.
      *
@@ -49,7 +54,8 @@ public class ShoppingListCtrl {
     /**
      * called when the shopping list is opened
      */
-    public void initialize(MyFXML fxml) {
+    public void initialize(MyFXML fxml, ResourceBundle bundle) {
+        this.bundle = bundle;
         this.fxml = fxml;
         setupAddModeButtons();
         loadShoppingList();
@@ -92,7 +98,7 @@ public class ShoppingListCtrl {
     public void loadShoppingList() {
         ingredientListBox.getChildren().clear();
         for (ShoppingListItem item : shoppingListService.getShoppingList()) {
-            Pair<ShoppingListElementCtrl, Parent> element = fxml.load(ShoppingListElementCtrl.class,
+            Pair<ShoppingListElementCtrl, Parent> element = fxml.load(ShoppingListElementCtrl.class, bundle,
                     "client", "scenes", "ShoppingListElement.fxml");
             element.getKey().initialize(item, this::loadShoppingList);
             ingredientListBox.getChildren().add(element.getValue());
@@ -103,7 +109,7 @@ public class ShoppingListCtrl {
      * called when the user presses the add button
      */
     public void onAddShoppingListElement(){
-        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class,
+        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, bundle,
                 "client", "scenes", "ShoppingListElement.fxml");
         boolean isTextMode = (currentAddMode == AddMode.TEXT);
         item.getKey().initialize(null, this::loadShoppingList, isTextMode);
