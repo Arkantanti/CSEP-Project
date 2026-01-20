@@ -18,10 +18,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import commons.Ingredient;
-import commons.Recipe;
-import commons.RecipeIngredient;
-import commons.Unit;
+import commons.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -83,12 +80,19 @@ public class Config {
         System.out.println("Loading small dataset...");
 
         // 1. Create Ingredients
-        Ingredient flour = ingredientRepo.save(new Ingredient("Flour", 1.0, 10.0, 76.0, Set.of()));
-        Ingredient sugar = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0, Set.of()));
-        Ingredient egg = ingredientRepo.save(new Ingredient("Egg", 11.0, 13.0, 1.1, Set.of()));
-        Ingredient tomato = ingredientRepo.save(new Ingredient("Tomato", 0.2, 0.9, 3.9, Set.of()));
-        Ingredient bread = ingredientRepo.save(new Ingredient("Bread", 3.2, 9.0, 49.0, Set.of()));
-        Ingredient cheese = ingredientRepo.save(new Ingredient("Cheese", 25.0, 25.0, 1.3, Set.of()));
+        Ingredient flour = ingredientRepo.save(new Ingredient(
+                "Flour", 1.0, 10.0, 76.0, Set.of(Allergen.GLUTEN)));
+        Ingredient sugar = ingredientRepo.save(new Ingredient(
+                "Sugar", 0.0, 0.0, 100.0, Set.of()));
+        Ingredient egg = ingredientRepo.save(new Ingredient(
+                "Egg", 11.0, 13.0, 1.1, Set.of(Allergen.EGGS)));
+        Ingredient tomato = ingredientRepo.save(new Ingredient(
+                "Tomato", 0.2, 0.9, 3.9, Set.of()));
+        Ingredient bread = ingredientRepo.save(new Ingredient(
+                "Bread", 3.2, 9.0, 49.0, Set.of(Allergen.GLUTEN)));
+        Ingredient cheese = ingredientRepo.save(new Ingredient(
+                "Cheese", 25.0, 25.0, 1.3, Set.of(Allergen.MILK)));
+
 
         // 2. Create Recipes
         Recipe pancake = recipeRepo.save(new Recipe("Pancakes", 4,
@@ -145,19 +149,19 @@ public class Config {
      */
     private Ingredient[] seedLargeIngredients(IngredientRepository ingredientRepo) {
         Ingredient[] ingredients = new Ingredient[30];
-        ingredients[0] = ingredientRepo.save(new Ingredient("Flour", 10.0, 1.0, 76.0, Set.of()));
-        ingredients[1] = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0, Set.of()));
-        ingredients[2] = ingredientRepo.save(new Ingredient("Egg", 13.0, 11.0, 1.1, Set.of()));
-        ingredients[3] = ingredientRepo.save(new Ingredient("Tomato", 0.9, 0.2, 3.9, Set.of()));
-        ingredients[4] = ingredientRepo.save(new Ingredient("Bread", 9.0, 3.2, 49.0, Set.of()));
-        ingredients[5] = ingredientRepo.save(new Ingredient("Cheese", 25.0, 33.0, 1.3, Set.of()));
-        ingredients[6] = ingredientRepo.save(new Ingredient("Milk", 3.4, 1.0, 5.0, Set.of()));
-        ingredients[7] = ingredientRepo.save(new Ingredient("Butter", 0.9, 81.0, 0.1, Set.of()));
-        ingredients[8] = ingredientRepo.save(new Ingredient("Salt", 0.0, 0.0, 0.0, Set.of()));
-        ingredients[9] = ingredientRepo.save(new Ingredient("Pepper", 11.0, 3.3, 64.0, Set.of()));
+        ingredients[0]  = ingredientRepo.save(new Ingredient("Flour", 10.0, 1.0, 76.0, Set.of(Allergen.GLUTEN)));
+        ingredients[1]  = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0, Set.of()));
+        ingredients[2]  = ingredientRepo.save(new Ingredient("Egg", 13.0, 11.0, 1.1, Set.of(Allergen.EGGS)));
+        ingredients[3]  = ingredientRepo.save(new Ingredient("Tomato", 0.9, 0.2, 3.9, Set.of()));
+        ingredients[4]  = ingredientRepo.save(new Ingredient("Bread", 9.0, 3.2, 49.0, Set.of(Allergen.GLUTEN)));
+        ingredients[5]  = ingredientRepo.save(new Ingredient("Cheese", 25.0, 33.0, 1.3, Set.of(Allergen.MILK)));
+        ingredients[6]  = ingredientRepo.save(new Ingredient("Milk", 3.4, 1.0, 5.0, Set.of(Allergen.MILK)));
+        ingredients[7]  = ingredientRepo.save(new Ingredient("Butter", 0.9, 81.0, 0.1, Set.of(Allergen.MILK)));
+        ingredients[8]  = ingredientRepo.save(new Ingredient("Salt", 0.0, 0.0, 0.0, Set.of()));
+        ingredients[9]  = ingredientRepo.save(new Ingredient("Pepper", 11.0, 3.3, 64.0, Set.of()));
         ingredients[10] = ingredientRepo.save(new Ingredient("Chicken", 31.0, 3.6, 0.0, Set.of()));
         ingredients[11] = ingredientRepo.save(new Ingredient("Beef", 26.0, 15.0, 0.0, Set.of()));
-        ingredients[12] = ingredientRepo.save(new Ingredient("Pasta", 13.0, 1.5, 75.0, Set.of()));
+        ingredients[12] = ingredientRepo.save(new Ingredient("Pasta", 13.0, 1.5, 75.0, Set.of(Allergen.GLUTEN)));
         ingredients[13] = ingredientRepo.save(new Ingredient("Rice", 2.7, 0.3, 28.0, Set.of()));
         ingredients[14] = ingredientRepo.save(new Ingredient("Potato", 2.0, 0.1, 17.0, Set.of()));
         ingredients[15] = ingredientRepo.save(new Ingredient("Onion", 1.1, 0.1, 9.3, Set.of()));
@@ -167,13 +171,13 @@ public class Config {
         ingredients[19] = ingredientRepo.save(new Ingredient("Cucumber", 0.7, 0.1, 3.6, Set.of()));
         ingredients[20] = ingredientRepo.save(new Ingredient("Olive Oil", 0.0, 100.0, 0.0, Set.of()));
         ingredients[21] = ingredientRepo.save(new Ingredient("Lemon", 1.1, 0.3, 9.3, Set.of()));
-        ingredients[22] = ingredientRepo.save(new Ingredient("Chocolate", 7.5, 30.0, 59.0, Set.of()));
+        ingredients[22] = ingredientRepo.save(new Ingredient("Chocolate", 7.5, 30.0, 59.0, Set.of(Allergen.MILK, Allergen.SOY)));
         ingredients[23] = ingredientRepo.save(new Ingredient("Vanilla Extract", 0.0, 0.0, 13.0, Set.of()));
         ingredients[24] = ingredientRepo.save(new Ingredient("Bacon", 37.0, 42.0, 1.4, Set.of()));
         ingredients[25] = ingredientRepo.save(new Ingredient("Mushroom", 3.1, 0.3, 3.3, Set.of()));
         ingredients[26] = ingredientRepo.save(new Ingredient("Spinach", 2.9, 0.4, 3.6, Set.of()));
-        ingredients[27] = ingredientRepo.save(new Ingredient("Tuna", 30.0, 1.0, 0.0, Set.of()));
-        ingredients[28] = ingredientRepo.save(new Ingredient("Soy Sauce", 8.1, 0.0, 4.9, Set.of()));
+        ingredients[27] = ingredientRepo.save(new Ingredient("Tuna", 30.0, 1.0, 0.0, Set.of(Allergen.FISH)));
+        ingredients[28] = ingredientRepo.save(new Ingredient("Soy Sauce", 8.1, 0.0, 4.9, Set.of(Allergen.SOY, Allergen.GLUTEN)));
         ingredients[29] = ingredientRepo.save(new Ingredient("Ginger", 1.8, 0.8, 18.0, Set.of()));
         return ingredients;
     }
