@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.MyFXML;
 import client.utils.NutrientsCalc;
+import client.services.RecipeService;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+
+import static commons.Recipe.recipeNameChecker;
 
 public class RecipeViewCtrl {
 
@@ -52,6 +55,7 @@ public class RecipeViewCtrl {
     private final AppViewCtrl appViewCtrl;
     private final FavoritesManager favoritesManager;
     private final ShoppingListService shoppingListService;
+    private final RecipeService recipeService;
     private final NutrientsCalc nutrientsCalc;
 
     private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
@@ -70,7 +74,8 @@ public class RecipeViewCtrl {
                           Printer printer,
                           FavoritesManager favoritesManager,
                           ShoppingListService shoppingListService,
-                          NutrientsCalc nutrientsCalc) {
+                          NutrientsCalc nutrientsCalc,
+                          RecipeService recipeService) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
@@ -78,6 +83,7 @@ public class RecipeViewCtrl {
         this.favoritesManager = favoritesManager;
         this.shoppingListService = shoppingListService;
         this.nutrientsCalc = nutrientsCalc;
+        this.recipeService = recipeService;
     }
 
     /**
@@ -182,6 +188,12 @@ public class RecipeViewCtrl {
      * Shows the label and hides the text field.
      */
     private void finishEditing() {
+        if(recipeNameChecker(recipeService.getAllRecipes(), nameTextField.getText(), this.recipe)){
+            mainCtrl.showError("Used Name",
+                    "This recipe name is already in use, please choose another.");
+            return;
+        }
+
         editing = false;
         String newName = nameTextField.getText();
         boolean isCheap = cheapCheckBox.isSelected();

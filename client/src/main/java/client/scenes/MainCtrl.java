@@ -23,6 +23,7 @@ import commons.Recipe;
 import commons.RecipeIngredient;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -267,6 +268,19 @@ public class MainCtrl {
         } else {
             System.out.println("Tried to shutdown the polling service but it was not initialized.");
         }
+    }
+
+    /**
+     * To show an error for if something goes wrong
+     * @param header The head text of the error
+     * @param content The main text of the error
+     */
+    public void showError(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     /**

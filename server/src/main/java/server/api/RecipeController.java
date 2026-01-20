@@ -91,6 +91,14 @@ public class RecipeController {
                 || recipe.getPreparationSteps() == null) {
             return ResponseEntity.badRequest().build();
         }
+
+        //check for the database when the name is the same
+        for(Recipe recipeName : getAll()){
+            if((recipe.getName().trim().equalsIgnoreCase(recipeName.getName().trim()))){
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
         Recipe saved = repo.save(recipe);
         return ResponseEntity.ok(saved);
     }
@@ -121,6 +129,13 @@ public class RecipeController {
                 || recipe.getServings() < 1
                 || recipe.getPreparationSteps() == null) {
             return ResponseEntity.badRequest().build();
+        }
+
+        for(Recipe recipeName : getAll()){
+            if((recipe.getName().trim().equalsIgnoreCase(recipeName.getName().trim())) &&
+                    (recipeName.getId() != id)){
+                return ResponseEntity.badRequest().build();
+            }
         }
 
         if (!repo.existsById(id)) {
