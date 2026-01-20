@@ -113,18 +113,18 @@ public class RecipeController {
             return ResponseEntity.badRequest().build();
         }
 
-        for(Recipe recipeName : getAll()){
-            if((recipe.getName().equals(recipeName.getName())) &&
-                    (recipeName.getId() != recipe.getId())){
-                return ResponseEntity.badRequest().build();
-            }
-        }
-
         if (recipe == null
                 || isNullOrEmpty(recipe.getName())
                 || recipe.getServings() < 1
                 || recipe.getPreparationSteps() == null) {
             return ResponseEntity.badRequest().build();
+        }
+
+        for(Recipe recipeName : getAll()){
+            if((recipe.getName().equals(recipeName.getName())) &&
+                    (recipeName.getId() != id)){
+                return ResponseEntity.badRequest().build();
+            }
         }
 
         if (!repo.existsById(id)) {
