@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Ingredient;
+import commons.IngredientCategory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.IngredientRepository;
@@ -81,6 +82,11 @@ public class IngredientController {
             return ResponseEntity.badRequest().build();
         }
         ing.setName(capitalize(ing.getName()));
+
+        if (ing.getCategory() == null) {
+            ing.setCategory(IngredientCategory.UNCATEGORIZED);
+        }
+
         Ingredient saved = repo.save(ing);
         return ResponseEntity.ok(saved);
     }
@@ -113,6 +119,10 @@ public class IngredientController {
 
         if (!repo.existsById(id)){
             return ResponseEntity.notFound().build();
+        }
+
+        if (ing.getCategory() == null) {
+            ing.setCategory(IngredientCategory.UNCATEGORIZED);
         }
 
         ing.setRecipeIngredients(repo.findById(id).get().getRecipeIngredients());

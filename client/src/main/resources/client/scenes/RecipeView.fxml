@@ -6,7 +6,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -85,17 +88,17 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <CheckBox fx:id="cheapCheckBox" mnemonicParsing="false" text="Cheap" disable="true">
+                  <CheckBox fx:id="cheapCheckBox" disable="true" mnemonicParsing="false" text="Cheap">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="fastCheckBox" mnemonicParsing="false" text="Fast" disable="true">
+                  <CheckBox fx:id="fastCheckBox" disable="true" mnemonicParsing="false" text="Fast">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="veganCheckBox" mnemonicParsing="false" text="Vegan" disable="true">
+                  <CheckBox fx:id="veganCheckBox" disable="true" mnemonicParsing="false" text="Vegan">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -160,28 +163,17 @@
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="servingsScalingInput" onAction="#onServingsEnter" prefHeight="26.0" prefWidth="151.0" promptText="Number of portions" />
-                  <Button fx:id="resetServingsButton" mnemonicParsing="false" onAction="#resetServingsScaling" text="Reset">
+                  <TextField fx:id="servingsScalingInput" onAction="#applyServingsFromField" prefHeight="26.0" prefWidth="151.0" promptText="Number of portions" />
+                  <Button fx:id="resetServingsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#resetServingsScaling" text="Reset" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#addToShoppingList" text="Shop">
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToShoppingList" text="Shop" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Button>
-                  <Label fx:id="caloriesDisplay" text="- kcal/100g" textAlignment="CENTER">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin>
-                     <padding>
-                        <Insets left="20.0" />
-                     </padding>
-                  </Label>
                </children>
                <VBox.margin>
                   <Insets />
@@ -190,6 +182,42 @@
                   <Insets bottom="20.0" />
                </padding>
             </HBox>
+            <Label text="Metrics:">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+            </Label>
+             <GridPane alignment="CENTER">
+                 <columnConstraints>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                 </columnConstraints>
+                 <rowConstraints>
+                     <RowConstraints />
+                 </rowConstraints>
+                 <Label fx:id="carbsLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="0" />
+                 <Label fx:id="proteinLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="1" />
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+             </GridPane>
+             <GridPane alignment="CENTER">
+                 <columnConstraints>
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                 </columnConstraints>
+                 <rowConstraints>
+                     <RowConstraints />
+                 </rowConstraints>
+                <Label fx:id="fatLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="0" />
+                <Label fx:id="caloriesDisplay" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="-" GridPane.columnIndex="1" />
+                 <VBox.margin>
+                     <Insets bottom="35.0" left="10.0" />
+                 </VBox.margin>
+             </GridPane>
          </children>
       </VBox>
    </content>

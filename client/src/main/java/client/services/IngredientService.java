@@ -38,6 +38,10 @@ public class IngredientService {
      * @return An ingredient with the requested id, else null
      */
     public Ingredient getIngredientById(long id) {
+        Ingredient ingredient = server.getIngredientById(id);
+        if (ingredient != null) {
+            return ingredient;
+        }
         return server.getIngredients().stream().filter(e -> e.getId() == id).findFirst().orElse(null);
     }
 
