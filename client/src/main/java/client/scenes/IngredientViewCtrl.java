@@ -142,12 +142,26 @@ public class  IngredientViewCtrl {
         String newName = nameTextField.getText();
 
         if (newName != null && !newName.isBlank()) {
-            nameLabel.setText(newName.trim());
             // update new title to the server.
             if (ingredient != null) {
                 ingredient.setName(newName);
-                server.updateIngredient(ingredient);
+
+                // --- FIX: Use the returned object from the server ---
+                Ingredient updated = server.updateIngredient(ingredient);
+                if (updated != null) {
+                    this.ingredient = updated;
+                    nameLabel.setText(updated.getName()); // Display server-side capitalized name
+                } else {
+                    nameLabel.setText(newName.trim()); // Fallback
+                }
+                // ----------------------------------------------------
+
                 appViewCtrl.loadIngredients();
+            }
+        } else {
+            // Revert if empty
+            if (ingredient != null) {
+                nameLabel.setText(ingredient.getName());
             }
         }
 

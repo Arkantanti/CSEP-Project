@@ -207,7 +207,6 @@ public class RecipeViewCtrl {
 
             // Check Title Change
             if (newName != null && !newName.isBlank() && !newName.equals(recipe.getName())) {
-                nameLabel.setText(newName.trim());
                 recipe.setName(newName);
                 changed = true;
             }
@@ -222,8 +221,18 @@ public class RecipeViewCtrl {
 
             // Only send update to server if something changed
             if (changed) {
-                server.updateRecipe(recipe);
+                // --- FIX: Use the returned object from the server ---
+                Recipe updated = server.updateRecipe(recipe);
+                if (updated != null) {
+                    this.recipe = updated; // Update local reference
+                    nameLabel.setText(updated.getName()); // Display server-side capitalized name
+                }
+                // ----------------------------------------------------
+
                 appViewCtrl.loadRecipes(); // Refresh the list sidebar
+            } else {
+                // If nothing changed, ensure label matches current name
+                nameLabel.setText(recipe.getName());
             }
         }
         setTagsEditable(false);
