@@ -31,8 +31,7 @@ public class RecipeViewCtrlTest {
         Printer printer = mock(Printer.class);
         RecipeService recipeService = mock(RecipeService.class);
 
-        return  new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager, sls, nutrientsCalc);
-        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager, sls, recipeService);
+        return new RecipeViewCtrl(server, mainCtrl, printer, favoritesManager, sls, nutrientsCalc, recipeService);
     }
 
     private static void setField(Object target, String fieldName, Object value) throws Exception {
