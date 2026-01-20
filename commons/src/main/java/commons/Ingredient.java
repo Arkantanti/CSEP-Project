@@ -87,9 +87,9 @@ public class Ingredient implements Showable{
         return carbs;
     }
 
-    public List<RecipeIngredient> getRecipeIngredients() {return recipeIngredients;}
+    public List<RecipeIngredient> getRecipeIngredients() {return new ArrayList<>(recipeIngredients);}
 
-    public Set<Allergen> getAllergens() {return allergens;}
+    public Set<Allergen> getAllergens() {return new HashSet<>(allergens);}
 
     public void setId(long id) { this.id = id;}
 
@@ -110,7 +110,7 @@ public class Ingredient implements Showable{
     }
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients){
-        this.recipeIngredients = recipeIngredients;
+        this.recipeIngredients = new ArrayList<>(recipeIngredients);
     }
 
     public void setAllergens(Set<Allergen> allergens){
