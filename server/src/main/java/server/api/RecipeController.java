@@ -121,7 +121,7 @@ public class RecipeController {
         }
 
         for(Recipe recipeName : getAll()){
-            if((recipe.getName().equals(recipeName.getName())) &&
+            if((recipe.getName().trim().equalsIgnoreCase(recipeName.getName().trim())) &&
                     (recipeName.getId() != id)){
                 return ResponseEntity.badRequest().build();
             }
