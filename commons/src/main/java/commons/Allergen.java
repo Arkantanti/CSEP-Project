@@ -1,15 +1,15 @@
 package commons;
 
 public enum Allergen {
-    GLUTEN("Gluten", "#F4D35E"),
-    MILK("Milk / Dairy", "#B8D8FF"),
-    EGGS("Eggs", "#FFD6A5"),
+    GLUTEN("Gluten", "#ECC112"),
+    MILK("Milk / Dairy", "#4A97FC"),
+    EGGS("Eggs", "#F09319"),
     PEANUTS("Peanuts", "#D4A373"),
-    TREE_NUTS("Tree nuts", "#CDB4DB"),
-    SOY("Soy", "#B7E4C7"),
-    FISH("Fish", "#A0C4FF"),
-    SHELLFISH("Shellfish", "#FFADAD"),
-    SESAME("Sesame", "#E9EDC9"),
+    TREE_NUTS("Tree nuts", "#4C8422"),
+    SOY("Soy", "#66E193"),
+    FISH("Fish", "#5E73DC"),
+    SHELLFISH("Shellfish", "#F96A6A"),
+    SESAME("Sesame", "#875A27"),
     MUSTARD("Mustard", "#FFD60A");
 
     private final String displayName;

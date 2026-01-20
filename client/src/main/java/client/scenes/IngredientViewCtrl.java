@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import commons.Allergen;
 import commons.Ingredient;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -104,6 +105,7 @@ public class  IngredientViewCtrl {
             for(Allergen allergen : ingredient.getAllergens()) {
                 Label label = new Label(allergen.getDisplayName());
                 label.getStyleClass().add("allergen-label");
+                HBox.setMargin(label, new Insets(0, 6, 0, 6));
                 label.setStyle("-fx-background-color:" + allergen.getColor()+";");
                 hboxAllergens.getChildren().add(label);
             }
