@@ -28,14 +28,14 @@
                                 <Insets left="10.0" top="5.0" />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="nameTextField" prefHeight="35.0" promptText="%pmpt.editTitle" style="-fx-font-size: 24px;">
+                        <TextField fx:id="nameTextField" prefHeight="35.0" promptText="Edit title" style="-fx-font-size: 24px;">
                             <HBox.margin>
                                 <Insets left="10.0" top="5.0" />
                             </HBox.margin>
                         </TextField>
                     </children>
                 </HBox>
-                <Label prefHeight="28.0" prefWidth="113.0" text="%txt.IngredientsHeader">
+                <Label prefHeight="28.0" prefWidth="113.0" text="Ingredients:">
                     <font>
                         <Font name="System Bold" size="19.0" />
                     </font>
@@ -56,7 +56,7 @@
                         <Insets left="10.0" top="5.0" />
                     </VBox.margin>
                 </Button>
-                <Label prefHeight="28.0" prefWidth="113.0" text="%txt.prepareHeader">
+                <Label prefHeight="28.0" prefWidth="113.0" text="Preparation:">
                     <font>
                         <Font name="System Bold" size="19.0" />
                     </font>
@@ -65,7 +65,7 @@
                     </VBox.margin>
                 </Label>
                 <TextArea fx:id="preparationsArea" maxHeight="1.7976931348623157E308" prefHeight="150.0" prefWidth="507.0" styleClass="items-container" />
-                <Label prefHeight="28.0" prefWidth="113.0" text="%txt.servingsHead">
+                <Label prefHeight="28.0" prefWidth="113.0" text="Servings:">
                     <font>
                         <Font name="System Bold" size="19.0" />
                     </font>
@@ -75,6 +75,9 @@
                     <font>
                         <Font name="System Bold" size="19.0" />
                     </font>
+                    <VBox.margin>
+                        <Insets left="10.0" />
+                    </VBox.margin>
                 </Label>
                 <ComboBox fx:id="languageChoise" maxHeight="5.0" minWidth="40.0" styleClass="items-container">
                     <items>
@@ -85,6 +88,31 @@
                         </FXCollections>
                     </items>
                 </ComboBox>
+
+                <HBox spacing="20.0">
+                    <children>
+                        <CheckBox fx:id="cheapCheckBox" mnemonicParsing="false" text="Cheap">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </CheckBox>
+                        <CheckBox fx:id="fastCheckBox" mnemonicParsing="false" text="Fast">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </CheckBox>
+                        <CheckBox fx:id="veganCheckBox" mnemonicParsing="false" text="Vegan">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </CheckBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets left="10.0" bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+
+
                 <HBox>
                     <children>
                         <Button fx:id="saveButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onSaveRecipe" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="✓">

@@ -62,6 +62,7 @@ public class AppViewCtrl implements Initializable {
     }
 
     private ViewMode currentMode = ViewMode.RECIPES;
+    private boolean favoritesActive = false;
 
     @FXML private TextField searchField;
     @FXML private StackPane contentRoot;
@@ -121,9 +122,27 @@ public class AppViewCtrl implements Initializable {
         additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
         refreshButton.setOnAction(e -> refreshData()); // Calls the public refresh method
 
-        recipesButton.setOnAction(e -> switchToMode(ViewMode.RECIPES));
-        favoritesButton.setOnAction(e -> switchToMode(ViewMode.FAVORITES));
-        ingredientsButton.setOnAction(e -> switchToMode(ViewMode.INGREDIENTS));
+        recipesButton.setOnAction(e -> {
+            favoritesActive = false;
+            favoritesButton.getStyleClass().remove("favorites-selected");
+            switchToMode(ViewMode.RECIPES);
+        });
+        favoritesButton.setOnAction(e -> {
+            if (currentMode == ViewMode.INGREDIENTS) return;
+            favoritesActive = !favoritesActive;
+            if (favoritesActive) {
+                favoritesButton.getStyleClass().add("favorites-selected");
+                switchToMode(ViewMode.FAVORITES);
+            } else {
+                favoritesButton.getStyleClass().remove("favorites-selected");
+                switchToMode(ViewMode.RECIPES);
+            }
+        });
+        ingredientsButton.setOnAction(e -> {
+            favoritesActive = false;
+            favoritesButton.getStyleClass().remove("favorites-selected");
+            switchToMode(ViewMode.INGREDIENTS);
+        });
 
         // Set default view to Recipes
         switchToMode(ViewMode.RECIPES);

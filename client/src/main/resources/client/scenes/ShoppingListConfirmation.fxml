@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="700.0" maxWidth="412.0" minHeight="200.0" minWidth="412.0" stylesheets="/styles/shopping-list.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ShoppingListCtrl">
+<BorderPane maxHeight="700.0" maxWidth="412.0" minHeight="200.0" minWidth="412.0" stylesheets="/styles/shopping-list.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ShoppingListConfirmationCtrl">
    <top>
       <HBox styleClass="shopping-list-header" BorderPane.alignment="CENTER">
          <children>
-            <Label styleClass="shopping-list-title" text="%txt.shoppingList">
+            <Label styleClass="shopping-list-title" text="These items will be added">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -28,9 +28,7 @@
    <bottom>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <items>
-            <Button fx:id="toggleGroupingButton" alignment="CENTER" mnemonicParsing="false" onAction="#toggleGrouping" text="Group" />
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#clear" text="%btn.clear" />
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#print" text="%btn.print" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#onConfirmPressed" text="Add to shopping list" />
          </items>
       </ToolBar>
    </bottom>
@@ -45,17 +43,7 @@
                   <VBox fx:id="ingredientListBox" fillWidth="true" spacing="2.0" />
                   <HBox fx:id="addModeToggle" spacing="5.0" styleClass="add-mode-toggle">
                      <children>
-                        <Button fx:id="addIngredientButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="120.0" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="%btn.addIngredient">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="addTextButton" mnemonicParsing="false" prefHeight="37.0" prefWidth="120.0" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="%btn.addText">
-                           <font>
-                              <Font size="12.0" />
-                           </font>
-                        </Button>
-                        <Button minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onAddShoppingListElement" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="+">
+                        <Button minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onAddElement" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="+">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>

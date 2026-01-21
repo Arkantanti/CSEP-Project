@@ -32,6 +32,18 @@ public class RecipeRepositoryTest implements RecipeRepository {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all recipe IDs from the "database".
+     *
+     * @return a list of all recipe IDs
+     */
+    @Override
+    public List<Long> findAllIds() {
+        return recipes.stream()
+                .map(Recipe::getId)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public List<Recipe> findAll() {
         call("findAll");

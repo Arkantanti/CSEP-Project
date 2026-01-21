@@ -48,6 +48,14 @@
                   <Insets right="10.0" top="2.0" />
                </HBox.margin>
             </ComboBox>
+            <Button fx:id="addIngredientButton" minHeight="30.0" minWidth="30.0" onAction="#onAddIngredient" prefHeight="30.0" prefWidth="30.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="+" textFill="#2f06ff">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="2.0" top="2.0" />
+               </HBox.margin>
+            </Button>
               <Button fx:id="confirmButton" minHeight="30.0" minWidth="30.0" onAction="#onConfirmClicked" prefHeight="30.0" prefWidth="30.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✔" textFill="LIME">
                <font>
                   <Font size="16.0" />

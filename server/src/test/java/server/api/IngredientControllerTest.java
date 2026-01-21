@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import server.database.IngredientRepository;
 import server.database.IngredientRepositoryTest;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class IngredientControllerTest {
@@ -23,9 +25,9 @@ class IngredientControllerTest {
         repo = new IngredientRepositoryTest();
         controller = new IngredientController(repo);
 
-        i1 = new Ingredient("Bread", 5.3, 5.4, 1);
-        i2 = new Ingredient("Cheese", 5.3, 5.4, 2);
-        i3 = new Ingredient("Butter", 5.3, 5.4, 3);
+        i1 = new Ingredient("Bread", 5.3, 5.4, 1, Set.of());
+        i2 = new Ingredient("Cheese", 5.3, 5.4, 2, Set.of());
+        i3 = new Ingredient("Butter", 5.3, 5.4, 3, Set.of());
 
         repo.save(i1);
         repo.save(i2);
@@ -53,7 +55,7 @@ class IngredientControllerTest {
 
     @Test
     void add_validIngredient() {
-        Ingredient i4 = new Ingredient("Milk", 5.3, 5.4, 1);
+        Ingredient i4 = new Ingredient("Milk", 5.3, 5.4, 1, Set.of());
         ResponseEntity<Ingredient> response = controller.add(i4);
 
         assertEquals(200, response.getStatusCode().value());
@@ -62,7 +64,7 @@ class IngredientControllerTest {
 
     @Test
     void add_invalidIngredient() {
-        Ingredient i4 = new Ingredient("", -5.3, 5.4, 1);
+        Ingredient i4 = new Ingredient("", -5.3, 5.4, 1, Set.of());
         ResponseEntity<Ingredient> response = controller.add(i4);
 
         assertEquals(400, response.getStatusCode().value());
@@ -70,7 +72,7 @@ class IngredientControllerTest {
 
     @Test
     void update_validIngredient() {
-        Ingredient updated = new Ingredient("Curry", 5.3, 5.4, 10);
+        Ingredient updated = new Ingredient("Curry", 5.3, 5.4, 10, Set.of());
         ResponseEntity<Ingredient> response = controller.update(i1.getId(), updated);
         assertEquals(200, response.getStatusCode().value());
         assertEquals(updated, repo.findById(i1.getId()).orElse(null));
@@ -78,21 +80,21 @@ class IngredientControllerTest {
 
     @Test
     void update_invalidId() {
-        Ingredient updated = new Ingredient("Curry", 5.3, 5.4, 10);
+        Ingredient updated = new Ingredient("Curry", 5.3, 5.4, 10, Set.of());
         ResponseEntity<Ingredient> response = controller.update(-1, updated);
         assertEquals(400, response.getStatusCode().value());
     }
 
     @Test
     void update_notfoundId() {
-        Ingredient updated = new Ingredient("Curry", 5.3, 5.4, 10);
+        Ingredient updated = new Ingredient("Curry", 5.3, 5.4, 10, Set.of());
         ResponseEntity<Ingredient> response = controller.update(999, updated);
         assertEquals(404, response.getStatusCode().value());
     }
 
     @Test
     void update_invalidIngredient() {
-        Ingredient updated = new Ingredient("", 5.3, 5.4, 10);
+        Ingredient updated = new Ingredient("", 5.3, 5.4, 10, Set.of());
         ResponseEntity<Ingredient> response = controller.update(i1.getId(), updated);
         assertEquals(400, response.getStatusCode().value());
     }
@@ -117,4 +119,13 @@ class IngredientControllerTest {
         assertEquals(404, response.getStatusCode().value());
         assertTrue(repo.existsById(i1.getId()));
     }
+
+    @Test
+    void post_doesnt_update() {
+        Ingredient i4 = new Ingredient("Bread", 5.3, 5.4, 1);
+        i4.setId(2L); // Set a false ID
+        controller.add(i4);
+        assertEquals(4, repo.findAll().size()); // Check if the ing got added not updated
+    }
+
 }

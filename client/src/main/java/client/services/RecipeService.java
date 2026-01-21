@@ -24,17 +24,16 @@ public class RecipeService {
         this.favoritesManager = favoritesManager;
     }
 
-//     Temporarily commented out if the code is perfect can be deleted.
-//    /**
-//     * Gets all recipes, sorted alphabetically by name.
-//     */
-//    public List<Recipe> getAllRecipes() {
-//        List<Recipe> recipes = server.getRecipes();
-//        if (recipes != null) {
-//            recipes.sort(Comparator.comparing(Recipe::getName));
-//        }
-//        return recipes;
-//    }
+    /**
+     * Gets all recipes, sorted alphabetically by name.
+     */
+    public List<Recipe> getAllRecipes() {
+        List<Recipe> recipes = server.getRecipes();
+        if (recipes != null) {
+            recipes.sort(Comparator.comparing(Recipe::getName));
+        }
+        return recipes;
+    }
 
     /**
      * Gets all recipes related to the language.
