@@ -23,6 +23,7 @@ import javafx.scene.layout.StackPane;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -74,9 +75,9 @@ public class AppViewCtrl implements Initializable {
     @FXML private CheckBox englishCheck;
     @FXML private CheckBox polishCheck;
     @FXML private CheckBox dutchCheck;
-    private boolean engLanguage;
-    private boolean polLanguage;
-    private boolean dutLanguage;
+    private boolean engLanguage =true;
+    private boolean polLanguage =true;
+    private boolean dutLanguage =true;
 
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
@@ -315,29 +316,29 @@ public class AppViewCtrl implements Initializable {
     }
 
     /**
-     * Gne
+     * The functio to see the English recipepe
      */
     @FXML
-    private void languageChangeEng(){
-        engLanguage = !engLanguage;
+    public void languageChangeEng(){
+        engLanguage = englishCheck.isSelected();
         loadRecipes();
     }
 
     /**
-     * Gne
+     * The function to see the Polish recipes
      */
     @FXML
-    private void languageChangePol(){
-        polLanguage = !polLanguage;
+    public void languageChangePol(){
+        polLanguage = polishCheck.isSelected();
         loadRecipes();
     }
 
     /**
-     * Gne
+     * The function to see the Dutch recipes
      */
     @FXML
-    private void languageChangeDut(){
-        dutLanguage = !dutLanguage;
+    public void languageChangeDut(){
+        dutLanguage = dutchCheck.isSelected();
         loadRecipes();
     }
 
@@ -346,7 +347,7 @@ public class AppViewCtrl implements Initializable {
      * @param flagPath the path to the flag's image
      */
     public void applyLanguageIcon(String flagPath) {
-        languageIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream(flagPath)));
+        languageIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream(flagPath))));
     }
 
 }

@@ -283,6 +283,7 @@ public class MainCtrl {
         setFlagPath(flagPath);
         showAppView();
         showDefaultView();
+        //herea
     }
 
     /**

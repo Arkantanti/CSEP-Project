@@ -6,7 +6,7 @@ import commons.Recipe;
 import com.google.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toList;
 
 public class RecipeService {
 
@@ -24,33 +24,38 @@ public class RecipeService {
         this.favoritesManager = favoritesManager;
     }
 
-    /**
-     * Gets all recipes, sorted alphabetically by name.
-     */
-    public List<Recipe> getAllRecipes() {
-        List<Recipe> recipes = server.getRecipes();
-        if (recipes != null) {
-            recipes.sort(Comparator.comparing(Recipe::getName));
-        }
-        return recipes;
-    }
+//     Temporarily commented out if the code is perfect can be deleted.
+//    /**
+//     * Gets all recipes, sorted alphabetically by name.
+//     */
+//    public List<Recipe> getAllRecipes() {
+//        List<Recipe> recipes = server.getRecipes();
+//        if (recipes != null) {
+//            recipes.sort(Comparator.comparing(Recipe::getName));
+//        }
+//        return recipes;
+//    }
 
     /**
      * Gets all recipes related to the language.
      */
     public List<Recipe> getAllRecipesWithLanguage(boolean english, boolean polish, boolean dutch){
 
-        return server.getRecipes().stream().filter((Recipe recipeItem) -> {
-            if(english){
+        List<Recipe> recipes = new java.util.ArrayList<>(server.getRecipes().stream().filter((Recipe recipeItem) -> {
+            if (english) {
                 return recipeItem.getLanguage().equals("English");
-            } else if(polish){
+            } else if (polish) {
                 return recipeItem.getLanguage().equals("Polish");
-            } else if(dutch){
+            } else if (dutch) {
                 return recipeItem.getLanguage().equals("Dutch");
             }
             return false;
         })
-                .collect(Collectors.toList());
+                .toList());
+
+        recipes.sort(Comparator.comparing(Recipe::getName));
+
+        return recipes;
     }
 
     /**
@@ -74,7 +79,7 @@ public class RecipeService {
         return all.stream()
                 .filter(r -> favoritesManager.isFavorite(r.getId()))
                 .sorted(Comparator.comparing(Recipe::getName))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     /**
@@ -87,6 +92,6 @@ public class RecipeService {
         return results.stream()
                 .filter(r -> favoritesManager.isFavorite(r.getId()))
                 .sorted(Comparator.comparing(Recipe::getName))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }
