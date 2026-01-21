@@ -122,10 +122,18 @@ class RecipeIngredientControllerTest {
         assertEquals(404, response.getStatusCode().value());
     }
 
-//    @Test
-//    void recipeCountSuccess() {
-//        ResponseEntity<Long> response = controller.getRecipeCount(ing2.getId());
-//        assertEquals(200, response.getStatusCode().value());
-//        assertEquals(2,response.getBody());
-//    }
+    @Test
+    void post_doesnt_update() {
+        RecipeIngredient ri4 = new RecipeIngredient(r2, ing3, null, 4, Unit.GRAM);
+        ri4.setId(2L); // Set a false ID
+        controller.add(ri4);
+        assertEquals(5, repo.findAll().size()); // Check if the ing got added not updated
+    }
+
+    @Test
+    void recipeCountSuccess() {
+        ResponseEntity<Long> response = controller.getRecipeCount(ing2.getId());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(2,response.getBody());
+    }
 }
