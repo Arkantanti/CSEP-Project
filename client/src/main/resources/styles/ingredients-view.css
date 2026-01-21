@@ -21,3 +21,28 @@
 .add-button:hover {
     -fx-background-color: #45a049;
 }
+.allergen-label {
+    -fx-text-fill: white;
+    -fx-pref-height: 30;
+    -fx-background-radius: 5;
+    -fx-padding: 0 3 0 3;
+    -fx-font-weight: 700;
+    -fx-font-size: 13;
+}
+.allergen-button {
+    -fx-pref-height: 30;
+    -fx-pref-width: 30;
+
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-background-color: white;
+    -fx-border-color: black;
+
+    -fx-padding: 0 3 0 3;
+    -fx-font-weight: 700;
+    -fx-font-size: 13;
+}
+.allergen-button:hover {
+    -fx-background-color: #eeeeee;
+    -fx-cursor: hand;
+}

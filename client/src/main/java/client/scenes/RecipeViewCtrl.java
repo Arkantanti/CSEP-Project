@@ -7,13 +7,17 @@ import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
+import commons.Allergen;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
@@ -21,10 +25,7 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 import static commons.Recipe.recipeNameChecker;
 
@@ -45,6 +46,7 @@ public class RecipeViewCtrl {
     @FXML private Label fatLabel;
     @FXML private Label carbsLabel;
     @FXML private Label proteinLabel;
+    @FXML private FlowPane hboxAllergens;
 
     private MyFXML fxml;
     private final ServerUtils server;
@@ -131,10 +133,23 @@ public class RecipeViewCtrl {
         updateFavoriteButton();
         rerenderIngredientsScaled();
         updateCaloriesDisplay();
+
         double[] nutrients = nutrientsCalc.calculateNutrients(ingredients);
         carbsLabel.setText(String.format(Locale.US, "Carbs: %.2f g/100g", nutrients[0]));
         proteinLabel.setText(String.format(Locale.US, "Protein: %.2f g/100g", nutrients[1]));
         fatLabel.setText(String.format(Locale.US, "Fat: %.2f g/100g", nutrients[2]));
+        Set<Allergen> allergens = new HashSet<>();
+        ingredients.forEach(ing -> {
+            if(ing.getIngredient() != null) {
+                allergens.addAll(ing.getIngredient().getAllergens());
+            }
+        });
+        for(Allergen allergen : allergens) {
+            Label label = new Label(allergen.getDisplayName());
+            label.getStyleClass().add("allergen-label");
+            label.setStyle("-fx-background-color:" + allergen.getColor()+";");
+            hboxAllergens.getChildren().add(label);
+        }
     }
 
     /**

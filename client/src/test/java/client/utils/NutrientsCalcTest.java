@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,8 +28,8 @@ class NutrientsCalcTest {
     void setUp() {
         sut = new NutrientsCalc();
 
-        flour = new Ingredient("flour", 1.0, 10.0, 76.0);
-        oil  = new Ingredient("oil", 100.0, 0.0, 0.0);
+        flour = new Ingredient("flour", 1.0, 10.0, 76.0, Set.of());
+        oil  = new Ingredient("oil", 100.0, 0.0, 0.0, Set.of());
 
         gramOk = new RecipeIngredient(null, flour, null ,100, Unit.GRAM);
         otherUnitOk = new RecipeIngredient(null, oil, null ,1, Unit.LITER);
