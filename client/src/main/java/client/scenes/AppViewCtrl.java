@@ -3,6 +3,7 @@ package client.scenes;
 import client.services.IngredientService;
 import client.services.RecipeService;
 import client.utils.FavoritesManager;
+import client.utils.PreferenceManager;
 import com.google.inject.Inject;
 import commons.Ingredient;
 import commons.Recipe;
@@ -20,6 +21,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +45,7 @@ public class AppViewCtrl implements Initializable {
     private final FavoritesManager favoritesManager;
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
+    private final PreferenceManager preferenceManager;
 
     /**
      * Enum to track the currently active view mode.
@@ -75,9 +78,10 @@ public class AppViewCtrl implements Initializable {
     @FXML private CheckBox englishCheck;
     @FXML private CheckBox polishCheck;
     @FXML private CheckBox dutchCheck;
-    private boolean engLanguage =true;
-    private boolean polLanguage =true;
-    private boolean dutLanguage =true;
+
+    private boolean engLanguage;
+    private boolean polLanguage;
+    private boolean dutLanguage;
 
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
@@ -89,11 +93,13 @@ public class AppViewCtrl implements Initializable {
      */
     @Inject
     public AppViewCtrl(MainCtrl mainCtrl, FavoritesManager favoritesManager,
-                       RecipeService recipeService, IngredientService ingredientService) {
+                       RecipeService recipeService, IngredientService ingredientService,
+                       PreferenceManager preferenceManager) {
         this.mainCtrl = mainCtrl;
         this.favoritesManager = favoritesManager;
         this.recipeService = recipeService;
         this.ingredientService = ingredientService;
+        this.preferenceManager = preferenceManager;
     }
 
     /**
@@ -106,6 +112,8 @@ public class AppViewCtrl implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        loadLanguagePreferences();
+
         setupListCellFactory();
         setupSearch();
 
@@ -119,6 +127,31 @@ public class AppViewCtrl implements Initializable {
 
         // Set default view to Recipes
         switchToMode(ViewMode.RECIPES);
+    }
+
+    /**
+     * Load language preferences from saved config
+     */
+    private void loadLanguagePreferences() {
+        try {
+            engLanguage = preferenceManager.isEnglishEnabled();
+            polLanguage = preferenceManager.isPolishEnabled();
+            dutLanguage = preferenceManager.isDutchEnabled();
+
+            // Sync checkboxes with loaded values
+            englishCheck.setSelected(engLanguage);
+            polishCheck.setSelected(polLanguage);
+            dutchCheck.setSelected(dutLanguage);
+        } catch (Exception e) {
+            // Use defaults if loading fails
+            engLanguage = true;
+            polLanguage = true;
+            dutLanguage = true;
+
+            englishCheck.setSelected(true);
+            polishCheck.setSelected(true);
+            dutchCheck.setSelected(true);
+        }
     }
 
     /**
@@ -191,6 +224,7 @@ public class AppViewCtrl implements Initializable {
         overListHBox.setManaged(showRecipeControls);
 
         refreshData();
+        englishCheck.setSelected(engLanguage);
     }
 
     /**
@@ -316,11 +350,16 @@ public class AppViewCtrl implements Initializable {
     }
 
     /**
-     * The functio to see the English recipepe
+     * The function to see the English recipes
      */
     @FXML
-    public void languageChangeEng(){
+    public void languageChangeEng() {
         engLanguage = englishCheck.isSelected();
+        try {
+            preferenceManager.updateLanguagePreference("english", engLanguage);
+        } catch (IOException e) {
+            showError("Save Error", "Could not save English language preference");
+        }
         loadRecipes();
     }
 
@@ -328,8 +367,13 @@ public class AppViewCtrl implements Initializable {
      * The function to see the Polish recipes
      */
     @FXML
-    public void languageChangePol(){
+    public void languageChangePol() {
         polLanguage = polishCheck.isSelected();
+        try {
+            preferenceManager.updateLanguagePreference("polish", polLanguage);
+        } catch (IOException e) {
+            showError("Save Error", "Could not save Polish language preference");
+        }
         loadRecipes();
     }
 
@@ -337,8 +381,13 @@ public class AppViewCtrl implements Initializable {
      * The function to see the Dutch recipes
      */
     @FXML
-    public void languageChangeDut(){
+    public void languageChangeDut() {
         dutLanguage = dutchCheck.isSelected();
+        try {
+            preferenceManager.updateLanguagePreference("dutch", dutLanguage);
+        } catch (IOException e) {
+            showError("Save Error", "Could not save Dutch language preference");
+        }
         loadRecipes();
     }
 
@@ -350,4 +399,27 @@ public class AppViewCtrl implements Initializable {
         languageIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream(flagPath))));
     }
 
+    public CheckBox getDutchCheck() {
+        return dutchCheck;
+    }
+
+    public CheckBox getEnglishCheck() {
+        return englishCheck;
+    }
+
+    public CheckBox getPolishCheck() {
+        return polishCheck;
+    }
+
+    public boolean isDutLanguage() {
+        return dutLanguage;
+    }
+
+    public boolean isEngLanguage() {
+        return engLanguage;
+    }
+
+    public boolean isPolLanguage() {
+        return polLanguage;
+    }
 }

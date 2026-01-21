@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -41,6 +42,10 @@ public class Config {
         this.shoppingList = shoppingList;
     }
 
+    private boolean engLanguage;
+    private boolean polLanguage;
+    private boolean dutLanguage;
+
     /**
      * Gets the list of favorite recipes ids.
      *
@@ -48,6 +53,30 @@ public class Config {
      */
     public List<Long> getFavoriteRecipesIds() {
         return favoriteRecipesIds;
+    }
+
+    public boolean isDutLanguage() {
+        return dutLanguage;
+    }
+
+    public boolean isEngLanguage() {
+        return engLanguage;
+    }
+
+    public boolean isPolLanguage() {
+        return polLanguage;
+    }
+
+    public void setDutLanguage(boolean dutLanguage) {
+        this.dutLanguage = dutLanguage;
+    }
+
+    public void setEngLanguage(boolean engLanguage) {
+        this.engLanguage = engLanguage;
+    }
+
+    public void setPolLanguage(boolean polLanguage) {
+        this.polLanguage = polLanguage;
     }
 
     /**
