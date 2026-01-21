@@ -171,8 +171,21 @@ public class  IngredientViewCtrl {
                 if (categoryComboBox.getValue() != null) {
                     ingredient.setCategory(categoryComboBox.getValue());
                 }
-                server.updateIngredient(ingredient);
+                // --- FIX: Use the returned object from the server ---
+                Ingredient updated = server.updateIngredient(ingredient);
+                if (updated != null) {
+                    this.ingredient = updated;
+                    nameLabel.setText(updated.getName()); // Display server-side capitalized name
+                } else {
+                    nameLabel.setText(newName.trim()); // Fallback
+                }
+                // ----------------------------------------------------
                 appViewCtrl.loadIngredients();
+            }
+        } else {
+            // Revert if empty
+            if (ingredient != null) {
+                nameLabel.setText(ingredient.getName());
             }
         }
 
