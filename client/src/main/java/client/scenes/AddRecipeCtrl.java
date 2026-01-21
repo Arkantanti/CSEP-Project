@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Recipe;
 import commons.RecipeIngredient;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -15,7 +14,6 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class AddRecipeCtrl {
     @FXML
@@ -50,7 +48,6 @@ public class AddRecipeCtrl {
     private Recipe recipe;
     private boolean isCloneMode = false;
     private boolean isSaved = false;
-    private String language;
 
     /**
      *  The constructor for the add recipeController
@@ -97,11 +94,10 @@ public class AddRecipeCtrl {
             }
 
             String language = null;
-
             if(languageChoise.getValue() == null){
                 language = "english";
             } else {
-                language = (String) languageChoise.getValue();
+                language = languageChoise.getValue();
             }
 
             if (isCloneMode) {
@@ -154,7 +150,6 @@ public class AddRecipeCtrl {
             }
 
             String language = languageChoise.getValue();
-
             if(language == null){
                 showError("Input Error", "There was no language selected");
                 return;
@@ -237,15 +232,6 @@ public class AddRecipeCtrl {
         } catch (Exception e) {
             System.out.println("There was an error in the saving of the ingredients.");
         }
-    }
-
-    /**
-     * handler for value
-     * @param event the thing that happens
-     */
-    @FXML
-    private void eventHandlerLanguage(ActionEvent event){
-        language = languageChoise.getValue();
     }
 
     /**

@@ -392,34 +392,10 @@ public class AppViewCtrl implements Initializable {
     }
 
     /**
-     * Helper method for updatnig the flag icon on the language menu.
+     * Helper method for updating the flag icon on the language menu.
      * @param flagPath the path to the flag's image
      */
     public void applyLanguageIcon(String flagPath) {
         languageIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream(flagPath))));
-    }
-
-    public CheckBox getDutchCheck() {
-        return dutchCheck;
-    }
-
-    public CheckBox getEnglishCheck() {
-        return englishCheck;
-    }
-
-    public CheckBox getPolishCheck() {
-        return polishCheck;
-    }
-
-    public boolean isDutLanguage() {
-        return dutLanguage;
-    }
-
-    public boolean isEngLanguage() {
-        return engLanguage;
-    }
-
-    public boolean isPolLanguage() {
-        return polLanguage;
     }
 }
