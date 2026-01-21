@@ -117,7 +117,7 @@ public class Ingredient implements Showable{
     }
 
     public List<RecipeIngredient> getRecipeIngredients() {
-        return recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);}
+        return recipeIngredients;}
 
     public Set<Allergen> getAllergens() {
         return allergens==null ? null : new HashSet<>(allergens);}

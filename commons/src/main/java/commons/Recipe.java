@@ -83,11 +83,11 @@ public class Recipe implements Showable{
     }
 
     public List<String> getPreparationSteps() {
-        return preparationSteps==null ? null : new ArrayList<>(preparationSteps);
+        return preparationSteps;
     }
 
     public List<RecipeIngredient> getRecipeIngredients() {
-        return recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);}
+        return recipeIngredients;}
 
     public void setName(String name){ this.name = name;}
 
