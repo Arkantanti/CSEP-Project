@@ -81,6 +81,8 @@ public class RecipeIngredientController {
             return ResponseEntity.badRequest().build();
         }
 
+        ri.setId(0L);
+
         RecipeIngredient saved = repo.save(ri);
         return ResponseEntity.ok(saved);
     }

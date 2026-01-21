@@ -100,6 +100,8 @@ public class RecipeController {
             }
         }
 
+        recipe.setId(0L);
+
         Recipe saved = repo.save(recipe);
         return ResponseEntity.ok(saved);
     }

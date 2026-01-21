@@ -87,6 +87,8 @@ public class IngredientController {
             ing.setCategory(IngredientCategory.UNCATEGORIZED);
         }
 
+        ing.setId(0L);
+
         Ingredient saved = repo.save(ing);
         return ResponseEntity.ok(saved);
     }
