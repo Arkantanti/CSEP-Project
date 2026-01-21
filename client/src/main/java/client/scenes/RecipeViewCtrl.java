@@ -1,15 +1,14 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.utils.NutrientsCalc;
+import client.services.RecipeService;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
-import commons.Ingredient;
 import commons.Recipe;
-import commons.Unit;
 import commons.RecipeIngredient;
-import commons.Unit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,48 +23,31 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+
+import static commons.Recipe.recipeNameChecker;
 
 public class RecipeViewCtrl {
 
-    @FXML
-    private Button titleEditButton;
-    @FXML
-    private TextField nameTextField;
-    @FXML
-    private Label nameLabel;
-    @FXML
-    private VBox ingredientsContainer;
-    @FXML
-    private Button ingredientAddButton;
-    @FXML
-    private VBox preparationsContainer;
-    @FXML
-    private Button preparationAddButton;
-    @FXML
-    private Button printButton;
-    @FXML
-    private Button cloneButton;
-    @FXML
-    private Button deleteButton;
-    @FXML
-    private TextField servingsScalingInput;
-    @FXML
-    private Button resetServingsButton;
-    @FXML
-    private Button favoriteButton;
-    @FXML
-    private Label caloriesDisplay;
-    @FXML
-    private CheckBox cheapCheckBox;
-    @FXML
-    private CheckBox fastCheckBox;
-    @FXML
-    private CheckBox veganCheckBox;
+    @FXML private Button titleEditButton;
+    @FXML private TextField nameTextField;
+    @FXML private Label nameLabel;
+    @FXML private VBox ingredientsContainer;
+    @FXML private VBox preparationsContainer;
+    @FXML private Button printButton;
+    @FXML private TextField servingsScalingInput;
+    @FXML private Button favoriteButton;
+    @FXML private Label caloriesDisplay;
+    @FXML private CheckBox cheapCheckBox;
+    @FXML private CheckBox fastCheckBox;
+    @FXML private CheckBox veganCheckBox;
+    @FXML private Label fatLabel;
+    @FXML private Label carbsLabel;
+    @FXML private Label proteinLabel;
 
     private MyFXML fxml;
     private final ServerUtils server;
-    private boolean editing = false;
     private final MainCtrl mainCtrl;
     private final Printer printer;
     private Recipe recipe;
@@ -73,10 +55,13 @@ public class RecipeViewCtrl {
     private final AppViewCtrl appViewCtrl;
     private final FavoritesManager favoritesManager;
     private final ShoppingListService shoppingListService;
+    private final RecipeService recipeService;
+    private final NutrientsCalc nutrientsCalc;
 
     private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
     private int baseServings;
     private double targetServings;
+    private boolean editing = false;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -88,13 +73,17 @@ public class RecipeViewCtrl {
                           MainCtrl mainCtrl,
                           Printer printer,
                           FavoritesManager favoritesManager,
-                          ShoppingListService shoppingListService) {
+                          ShoppingListService shoppingListService,
+                          NutrientsCalc nutrientsCalc,
+                          RecipeService recipeService) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.favoritesManager = favoritesManager;
         this.shoppingListService = shoppingListService;
+        this.nutrientsCalc = nutrientsCalc;
+        this.recipeService = recipeService;
     }
 
     /**
@@ -152,6 +141,10 @@ public class RecipeViewCtrl {
         updateFavoriteButton();
         rerenderIngredientsScaled();
         updateCaloriesDisplay();
+        double[] nutrients = nutrientsCalc.calculateNutrients(ingredients);
+        carbsLabel.setText(String.format(Locale.US, "Carbs: %.2f g/100g", nutrients[0]));
+        proteinLabel.setText(String.format(Locale.US, "Protein: %.2f g/100g", nutrients[1]));
+        fatLabel.setText(String.format(Locale.US, "Fat: %.2f g/100g", nutrients[2]));
     }
 
     public Recipe getRecipe(){
@@ -209,6 +202,12 @@ public class RecipeViewCtrl {
      * Shows the label and hides the text field.
      */
     private void finishEditing() {
+        if(recipeNameChecker(recipeService.getAllRecipes(), nameTextField.getText(), this.recipe)){
+            mainCtrl.showError("Used Name",
+                    "This recipe name is already in use, please choose another.");
+            return;
+        }
+
         editing = false;
         String newName = nameTextField.getText();
         boolean isCheap = cheapCheckBox.isSelected();
@@ -467,17 +466,9 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * called when the user presses enter after inputting Target Servings
+     * Fetches the input from Target Services and handles invalid inputs
      */
-    @FXML
-    private void onServingsEnter() {
-        applyServingsFromField();
-    }
-
-    /**
-     * fetches the input from Target Services and handles invalid inputs
-     */
-    private void applyServingsFromField() {
+    public void applyServingsFromField() {
         String text = servingsScalingInput.getText();
         if (text == null || text.isBlank()) return;
 
@@ -500,7 +491,7 @@ public class RecipeViewCtrl {
      * calculates the scaling factor and rerenders it again
      */
     private void rerenderIngredientsScaled() {
-        double factor = (baseServings <= 0) ? 1.0 : (double) targetServings / baseServings;
+        double factor = (baseServings <= 0) ? 1.0 : targetServings / baseServings;
 
         for (RecipeIngredientCtrl ctrl : ingredientRowCtrls) {
             ctrl.applyScaleFactor(factor);
@@ -525,68 +516,19 @@ public class RecipeViewCtrl {
      */
     @FXML
     public void addToShoppingList(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Adding to shopping list");
-        alert.setHeaderText("You are about to add the ingredients for " + targetServings + " servings of "
-                + recipe.getName() + " to the shopping list.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            this.shoppingListService.addIngredients(server.getRecipeIngredients(this.recipe.getId()),
-                    targetServings/baseServings, recipe.getName());
-            Alert notif = new Alert(Alert.AlertType.INFORMATION);
-            notif.setTitle("Success");
-            notif.setHeaderText("Success");
-            StringBuilder sb = new StringBuilder("Added:\n");
-            for (RecipeIngredient ri : server.getRecipeIngredients(this.recipe.getId())){
-                sb.append(ri.formatIngredientScaled(ri.getAmount()*targetServings/baseServings));
-                sb.append("\n");
-            }
-            notif.setContentText(sb.toString());
-            notif.show();
-            mainCtrl.reloadShoppingList();
-        }
+        mainCtrl.openShoppingListConfirmation(server.getRecipeIngredients(this.recipe.getId()),
+                targetServings/baseServings, recipe.getName());
     }
-
-    //calories display
 
     /**
      * Updates the calories display based on the database's list of ingredients
      */
     protected void updateCaloriesDisplay(){
-        StringBuilder textToDisplay = new StringBuilder();
-        textToDisplay.append((int) calculateCaloriesForRecipe());
-        textToDisplay.append(" kcal/100g");
-        caloriesDisplay.setText(textToDisplay.toString());
+        String textToDisplay = "Calories: "
+                + (int) nutrientsCalc.calculateCaloriesForRecipe(ingredients) +
+                " kcal/100g";
+        caloriesDisplay.setText(textToDisplay);
     }
-
-    /**
-     * Logic for calculating the amount of calories for this Recipe.
-     * This logic assumes that 1g = 1mL.
-     * @return amount of calories or 0.0 in case of invalid ingredient's mass
-     */
-    private double calculateCaloriesForRecipe(){
-        double totalCalories = 0;
-        double totalMass = 0;
-        for(RecipeIngredient ri: ingredients){
-            if(ri == null) continue;
-            if(ri.getIngredient() == null) continue;
-
-            //String informal = ri.getInformalUnit();
-            if (ri.getUnit() == Unit.CUSTOM) continue;
-
-            double amount = ri.getAmount();
-            Ingredient ingredient = ri.getIngredient();
-            totalCalories +=
-                    ri.getUnit() == Unit.GRAM ?
-                            ingredient.calculateCalories()*amount : ingredient.calculateCalories()*amount*1000;
-            totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*1000;
-        }
-        if(totalMass <= 0.0) return 0.0;
-        return 100*totalCalories/totalMass;
-    }
-
-
-
 }
 
 

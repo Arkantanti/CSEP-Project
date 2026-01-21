@@ -48,3 +48,7 @@
 .sidebar-action-button:pressed {
     -fx-background-color: #d8d8d8;
 }
+
+.favorites-selected {
+    -fx-text-fill: #ffd700;
+}
