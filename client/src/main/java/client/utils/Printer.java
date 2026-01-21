@@ -6,6 +6,8 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import client.model.ShoppingListItem;
+import client.services.ShoppingListService;
+import commons.IngredientCategory;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import commons.Unit;
@@ -15,6 +17,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Printer {
@@ -53,14 +56,33 @@ public class Printer {
      * Transforms a shopping list into a String with markdown notation.
      *
      * @param items list of shopping list items to be saved in markdown
+     * @param shoppingListService the service for getting category/shopping list information
      * @return String with markdown formatted description of the shopping list
      */
-    public String createShoppingListOutputString(List<ShoppingListItem> items) {
+    public String createShoppingListOutputString(List<ShoppingListItem> items, ShoppingListService shoppingListService) {
         StringBuilder output = new StringBuilder();
         output.append("## Shopping List\n\n");
-        for (ShoppingListItem item : items) {
-            output.append(" - ").append(item.formatItem()).append("\n");
+
+        for (IngredientCategory category : IngredientCategory.values()) {
+            List<ShoppingListItem> categoryItems = new ArrayList<>();
+            for (ShoppingListItem item : items) {
+                IngredientCategory itemCategory = shoppingListService.getCategoryForItem(item);
+                if (itemCategory == category) {
+                    categoryItems.add(item);
+                }
+            }
+
+            if (!categoryItems.isEmpty()) {
+                String categoryName = category.name();
+                String formattedCategoryName = categoryName.charAt(0) + categoryName.substring(1).toLowerCase();
+                output.append("### ").append(formattedCategoryName).append("\n\n");
+                for (ShoppingListItem item : categoryItems) {
+                    output.append(" - ").append(item.formatItem()).append("\n");
+                }
+                output.append("\n");
+            }
         }
+
         return output.toString();
     }
 

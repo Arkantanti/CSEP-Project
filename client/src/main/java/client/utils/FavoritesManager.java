@@ -36,7 +36,7 @@ public class FavoritesManager {
      */
     public void addFavorite(long recipeId) throws IOException {
         List<Long> favorites = config.getFavoriteRecipesIds();
-        
+
         if (!favorites.contains(recipeId)) {
             favorites.add(recipeId);
             ConfigManager.save(config);
@@ -70,6 +70,8 @@ public class FavoritesManager {
 
     /**
      * Validates favorite recipe IDs and removes invalid ones.
+     * optimized to fetch all IDs from server once, and iterates over a copy
+     * to avoid ConcurrentModificationException.
      *
      * @return list of recipe IDs that were removed because they no longer exist
      * @throws IOException if saving the config fails
@@ -83,23 +85,32 @@ public class FavoritesManager {
             return new ArrayList<>();
         }
 
-        List<Long> removedIds = new ArrayList<>();
-        List<Long> validIds = new ArrayList<>();
+        // Fetch all existing recipe IDs from the server in one go
+        List<Long> allServerIds = serverUtils.getAllRecipeIds();
 
-        for (Long recipeId : favorites) {
-            if (serverUtils.getRecipeById(recipeId) != null) {
-                validIds.add(recipeId);
-            } else {
+        // If server is unreachable, we cannot validate. Return empty to avoid accidental deletion.
+        if (allServerIds == null) {
+            return new ArrayList<>();
+        }
+
+        List<Long> removedIds = new ArrayList<>();
+
+        // Iterate over a COPY of the list to avoid ConcurrentModificationException
+        // if the user interacts with the UI while this thread is running.
+        List<Long> favoritesCopy = new ArrayList<>(favorites);
+
+        for (Long recipeId : favoritesCopy) {
+            if (!allServerIds.contains(recipeId)) {
                 removedIds.add(recipeId);
             }
         }
 
         if (!removedIds.isEmpty()) {
-            config.setFavoriteRecipesIds(validIds);
+            // Remove the invalid IDs from the LIVE list
+            favorites.removeAll(removedIds);
             ConfigManager.save(config);
         }
 
         return removedIds;
     }
 }
-

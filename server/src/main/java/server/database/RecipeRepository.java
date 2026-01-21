@@ -35,4 +35,11 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
             "    WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :query, '%'))" +
             ")")
     List<Recipe> search(@Param("query") String query);
+
+    /**
+     * Retrieves all recipe IDs from the database.
+     * Used for efficient validation of favorites.
+     */
+    @Query("SELECT r.id FROM Recipe r")
+    List<Long> findAllIds();
 }

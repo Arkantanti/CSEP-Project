@@ -37,6 +37,9 @@ public class Ingredient implements Showable{
     @ElementCollection
     private Set<Allergen> allergens;
 
+    @Enumerated(EnumType.STRING)
+    private IngredientCategory category;
+
     /**
      * Creates a new Ingredient object with the given name and nutritional values
      * per 100 grams.
@@ -57,6 +60,32 @@ public class Ingredient implements Showable{
         this.protein = protein;
         this.carbs = carbs;
         this.allergens = new HashSet<>(allergens);
+        this.category = IngredientCategory.UNCATEGORIZED;
+    }
+
+    /**
+     * Creates a new Ingredient object with the given name, nutritional values
+     * per 100 grams, and category.
+     *
+     * @param name    the name of the ingredient
+     * @param fat     the amount of fat per 100 grams of the ingredient
+     * @param protein the amount of protein per 100 grams of the ingredient
+     * @param carbs   the amount of carbohydrates per 100 grams of the ingredient
+     * @param category the category of the ingredient.
+     * @param allergens Set of allergens of this ingredient.
+     */
+    public Ingredient(String name,
+                      double fat,
+                      double protein,
+                      double carbs,
+                      IngredientCategory category,
+                      Set<Allergen> allergens) {
+        this.name = name;
+        this.fat = fat;
+        this.protein = protein;
+        this.carbs = carbs;
+        this.allergens = new HashSet<>(allergens);
+        this.category = category;
     }
 
     /**
@@ -109,6 +138,14 @@ public class Ingredient implements Showable{
 
     public void setCarbs(double carbs){
         this.carbs = carbs;
+    }
+
+    public IngredientCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(IngredientCategory category) {
+        this.category = category;
     }
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients){

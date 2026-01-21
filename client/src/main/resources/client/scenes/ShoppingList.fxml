@@ -28,6 +28,7 @@
    <bottom>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <items>
+            <Button fx:id="toggleGroupingButton" alignment="CENTER" mnemonicParsing="false" onAction="#toggleGrouping" text="Group" />
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#clear" text="Clear" />
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#print" text="Print" />
          </items>
