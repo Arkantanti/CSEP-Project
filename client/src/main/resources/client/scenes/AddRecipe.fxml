@@ -10,6 +10,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import javafx.scene.control.ComboBox?>
 <ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddRecipeCtrl">
     <content>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0" spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
@@ -67,6 +71,20 @@
                     </font>
                 </Label>
                 <TextField fx:id="servingsArea" maxHeight="5.0" minWidth="40.0" styleClass="items-container" />
+                <Label prefHeight="28.0" prefWidth="113.0" text="%txt.languageChoise">
+                    <font>
+                        <Font name="System Bold" size="19.0" />
+                    </font>
+                </Label>
+                <ComboBox fx:id="languageChoise" maxHeight="5.0" minWidth="40.0" styleClass="items-container">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="English"/>
+                            <String fx:value="Dutch"/>
+                            <String fx:value="Polish"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
                 <HBox>
                     <children>
                         <Button fx:id="saveButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onSaveRecipe" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="✓">

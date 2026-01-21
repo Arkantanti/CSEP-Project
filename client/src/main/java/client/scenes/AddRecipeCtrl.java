@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Recipe;
 import commons.RecipeIngredient;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -14,6 +15,7 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class AddRecipeCtrl {
     @FXML
@@ -26,6 +28,8 @@ public class AddRecipeCtrl {
     private Button saveButton;
     @FXML
     private Button cancelButton;
+    @FXML
+    private ComboBox<String> languageChoise;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -36,7 +40,6 @@ public class AddRecipeCtrl {
     private TextField nameTextField;
     @FXML
     private TextField servingsArea;
-
     @FXML
     private TextArea preparationsArea;
 
@@ -47,6 +50,7 @@ public class AddRecipeCtrl {
     private Recipe recipe;
     private boolean isCloneMode = false;
     private boolean isSaved = false;
+    private String language;
 
     /**
      *  The constructor for the add recipeController
@@ -92,10 +96,18 @@ public class AddRecipeCtrl {
                 steps = Arrays.asList(preparationsArea.getText().split("\\r?\\n"));
             }
 
-            if (isCloneMode) {
-                recipe = new Recipe(name, servings, steps);
+            String language = null;
+
+            if(languageChoise.getValue() == null){
+                language = "english";
             } else {
-                recipe = server.add(new Recipe(name, servings, steps));
+                language = (String) languageChoise.getValue();
+            }
+
+            if (isCloneMode) {
+                recipe = new Recipe(name, servings, steps, language);
+            } else {
+                recipe = server.add(new Recipe(name, servings, steps, language));
             }
         }
 
@@ -140,14 +152,22 @@ public class AddRecipeCtrl {
                 showError("Input Error", "Preparation steps cannot be empty.");
                 return;
             }
+
+            String language = languageChoise.getValue();
+
+            if(language == null){
+                showError("Input Error", "There was no language selected");
+                return;
+            }
+
             isSaved = true;
 
             // Check if a recipe exists before adding the ingredients.
             if (recipe == null) {
                 // If not first create the recipe.
-                recipe = server.add(new Recipe(name, servings, preparationSteps));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, language));
             } else if (isCloneMode && recipe.getId() == 0) {
-                recipe = server.add(new Recipe(name, servings, preparationSteps));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, language));
                 isCloneMode = false;
             } else {
                 // Update the existing recipe.
@@ -220,6 +240,15 @@ public class AddRecipeCtrl {
     }
 
     /**
+     * handler for value
+     * @param event the thing that happens
+     */
+    @FXML
+    private void eventHandlerLanguage(ActionEvent event){
+        language = languageChoise.getValue();
+    }
+
+    /**
      * To show an error for if something goes wrong
      * @param header The head text of the error
      * @param content The main text of the error
@@ -248,11 +277,18 @@ public class AddRecipeCtrl {
         nameTextField.setText(originalRecipe.getName());
         servingsArea.setText(String.valueOf(originalRecipe.getServings()));
         preparationsArea.setText(String.join("\n", originalRecipe.getPreparationSteps()));
+        try{
+            languageChoise.setValue(originalRecipe.getLanguage());
+        } catch(Exception _){
+
+        }
+
 
         this.recipe = new Recipe(
                 originalRecipe.getName(),
                 originalRecipe.getServings(),
-                new ArrayList<>(originalRecipe.getPreparationSteps())
+                new ArrayList<>(originalRecipe.getPreparationSteps()),
+                originalRecipe.getLanguage()
         );
 
         // Load and clone the ingredients

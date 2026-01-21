@@ -77,7 +77,8 @@ public class RecipeController {
         if (recipe == null
                 || isNullOrEmpty(recipe.getName())
                 || recipe.getServings() < 1
-                || recipe.getPreparationSteps() == null) {
+                || recipe.getPreparationSteps() == null
+                || recipe.getLanguage() == null) {
             return ResponseEntity.badRequest().build();
         }
         Recipe saved = repo.save(recipe);

@@ -36,6 +36,24 @@ public class RecipeService {
     }
 
     /**
+     * Gets all recipes related to the language.
+     */
+    public List<Recipe> getAllRecipesWithLanguage(boolean english, boolean polish, boolean dutch){
+
+        return server.getRecipes().stream().filter((Recipe recipeItem) -> {
+            if(english){
+                return recipeItem.getLanguage().equals("English");
+            } else if(polish){
+                return recipeItem.getLanguage().equals("Polish");
+            } else if(dutch){
+                return recipeItem.getLanguage().equals("Dutch");
+            }
+            return false;
+        })
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Searches for recipes, sorted alphabetically by name.
      */
     public List<Recipe> searchRecipes(String query) {

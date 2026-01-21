@@ -71,6 +71,12 @@ public class AppViewCtrl implements Initializable {
     @FXML private HBox overListHBox;
     @FXML private MenuButton languageMenu;
     @FXML private ImageView languageIcon;
+    @FXML private CheckBox englishCheck;
+    @FXML private CheckBox polishCheck;
+    @FXML private CheckBox dutchCheck;
+    private boolean engLanguage;
+    private boolean polLanguage;
+    private boolean dutLanguage;
 
     /**
      * Constructs a new AppViewCtrl with the necessary dependencies.
@@ -214,7 +220,7 @@ public class AppViewCtrl implements Initializable {
                 case RECIPES:
                 default:
                     items = isSearch ? recipeService.searchRecipes(query)
-                            : recipeService.getAllRecipes();
+                            : recipeService.getAllRecipesWithLanguage(engLanguage, polLanguage, dutLanguage);
                     additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
                     break;
             }
@@ -306,6 +312,33 @@ public class AppViewCtrl implements Initializable {
     @FXML
     private void setLangPL() {
         mainCtrl.changeLanguageAndReset(Locale.forLanguageTag("pl-PL"), "/images/POLAND-flag.png");
+    }
+
+    /**
+     * Gne
+     */
+    @FXML
+    private void languageChangeEng(){
+        engLanguage = !engLanguage;
+        loadRecipes();
+    }
+
+    /**
+     * Gne
+     */
+    @FXML
+    private void languageChangePol(){
+        polLanguage = !polLanguage;
+        loadRecipes();
+    }
+
+    /**
+     * Gne
+     */
+    @FXML
+    private void languageChangeDut(){
+        dutLanguage = !dutLanguage;
+        loadRecipes();
     }
 
     /**

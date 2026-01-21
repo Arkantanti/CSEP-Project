@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
+import java.util.Locale;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -26,6 +27,7 @@ public class Recipe implements Showable{
 
     private String name;
     private int servings;
+    private String language;
 
     @ElementCollection
     private List<String> preparationSteps;
@@ -48,10 +50,12 @@ public class Recipe implements Showable{
      */
     public Recipe(String name,
                   int servings,
-                  List<String> preparationSteps) {
+                  List<String> preparationSteps,
+                  String language) {
         this.name = name;
         this.servings = servings;
         this.preparationSteps = preparationSteps;
+        this.language = language;
     }
 
     public long getId() {
@@ -71,6 +75,10 @@ public class Recipe implements Showable{
     }
 
     public List<RecipeIngredient> getRecipeIngredients() {return recipeIngredients;}
+
+    public String getLanguage(){
+        return this.language;
+    }
 
     public void setName(String name){ this.name = name;}
 

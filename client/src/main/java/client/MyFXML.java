@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import com.google.inject.Injector;
