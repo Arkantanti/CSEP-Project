@@ -110,6 +110,7 @@ public class Recipe implements Showable{
     public void setCheap(boolean cheap) { this.cheap = cheap; }
     public void setFast(boolean fast) { this.fast = fast; }
     public void setVegan(boolean vegan) { this.vegan = vegan; }
+    public void setLanguage(Language language){this.language = language;}
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
         this.recipeIngredients = recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);

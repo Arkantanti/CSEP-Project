@@ -100,6 +100,11 @@ public class AddRecipeCtrl {
                 return;
             }
 
+            if(languageChoise == null){
+                mainCtrl.showError("No language selected", "Choose a valid language");
+                return;
+            }
+
             int servings = 1;
             try {
                 servings = Integer.parseInt(servingsArea.getText().trim());
@@ -115,7 +120,7 @@ public class AddRecipeCtrl {
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
 
-            Language language;
+            Language language = null;
 
             if(languageChoise.getValue().equals("English")){
                 language = Language.English;
@@ -123,8 +128,6 @@ public class AddRecipeCtrl {
                 language = Language.Dutch;
             } else if(languageChoise.getValue().equals("Polish")){
                 language = Language.Polish;
-            } else {
-                language = Language.English;
             }
 
             if (isCloneMode) {
@@ -186,6 +189,7 @@ public class AddRecipeCtrl {
             }
 
             Language language;
+            System.out.println(languageChoise.getValue());
             if(languageChoise.getValue().equals("English")){
                 language = Language.English;
             } else if(languageChoise.getValue().equals("Dutch")){
@@ -214,6 +218,7 @@ public class AddRecipeCtrl {
                 recipe.setName(name);
                 recipe.setServings(servings);
                 recipe.setPreparationSteps(preparationSteps);
+                recipe.setLanguage(language);
                 recipe = server.updateRecipe(recipe);
             }
 
@@ -347,6 +352,10 @@ public class AddRecipeCtrl {
 
         // Get ingredients from the original recipe
         List<RecipeIngredient> originalIngredients = server.getRecipeIngredients(originalRecipe.getId());
+
+        if(languageChoise == null){
+            return;
+        }
 
         if (originalIngredients == null || originalIngredients.isEmpty()) {
             return;
