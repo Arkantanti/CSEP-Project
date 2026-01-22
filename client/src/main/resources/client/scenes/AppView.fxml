@@ -12,76 +12,137 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AppViewCtrl">
-   <top>
-      <ToolBar prefHeight="83.0" prefWidth="708.0" BorderPane.alignment="CENTER">
-         <items>
-            <Button mnemonicParsing="false" onAction="#openShoppingList" prefHeight="23.0" text="Shopping List">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="49.0" prefWidth="540.0" text="    FoodPal">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Label>
-            <Button fx:id="refreshButton" mnemonicParsing="false" prefHeight="23.0" prefWidth="14.0" text="↺">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Button>
-         </items>
-      </ToolBar>
-   </top>
-   <left>
-      <VBox prefHeight="438.0" prefWidth="187.0" styleClass="sidebar-root" stylesheets="/styles/sidebar.css" BorderPane.alignment="CENTER">
-         <children>
-            <HBox prefHeight="51.0" prefWidth="187.0" spacing="5.0" styleClass="sidebar-actions">
-               <children>
-                  <Button fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadRecipes" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="Recipes" />
-                  <Button fx:id="ingredientsButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadIngredients" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="Ingredients" />
-               </children>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-            </HBox>
-            <HBox fx:id="overListHBox" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="187.0" spacing="5.0">
-               <children>
-                  <Button fx:id="favoritesButton" mnemonicParsing="false" minWidth="32.0" prefHeight="29.0" prefWidth="32.0" text="★">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Button>
-                  <TextField fx:id="searchField" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="142.0" promptText="search" />
-               </children>
-            </HBox>
-            <ListView fx:id="itemsList" prefHeight="281.0" prefWidth="187.0">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </ListView>
-            <HBox prefHeight="44.0" prefWidth="170.0" spacing="5.0" styleClass="sidebar-actions">
-               <children>
-                  <Button fx:id="additionButton" mnemonicParsing="false" prefHeight="19.0" prefWidth="9.0" styleClass="sidebar-action-button" text="+">
-                     <font>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.CustomMenuItem?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AppViewCtrl">
+    <top>
+        <ToolBar prefHeight="83.0" prefWidth="708.0" BorderPane.alignment="CENTER">
+            <items>
+                <Button mnemonicParsing="false" onAction="#openShoppingList" prefHeight="23.0" text="%btn.shoppingList">
+                    <font>
                         <Font size="15.0" />
-                     </font>
-                  </Button>
+                    </font>
+                </Button>
+                <CheckBox fx:id="dutchCheck" mnemonicParsing="false" onMouseClicked="#languageChangeDut" text="%txt.dutch" />
+                <CheckBox fx:id="polishCheck" mnemonicParsing="false" onMouseClicked="#languageChangePol" text="%txt.polish" />
+                <CheckBox fx:id="englishCheck" mnemonicParsing="false" onMouseClicked="#languageChangeEng" text="%txt.english" />
 
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </HBox>
-         </children>
-      </VBox>
-   </left>
-   <center>
-      <StackPane fx:id="contentRoot" prefHeight="424.0" prefWidth="521.0" BorderPane.alignment="CENTER">
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </StackPane>
-   </center>
+                <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="234.0" text="FoodPal">
+                    <font>
+                        <Font size="25.0" />
+                    </font>
+                </Label>
+                <Button fx:id="refreshButton" alignment="CENTER_RIGHT" mnemonicParsing="false" prefHeight="23.0" prefWidth="14.0" text="↺">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </Button>
+                <MenuButton fx:id="languageMenu" alignment="CENTER" mnemonicParsing="false">
+                    <!-- what the button shows when closed -->
+                    <graphic>
+                        <ImageView fx:id="languageIcon" fitHeight="18.0" fitWidth="24.0" preserveRatio="true">
+                            <image>
+                                <Image url="@/images/UK-flag.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+
+                    <items>
+                        <CustomMenuItem hideOnClick="true" onAction="#setLangEN">
+                            <content>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <ImageView fitHeight="18.0" fitWidth="24.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@/images/UK-flag.png" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </HBox>
+                            </content>
+                        </CustomMenuItem>
+                        <CustomMenuItem mnemonicParsing="false" onAction="#setLangNL">
+                            <content>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <ImageView fitHeight="18.0" fitWidth="24.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@/images/DUTCH-flag.png" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </HBox>
+                            </content>
+                        </CustomMenuItem>
+                        <CustomMenuItem mnemonicParsing="false" onAction="#setLangPL">
+                            <content>
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <ImageView fitHeight="18.0" fitWidth="24.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@/images/POLAND-flag.png" />
+                                            </image>
+                                        </ImageView>
+                                    </children>
+                                </HBox>
+                            </content>
+                        </CustomMenuItem>
+                    </items>
+                </MenuButton>
+            </items>
+        </ToolBar>
+    </top>
+    <left>
+        <VBox prefHeight="438.0" prefWidth="187.0" styleClass="sidebar-root" stylesheets="/styles/sidebar.css" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="51.0" prefWidth="187.0" spacing="5.0" styleClass="sidebar-actions">
+                    <children>
+                        <Button fx:id="recipesButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadRecipes" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="%btn.recipes" />
+                        <Button fx:id="ingredientsButton" graphicTextGap="10.0" mnemonicParsing="false" onAction="#loadIngredients" prefHeight="37.0" prefWidth="86.0" style="-fx-max-height: 37px;" styleClass="sidebar-toggle" stylesheets="/styles/sidebar.css" text="%btn.ingredients" />
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                    </padding>
+                </HBox>
+                <HBox fx:id="overListHBox" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="187.0" spacing="5.0">
+                    <children>
+                        <Button fx:id="favoritesButton" mnemonicParsing="false" minWidth="32.0" prefHeight="29.0" prefWidth="32.0" text="★">
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Button>
+                        <TextField fx:id="searchField" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="142.0" promptText="%prmpt.searchBar" />
+                    </children>
+                </HBox>
+                <ListView fx:id="itemsList" prefHeight="281.0" prefWidth="187.0">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </ListView>
+                <HBox prefHeight="44.0" prefWidth="170.0" spacing="5.0" styleClass="sidebar-actions">
+                    <children>
+                        <Button fx:id="additionButton" mnemonicParsing="false" prefHeight="19.0" prefWidth="9.0" styleClass="sidebar-action-button" text="+">
+                            <font>
+                                <Font size="15.0" />
+                            </font>
+                        </Button>
+
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <StackPane fx:id="contentRoot" prefHeight="424.0" prefWidth="521.0" BorderPane.alignment="CENTER">
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+        </StackPane>
+    </center>
 </BorderPane>

@@ -19,7 +19,7 @@ public class MainCtrlTest {
 
     @Test
     void showRecipe_throwsIfNotInitialized() {
-        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step 1"),false,false,false);
+        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step 1"), "English",false,false,false);
 
         assertThrows(IllegalStateException.class,
                 () -> sut.showRecipe(recipe),

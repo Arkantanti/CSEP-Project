@@ -55,7 +55,7 @@
                   </Button>
                </children>
             </HBox>
-             <Label prefHeight="28.0" prefWidth="200.0" text="Nutrients (g/100g):">
+             <Label prefHeight="28.0" prefWidth="402.0" text="%txt.nutriHead">
                  <font>
                      <Font name="System Bold" size="19.0" />
                  </font>
@@ -83,7 +83,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Carbs: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.carbs">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -100,7 +100,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Protein: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.protein">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -117,7 +117,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Fat: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.fat">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -132,7 +132,7 @@
             </GridPane>
             <VBox maxWidth="1.7976931348623157E308" prefWidth="520.0">
                <children>
-                   <Label prefHeight="28.0" prefWidth="200.0" text="Category:">
+                   <Label prefHeight="28.0" prefWidth="200.0" text="txt.categorie">
                        <font>
                            <Font name="System Bold" size="19.0" />
                        </font>
@@ -155,7 +155,7 @@
                    </ComboBox>
                </children>
             </VBox>
-             <Label prefHeight="28.0" prefWidth="113.0" text="Info:">
+             <Label prefHeight="28.0" prefWidth="113.0" text="%txt.InfoHead">
                  <font>
                      <Font name="System Bold" size="19.0" />
                  </font>
@@ -181,7 +181,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Used in: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.usedIn">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -198,7 +198,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="Kcal: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.kcalHead">
                            <font>
                               <Font size="20.0" />
                            </font>

@@ -59,7 +59,7 @@ class ServerUtilsTest {
 
     @Test
     void getRecipes_success() {
-        Recipe recipe = new Recipe("Pancakes", 1, List.of("Mix", "Fry"),false,false,false);
+        Recipe recipe = new Recipe("Pancakes", 1, List.of("Mix", "Fry"), "English",false,false,false);
         List<Recipe> expected = List.of(recipe);
 
         when(builder.get(ArgumentMatchers.<GenericType<List<Recipe>>>any()))
@@ -73,7 +73,7 @@ class ServerUtilsTest {
 
     @Test
     void getRecipeById_success() {
-        Recipe expected = new Recipe("Test Recipe", 2, List.of(),false,false,false);
+        Recipe expected = new Recipe("Test Recipe", 2, List.of(), "English",false,false,false);
         expected.setId(123L);
 
         // Mock the chain of calls: client -> target -> path -> request -> get -> response
@@ -114,10 +114,10 @@ class ServerUtilsTest {
 
     @Test
     void addRecipe_success() {
-        Recipe input = new Recipe("New", 0, List.of(),false,false,false);
+        Recipe input = new Recipe("New", 0, List.of(), "English",false,false,false);
 
         // FIX: Explicitly set the ID on the "saved" recipe so expected value matches
-        Recipe saved = new Recipe("New", 0, List.of(),false,false,false);
+        Recipe saved = new Recipe("New", 0, List.of(), "English",false,false,false);
         saved.setId(42L);
 
         when(builder.post(any(Entity.class), eq(Recipe.class))).thenReturn(saved);
@@ -130,7 +130,7 @@ class ServerUtilsTest {
 
     @Test
     void updateRecipe_success() {
-        Recipe update = new Recipe("Updated", 10, List.of(),false,false,false);
+        Recipe update = new Recipe("Updated", 10, List.of(), "English",false,false,false);
         // FIX: Explicitly set the ID so the URL path is correct ("api/recipes/10")
         update.setId(10L);
 
@@ -146,7 +146,7 @@ class ServerUtilsTest {
     void updateRecipe_invalidInput() {
         assertThrows(IllegalArgumentException.class, () -> sut.updateRecipe(null));
 
-        Recipe invalid = new Recipe("Bad", 10, List.of(),false,false,false);
+        Recipe invalid = new Recipe("Bad", 10, List.of(), "English",false,false,false);
         // FIX: Explicitly set an invalid ID (< 0) to trigger the exception
         invalid.setId(-1L);
 
