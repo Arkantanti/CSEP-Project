@@ -1,0 +1,5 @@
+package commons;
+
+public enum IngredientCategory {
+    PRODUCE, FRUIT, VEGETABLES, DAIRY, MEAT, FISH, PANTRY, BAKERY, BEVERAGES, SPICES, CONDIMENTS, OTHER, UNCATEGORIZED
+}

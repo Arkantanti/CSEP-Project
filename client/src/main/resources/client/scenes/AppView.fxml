@@ -104,7 +104,7 @@
             </HBox>
             <HBox fx:id="overListHBox" alignment="TOP_CENTER" prefHeight="38.0" prefWidth="187.0" spacing="5.0">
                <children>
-                  <Button fx:id="favoritesButton" mnemonicParsing="false" prefHeight="29.0" prefWidth="32.0" text="★">
+                  <Button fx:id="favoritesButton" mnemonicParsing="false" minWidth="32.0" prefHeight="29.0" prefWidth="32.0" text="★">
                      <font>
                         <Font size="10.0" />
                      </font>

@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Ingredient;
+import commons.IngredientCategory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.IngredientRepository;
@@ -80,6 +81,13 @@ public class IngredientController {
                 || ing.getCarbs() < 0) {
             return ResponseEntity.badRequest().build();
         }
+        ing.setName(capitalize(ing.getName()));
+
+        if (ing.getCategory() == null) {
+            ing.setCategory(IngredientCategory.UNCATEGORIZED);
+        }
+
+        ing.setId(0L);
 
         Ingredient saved = repo.save(ing);
         return ResponseEntity.ok(saved);
@@ -115,11 +123,25 @@ public class IngredientController {
             return ResponseEntity.notFound().build();
         }
 
+        if (ing.getCategory() == null) {
+            ing.setCategory(IngredientCategory.UNCATEGORIZED);
+        }
+
         ing.setRecipeIngredients(repo.findById(id).get().getRecipeIngredients());
         ing.setId(id);
-
+        ing.setName(capitalize(ing.getName()));
         Ingredient saved = repo.save(ing);
         return ResponseEntity.ok(saved);
+    }
+
+    /**
+     * Helper to convert "flour" -> "Flour" and "FLOUR" -> "Flour".
+     */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1).toLowerCase();
     }
 
     /**

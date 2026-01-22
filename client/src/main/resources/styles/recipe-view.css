@@ -60,4 +60,12 @@
 .favorite-button.favorited {
     -fx-text-fill: rgba(218, 165, 32, 1.0); /* strong gold */
 }
+.allergen-label {
+    -fx-text-fill: white;
+    -fx-pref-height: 30;
+    -fx-background-radius: 5;
+    -fx-padding: 0 3 0 3;
+    -fx-font-weight: 700;
+    -fx-font-size: 13;
+}
 

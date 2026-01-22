@@ -21,10 +21,13 @@ import client.utils.FavoritesPollingService;
 import commons.Ingredient;
 import commons.Recipe;
 import javafx.fxml.FXML;
+import commons.RecipeIngredient;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -33,6 +36,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
+import java.util.List;
 
 /**
  * The Main Controller that manages the execution flow and scene switching.
@@ -40,11 +44,14 @@ import java.util.prefs.Preferences;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage ingredientAddStage;
     private Stage shoppingListStage;
+    private Stage shoppingListConfirmationStage;
 
     private AppViewCtrl appViewCtrl;
     private AddRecipeCtrl addRecipeCtrl;
     private ShoppingListCtrl shoppingListCtrl;
+    private ShoppingListConfirmationCtrl shoppingListConfirmationCtrl;
 
     private MyFXML fxml;
     private boolean firstOpen;
@@ -70,6 +77,8 @@ public class MainCtrl {
 
         locale = Locale.forLanguageTag(prefs.get("lang", "en"));
         flagPath = prefs.get("flagPath", "/images/UK-flag.png");
+
+        primaryStage.setResizable(false);
 
         showAppView();
         primaryStage.show();
@@ -150,7 +159,7 @@ public class MainCtrl {
     public void showAddIngredient() {
         Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class, bundle(),
                 "client", "scenes", "AddIngredient.fxml");
-        addIngredientView.getKey().initialize();
+        addIngredientView.getKey().initialize(false);
         appViewCtrl.setContent(addIngredientView.getValue());
     }
 
@@ -213,6 +222,7 @@ public class MainCtrl {
             shoppingListStage = new Stage();
             shoppingListStage.setTitle("Shopping List");
             shoppingListStage.setScene(new Scene(shoppingListView.getValue()));
+            shoppingListStage.setResizable(false);
             shoppingListCtrl = shoppingListView.getKey();
 
             shoppingListCtrl.initialize(fxml, getBundle());
@@ -226,7 +236,9 @@ public class MainCtrl {
      * called when adding new elements to the shopping list to reload it
      */
     public void reloadShoppingList(){
-        shoppingListCtrl.loadShoppingList();
+        if (shoppingListCtrl != null) {
+            shoppingListCtrl.loadShoppingList();
+        }
     }
 
     /**
@@ -251,14 +263,16 @@ public class MainCtrl {
     public AddRecipeCtrl getAddRecipeCtrl() {return addRecipeCtrl; }
 
     /**
-     * Method to load recipes from the main controller so that the main controller acts as the main orchestrator.
-     * This method is also used by the PollingService to reload recipes trough the main controller.
+     * Method to load recipes from the main controller so that
+     * the main controller acts as the main orchestrator.
+     * This method is also used by the PollingService to reload recipes through the main controller.
      */
     public void reloadRecipes() {
         if (appViewCtrl != null) {
             appViewCtrl.loadRecipes();
         } else {
-            System.out.println("Tried to reload recipes from the main controller, but app view controller was not initialized.");
+            System.out.println("Tried to reload recipes from the main controller, " +
+                    "but app view controller was not initialized.");
         }
     }
 
@@ -271,6 +285,74 @@ public class MainCtrl {
         } else {
             System.out.println("Tried to shutdown the polling service but it was not initialized.");
         }
+    }
+
+    /**
+     * To show an error for if something goes wrong
+     * @param header The head text of the error
+     * @param content The main text of the error
+     */
+    public void showError(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    /**
+     * Opens a new window with addIngredients view.
+     */
+    public Ingredient showAddIngredientsNewWindow() {
+        ingredientAddStage = new Stage();
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+                "client", "scenes", "AddIngredient.fxml");
+        AddIngredientCtrl addIngredientCtrl = addIngredientView.getKey();
+        addIngredientCtrl.initialize(true);
+        ingredientAddStage.setScene(new Scene(addIngredientView.getValue()));
+        ingredientAddStage.initModality(Modality.APPLICATION_MODAL);
+        ingredientAddStage.initOwner(primaryStage);
+        ingredientAddStage.setTitle("Add Ingredient");
+        ingredientAddStage.setResizable(false);
+        ingredientAddStage.showAndWait();
+
+        if(addIngredientCtrl.getIngredientSaved()) {
+            return addIngredientCtrl.getIngredient();
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * Closes the secondary stage.
+     */
+    public void closeAddIngredientWindow() {
+        if(ingredientAddStage != null) {
+            ingredientAddStage.close();
+        }
+    }
+
+    /**
+     * opens the shopping list confirmation stage for the given ingredient list
+     * @param ingredients the list of ingredients will be shown
+     * @param scalar a scaling value for the ingredients
+     * @param recipeName the name of the recipe
+     */
+    public void openShoppingListConfirmation(List<RecipeIngredient> ingredients, double scalar, String recipeName) {
+        if (shoppingListConfirmationCtrl == null || shoppingListConfirmationStage == null){
+            Pair<ShoppingListConfirmationCtrl, Parent> shoppingListConfirmation = fxml.load(ShoppingListConfirmationCtrl.class, "client", "scenes", "ShoppingListConfirmation.fxml");
+            shoppingListConfirmationStage = new Stage();
+            shoppingListConfirmationStage.setTitle("Shopping List Confirmation");
+            shoppingListConfirmationStage.setScene(new Scene(shoppingListConfirmation.getValue()));
+            shoppingListConfirmationStage.setResizable(false);
+            shoppingListConfirmationCtrl = shoppingListConfirmation.getKey();
+
+            shoppingListConfirmationCtrl.initialize(fxml, shoppingListConfirmationStage);
+        }
+        shoppingListConfirmationStage.show();
+        shoppingListConfirmationStage.toFront();
+        shoppingListConfirmationCtrl.loadList(ingredients, scalar, recipeName);
     }
 
     /**

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.services.IngredientService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.*;
@@ -10,52 +11,33 @@ import javafx.scene.layout.HBox;
 import java.util.List;
 
 public class RecipeIngredientCtrl {
-    @FXML
-    private HBox defaultView;
-
-    @FXML
-    private Label textLabel;
-
-    @FXML
-    private Button editButton;
-
-    @FXML
-    private Button deleteButton;
-
-    @FXML
-    private HBox editView;
-
-    @FXML
-    private TextField amountField;
-
-    @FXML
-    private ComboBox<Unit> unitComboBox;
-
-    @FXML
-    private ComboBox<Ingredient> ingredientComboBox;
-
-    @FXML
-    private Button confirmButton;
-
-    @FXML
-    private Button cancelButton;
-
+    @FXML private HBox defaultView;
+    @FXML private Label textLabel;
+    @FXML private HBox editView;
+    @FXML private TextField amountField;
+    @FXML private ComboBox<Unit> unitComboBox;
+    @FXML private ComboBox<Ingredient> ingredientComboBox;
 
     private RecipeIngredient recipeIngredient;
     private Recipe recipe;
 
     private Runnable updateIngredientList;
-
+    private final MainCtrl mainCtrl;
     private final ServerUtils serverUtils;
+    private final IngredientService ingredientService;
 
     /**
      * constructor to be injected
      * @param serverUtils serverutils to load/delete/edit ingredients
      */
     @Inject
-    public RecipeIngredientCtrl(ServerUtils serverUtils) {
+    public RecipeIngredientCtrl(ServerUtils serverUtils,
+                                MainCtrl mainCtrl, IngredientService ingredientService) {
+        this.mainCtrl = mainCtrl;
         this.serverUtils = serverUtils;
+        this.ingredientService = ingredientService;
     }
+
 
     /**
      * called by the RecipeView to initialize the cell
@@ -117,7 +99,7 @@ public class RecipeIngredientCtrl {
             amountField.setText(recipeIngredient.getInformalUnit());
         }
         // Ingredient dropdown
-        List<Ingredient> ingredients = serverUtils.getIngredients();
+        List<Ingredient> ingredients = ingredientService.getAllIngredients();
         ingredientComboBox.getItems().setAll(ingredients);
 
         int i = ingredients.indexOf(recipeIngredient.getIngredient());
@@ -241,7 +223,7 @@ public class RecipeIngredientCtrl {
         amountField.setText("");
 
         // Ingredient dropdown
-        List<Ingredient> ingredients = serverUtils.getIngredients();
+        List<Ingredient> ingredients = ingredientService.getAllIngredients();
         ingredientComboBox.getItems().setAll(ingredients);
 
         // unit dropdown
@@ -260,5 +242,17 @@ public class RecipeIngredientCtrl {
         double scaled = recipeIngredient.getAmount() * factor;
 
         textLabel.setText(recipeIngredient.formatIngredientScaled(scaled));
+    }
+
+    /**
+     * Opens a new window to quickly add an ingredient.
+     */
+    public void onAddIngredient() {
+        Ingredient newIngredient = mainCtrl.showAddIngredientsNewWindow();
+        if(newIngredient != null){
+            List<Ingredient> ingredients = ingredientService.getAllIngredients();
+            ingredientComboBox.getItems().setAll(ingredients);
+            ingredientComboBox.getSelectionModel().select(newIngredient);
+        }
     }
 }

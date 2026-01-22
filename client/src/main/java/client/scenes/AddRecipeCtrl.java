@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.services.RecipeService;
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Recipe;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static commons.Recipe.recipeNameChecker;
+
 public class AddRecipeCtrl {
     @FXML
     private Label nameLabel;
@@ -26,9 +29,16 @@ public class AddRecipeCtrl {
     private Button saveButton;
     @FXML
     private Button cancelButton;
+    @FXML
+    private CheckBox cheapCheckBox;
+    @FXML
+    private CheckBox fastCheckBox;
+    @FXML
+    private CheckBox veganCheckBox;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final RecipeService recipeService;
 
     private MyFXML fxml;
 
@@ -36,7 +46,6 @@ public class AddRecipeCtrl {
     private TextField nameTextField;
     @FXML
     private TextField servingsArea;
-
     @FXML
     private TextArea preparationsArea;
 
@@ -53,10 +62,11 @@ public class AddRecipeCtrl {
      * @param server the server it is linked to
      */
     @Inject
-    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl, RecipeService recipeService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
+        this.recipeService = recipeService;
     }
 
     /**
@@ -78,7 +88,14 @@ public class AddRecipeCtrl {
         // If no recipe exists yet, create it from current fields
         if (recipe == null) {
             String name = nameTextField.getText().trim();
-            if (name.isEmpty()) name = "New Recipe";
+            if (name.isEmpty()) {
+                name = "New Recipe";
+            }
+
+            if(recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)){
+                mainCtrl.showError("Name Used.", "This name is already in use.");
+                return;
+            }
 
             int servings = 1;
             try {
@@ -91,12 +108,12 @@ public class AddRecipeCtrl {
             if (!preparationsArea.getText().isEmpty()) {
                 steps = Arrays.asList(preparationsArea.getText().split("\\r?\\n"));
             }
+            boolean isCheap = cheapCheckBox.isSelected();
+            boolean isFast = fastCheckBox.isSelected();
+            boolean isVegan = veganCheckBox.isSelected();
 
-            if (isCloneMode) {
-                recipe = new Recipe(name, servings, steps);
-            } else {
-                recipe = server.add(new Recipe(name, servings, steps));
-            }
+            recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
+
         }
 
         Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
@@ -116,8 +133,17 @@ public class AddRecipeCtrl {
         try {
             // Make sure the inputs are correct
             String name = nameTextField.getText().trim();
+            boolean isCheap = cheapCheckBox.isSelected();
+            boolean isFast = fastCheckBox.isSelected();
+            boolean isVegan = veganCheckBox.isSelected();
             if (name.isBlank()) {
-                showError("Input Error", "Recipe name cannot be empty.");
+                mainCtrl.showError("Input Error", "Recipe name cannot be empty.");
+                return;
+            }
+
+            if(recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)){
+                mainCtrl.showError("Used Name",
+                        "This recipe name is already in use, please choose another.");
                 return;
             }
 
@@ -125,11 +151,11 @@ public class AddRecipeCtrl {
             try {
                 servings = Integer.parseInt(servingsArea.getText().trim());
                 if (servings < 1) {
-                    showError("Input Error", "Servings must be at least 1.");
+                    mainCtrl.showError("Input Error", "Servings must be at least 1.");
                     return;
                 }
             } catch (NumberFormatException e) {
-                showError("Input Error", "Servings must be a number.");
+                mainCtrl.showError("Input Error", "Servings must be a number.");
                 return;
             }
 
@@ -137,7 +163,7 @@ public class AddRecipeCtrl {
                     preparationsArea.getText().split("\\r?\\n"));
             if (preparationSteps.isEmpty() ||
                     (preparationSteps.size() == 1 && preparationSteps.get(0).isBlank())) {
-                showError("Input Error", "Preparation steps cannot be empty.");
+                mainCtrl.showError("Input Error", "Preparation steps cannot be empty.");
                 return;
             }
             isSaved = true;
@@ -145,12 +171,16 @@ public class AddRecipeCtrl {
             // Check if a recipe exists before adding the ingredients.
             if (recipe == null) {
                 // If not first create the recipe.
-                recipe = server.add(new Recipe(name, servings, preparationSteps));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
             } else if (isCloneMode && recipe.getId() == 0) {
-                recipe = server.add(new Recipe(name, servings, preparationSteps));
+                // to make sure that the clone gets properly added.
+                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
                 isCloneMode = false;
             } else {
                 // Update the existing recipe.
+                recipe.setCheap(isCheap);
+                recipe.setFast(isFast);
+                recipe.setVegan(isVegan);
                 recipe.setName(name);
                 recipe.setServings(servings);
                 recipe.setPreparationSteps(preparationSteps);
@@ -164,7 +194,8 @@ public class AddRecipeCtrl {
             mainCtrl.showRecipe(recipe);
 
         } catch (Exception e) {
-            showError("Error", "Could not save the recipe. There might be a problem with your server connection.");
+            mainCtrl.showError("Error",
+                    "Could not save the recipe. There might be a problem with your server connection.");
         }
     }
 
@@ -220,19 +251,6 @@ public class AddRecipeCtrl {
     }
 
     /**
-     * To show an error for if something goes wrong
-     * @param header The head text of the error
-     * @param content The main text of the error
-     */
-    private void showError(String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    /**
      * the function to clone the recipe.
      * @param originalRecipe the recipe information that needs be inputted for the clone.
      */
@@ -245,18 +263,28 @@ public class AddRecipeCtrl {
         this.isCloneMode = true;
 
         // Set the values that have changed to the clone
-        nameTextField.setText(originalRecipe.getName());
+        nameTextField.setText(originalRecipe.getName() + " - Clone");
         servingsArea.setText(String.valueOf(originalRecipe.getServings()));
         preparationsArea.setText(String.join("\n", originalRecipe.getPreparationSteps()));
+        cheapCheckBox.setSelected(originalRecipe.isCheap());
+        fastCheckBox.setSelected(originalRecipe.isFast());
+        veganCheckBox.setSelected(originalRecipe.isVegan());
 
         this.recipe = new Recipe(
-                originalRecipe.getName(),
+                (originalRecipe.getName() + " - Clone"),
                 originalRecipe.getServings(),
-                new ArrayList<>(originalRecipe.getPreparationSteps())
+                new ArrayList<>(originalRecipe.getPreparationSteps()),
+                originalRecipe.isCheap(),
+                originalRecipe.isFast(),
+                originalRecipe.isVegan()
         );
-
         // Load and clone the ingredients
         cloneIngredients(originalRecipe);
+
+        recipe = server.add(this.recipe);
+
+        saveAllIngredientsToServer(recipe);
+        showIngredients();
     }
 
     /**
@@ -269,6 +297,9 @@ public class AddRecipeCtrl {
         ingredientsContainer.getChildren().clear();
         recipe = null;
         isCloneMode = false;
+        cheapCheckBox.setSelected(false);
+        fastCheckBox.setSelected(false);
+        veganCheckBox.setSelected(false);
     }
 
     /**

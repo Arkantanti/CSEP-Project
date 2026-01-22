@@ -52,8 +52,6 @@ public class ServerUtils {
         this.client = client;
     }
 
-
-
     /**
      * Retrieves a list of all recipes from the server.
      *
@@ -65,6 +63,22 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<Recipe>>() {
                 });
+    }
+
+    /**
+     * Retrieves a list of all recipe IDs from the server.
+     *
+     * @return a list of recipe IDs, or null if server is unreachable
+     */
+    public List<Long> getAllRecipeIds() {
+        try {
+            return this.client
+                    .target(serverURL).path("api/recipes/ids")
+                    .request(APPLICATION_JSON)
+                    .get(new GenericType<List<Long>>() {});
+        } catch (ProcessingException e) {
+            return null;
+        }
     }
 
     /**
@@ -93,7 +107,7 @@ public class ServerUtils {
                     .target(serverURL).path("api/recipes/" + id)
                     .request(APPLICATION_JSON)
                     .get();
-            
+
             if (response.getStatus() == Response.Status.OK.getStatusCode()) {
                 return response.readEntity(Recipe.class);
             }
@@ -183,6 +197,29 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .get(new GenericType<List<Ingredient>>() {
                 });
+    }
+
+    /**
+     * retrieves an ingredient by its ID from the server
+     *
+     * @param id the ID of the ingredient to retrieve
+     * @return the Ingredient object if found. Otherwise returns null.
+     */
+    public Ingredient getIngredientById(long id) {
+        try {
+            Response response = this.client
+                    .target(serverURL).path("api/ingredients/" + id)
+                    .request(APPLICATION_JSON)
+                    .get();
+
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(Ingredient.class);
+            }
+            return null;
+        } catch (ProcessingException e) {
+            System.out.println("Could not retrieve ingredient by ID: ");
+            return null;
+        }
     }
 
     /**
@@ -366,5 +403,7 @@ public class ServerUtils {
             return null;
         }
     }
+
+
 
 }

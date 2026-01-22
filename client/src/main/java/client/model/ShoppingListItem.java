@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import commons.Unit;
+import commons.RecipeIngredient;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -58,6 +59,20 @@ public class ShoppingListItem {
         this.amount = amount;
         this.unit = unit;
         this.recipeName = (recipeName != null && !recipeName.isBlank()) ? recipeName : null;
+    }
+
+    /**
+     * Creates a ShoppingListItem from a recipeIngredient
+     * @param recipeIngredient the RecipeIngredient to base this ShoppingListItem off of
+     * @param scalar a multiplier for the recipeIngredient
+     */
+    public ShoppingListItem(RecipeIngredient recipeIngredient, double scalar) {
+        this.ingredientId = recipeIngredient.getIngredient().getId();
+        this.ingredientName = recipeIngredient.getIngredient().getName();
+        this.informalUnit = recipeIngredient.getInformalUnit();
+        this.amount = recipeIngredient.getAmount() * scalar;
+        this.unit = recipeIngredient.getUnit();
+        this.recipeName = recipeIngredient.getRecipe().getName();
     }
 
     /**
@@ -165,6 +180,10 @@ public class ShoppingListItem {
         this.ingredientId = ingredientId;
     }
 
+    public String getIngredientName(){
+        return this.ingredientName;
+    }
+
     public void setIngredientName(String ingredientName) {
         this.ingredientName = ingredientName;
     }
@@ -199,6 +218,14 @@ public class ShoppingListItem {
 
     public void setUnit(Unit unit) {
         this.unit = unit;
+    }
+
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
+    }
+
+    public String getRecipeName() {
+        return recipeName;
     }
 
     @Override

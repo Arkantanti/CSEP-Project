@@ -36,3 +36,29 @@
     -fx-min-width: 100%;
     -fx-pref-width: 100%;
 }
+
+.category-header {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 4;
+    -fx-padding: 5;
+}
+
+.toggle-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+}
+
+.toggle-button:hover {
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 3;
+}
+
+#toggleGroupingButton.active {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+#toggleGroupingButton.active:hover {
+    -fx-background-color: #45a049;
+}

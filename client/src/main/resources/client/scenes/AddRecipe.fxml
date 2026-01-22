@@ -67,6 +67,39 @@
                     </font>
                 </Label>
                 <TextField fx:id="servingsArea" maxHeight="5.0" minWidth="40.0" styleClass="items-container" />
+                <Label prefHeight="28.0" prefWidth="113.0" text="Tags:">
+                    <font>
+                        <Font name="System Bold" size="19.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets left="10.0" />
+                    </VBox.margin>
+                </Label>
+
+                <HBox spacing="20.0">
+                    <children>
+                        <CheckBox fx:id="cheapCheckBox" mnemonicParsing="false" text="Cheap">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </CheckBox>
+                        <CheckBox fx:id="fastCheckBox" mnemonicParsing="false" text="Fast">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </CheckBox>
+                        <CheckBox fx:id="veganCheckBox" mnemonicParsing="false" text="Vegan">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </CheckBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets left="10.0" bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+
+
                 <HBox>
                     <children>
                         <Button fx:id="saveButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onSaveRecipe" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="✓">
