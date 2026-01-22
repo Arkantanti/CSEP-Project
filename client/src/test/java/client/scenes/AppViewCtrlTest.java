@@ -3,7 +3,7 @@ package client.scenes;
 import client.services.IngredientService;
 import client.services.RecipeService;
 import client.utils.FavoritesManager;
-import client.utils.PreferenceManager;
+import client.utils.LanguageManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +23,11 @@ public class AppViewCtrlTest {
     @Mock private FavoritesManager favoritesManager;
     @Mock private RecipeService recipeService;
     @Mock private IngredientService ingredientService;
-    @Mock private PreferenceManager preferenceManager;
+    @Mock private LanguageManager languageManager;
 
     @BeforeEach
     void setup() {
-        ctrl = new AppViewCtrl(mainCtrl, favoritesManager, recipeService, ingredientService, preferenceManager);
+        ctrl = new AppViewCtrl(mainCtrl, favoritesManager, recipeService, ingredientService, languageManager);
     }
 
     @Test

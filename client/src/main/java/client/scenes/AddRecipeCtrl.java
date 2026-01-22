@@ -4,6 +4,7 @@ import client.MyFXML;
 import client.services.RecipeService;
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
+import commons.Language;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import javafx.fxml.FXML;
@@ -114,11 +115,16 @@ public class AddRecipeCtrl {
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
 
-            String language = null;
-            if(languageChoise.getValue() == null){
-                language = "english";
+            Language language;
+
+            if(languageChoise.getValue().equals("English")){
+                language = Language.English;
+            } else if(languageChoise.getValue().equals("Dutch")){
+                language = Language.Dutch;
+            } else if(languageChoise.getValue().equals("Polish")){
+                language = Language.Polish;
             } else {
-                language = languageChoise.getValue();
+                language = Language.English;
             }
 
             if (isCloneMode) {
@@ -179,9 +185,15 @@ public class AddRecipeCtrl {
                 return;
             }
 
-            String language = languageChoise.getValue();
-            if(language == null){
-                mainCtrl.showError("Input Error", "There was no language selected");
+            Language language;
+            if(languageChoise.getValue().equals("English")){
+                language = Language.English;
+            } else if(languageChoise.getValue().equals("Dutch")){
+                language = Language.Dutch;
+            } else if(languageChoise.getValue().equals("Polish")){
+                language = Language.Polish;
+            } else {
+                mainCtrl.showError("Input Error", "There was no proper language selected");
                 return;
             }
 
@@ -288,7 +300,7 @@ public class AddRecipeCtrl {
         fastCheckBox.setSelected(originalRecipe.isFast());
         veganCheckBox.setSelected(originalRecipe.isVegan());
         try{
-            languageChoise.setValue(originalRecipe.getLanguage());
+            languageChoise.setValue(originalRecipe.getLanguage().toString());
         } catch(Exception _){
 
         }

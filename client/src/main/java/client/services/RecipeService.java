@@ -2,6 +2,7 @@ package client.services;
 
 import client.utils.FavoritesManager;
 import client.utils.ServerUtils;
+import commons.Language;
 import commons.Recipe;
 import com.google.inject.Inject;
 import java.util.Comparator;
@@ -42,11 +43,11 @@ public class RecipeService {
 
         List<Recipe> recipes = new java.util.ArrayList<>(server.getRecipes().stream().filter((Recipe recipeItem) -> {
             if (english) {
-                return recipeItem.getLanguage().equals("English");
+                return recipeItem.getLanguage().equals(Language.English);
             } else if (polish) {
-                return recipeItem.getLanguage().equals("Polish");
+                return recipeItem.getLanguage().equals(Language.Polish);
             } else if (dutch) {
-                return recipeItem.getLanguage().equals("Dutch");
+                return recipeItem.getLanguage().equals(Language.Dutch);
             }
             return false;
         })

@@ -3,9 +3,10 @@ package client.scenes;
 import client.services.IngredientService;
 import client.services.RecipeService;
 import client.utils.FavoritesManager;
-import client.utils.PreferenceManager;
+import client.utils.LanguageManager;
 import com.google.inject.Inject;
 import commons.Ingredient;
+import commons.Language;
 import commons.Recipe;
 import commons.Showable;
 import javafx.application.Platform;
@@ -14,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -45,7 +45,7 @@ public class AppViewCtrl implements Initializable {
     private final FavoritesManager favoritesManager;
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
-    private final PreferenceManager preferenceManager;
+    private final LanguageManager languageManager;
 
     /**
      * Enum to track the currently active view mode.
@@ -95,12 +95,12 @@ public class AppViewCtrl implements Initializable {
     @Inject
     public AppViewCtrl(MainCtrl mainCtrl, FavoritesManager favoritesManager,
                        RecipeService recipeService, IngredientService ingredientService,
-                       PreferenceManager preferenceManager) {
+                       LanguageManager languageManager) {
         this.mainCtrl = mainCtrl;
         this.favoritesManager = favoritesManager;
         this.recipeService = recipeService;
         this.ingredientService = ingredientService;
-        this.preferenceManager = preferenceManager;
+        this.languageManager = languageManager;
     }
 
     /**
@@ -153,9 +153,9 @@ public class AppViewCtrl implements Initializable {
      */
     private void loadLanguagePreferences() {
         try {
-            engLanguage = preferenceManager.isEnglishEnabled();
-            polLanguage = preferenceManager.isPolishEnabled();
-            dutLanguage = preferenceManager.isDutchEnabled();
+            engLanguage = languageManager.isEnglishEnabled();
+            polLanguage = languageManager.isPolishEnabled();
+            dutLanguage = languageManager.isDutchEnabled();
 
             // Sync checkboxes with loaded values
             englishCheck.setSelected(engLanguage);
@@ -375,7 +375,7 @@ public class AppViewCtrl implements Initializable {
     public void languageChangeEng() {
         engLanguage = englishCheck.isSelected();
         try {
-            preferenceManager.updateLanguagePreference("english", engLanguage);
+            languageManager.updateLanguagePreference(Language.English, engLanguage);
         } catch (IOException e) {
             showError("Save Error", "Could not save English language preference");
         }
@@ -389,7 +389,7 @@ public class AppViewCtrl implements Initializable {
     public void languageChangePol() {
         polLanguage = polishCheck.isSelected();
         try {
-            preferenceManager.updateLanguagePreference("polish", polLanguage);
+            languageManager.updateLanguagePreference(Language.Polish, polLanguage);
         } catch (IOException e) {
             showError("Save Error", "Could not save Polish language preference");
         }
@@ -403,7 +403,7 @@ public class AppViewCtrl implements Initializable {
     public void languageChangeDut() {
         dutLanguage = dutchCheck.isSelected();
         try {
-            preferenceManager.updateLanguagePreference("dutch", dutLanguage);
+            languageManager.updateLanguagePreference(Language.Dutch, dutLanguage);
         } catch (IOException e) {
             showError("Save Error", "Could not save Dutch language preference");
         }

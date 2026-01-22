@@ -1,9 +1,6 @@
 package server.api;
 
-import commons.Ingredient;
-import commons.Recipe;
-import commons.RecipeIngredient;
-import commons.Unit;
+import commons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -38,8 +35,8 @@ class RecipeIngredientControllerTest {
         RecipeRepository recipeRepo = new RecipeRepositoryTest();
         IngredientRepository ingredientRepo = new IngredientRepositoryTest();
 
-        r1 = recipeRepo.save(new Recipe("Pancakes", 4, List.of("step 1","step 2"), "English",false,false,false));
-        r2 = recipeRepo.save(new Recipe("Spaghetti", 3, List.of("step 3","step 4"), "English",false,false,false));
+        r1 = recipeRepo.save(new Recipe("Pancakes", 4, List.of("step 1","step 2"), Language.English,false,false,false));
+        r2 = recipeRepo.save(new Recipe("Spaghetti", 3, List.of("step 3","step 4"), Language.English,false,false,false));
 
         ing1 = ingredientRepo.save(new Ingredient("Chilli", 3, 1, 1.2, Set.of()));
         ing2 = ingredientRepo.save(new Ingredient("Potato", 3, 1, 1.2, Set.of()));
