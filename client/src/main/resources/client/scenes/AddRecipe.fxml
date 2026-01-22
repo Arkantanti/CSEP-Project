@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
@@ -10,11 +14,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.CheckBox?>
 <ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddRecipeCtrl">
     <content>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0" spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
@@ -29,14 +28,14 @@
                                 <Insets left="10.0" top="5.0" />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="nameTextField" prefHeight="35.0" promptText="Edit title" style="-fx-font-size: 24px;">
+                        <TextField fx:id="nameTextField" prefHeight="35.0" promptText="%pmpt.editTitle" style="-fx-font-size: 24px;">
                             <HBox.margin>
                                 <Insets left="10.0" top="5.0" />
                             </HBox.margin>
                         </TextField>
                     </children>
                 </HBox>
-                <Label prefHeight="28.0" prefWidth="113.0" text="Ingredients:">
+                <Label prefHeight="28.0" prefWidth="113.0" text="%txt.IngredientsHeader">
                     <font>
                         <Font name="System Bold" size="19.0" />
                     </font>
@@ -57,7 +56,7 @@
                         <Insets left="10.0" top="5.0" />
                     </VBox.margin>
                 </Button>
-                <Label prefHeight="28.0" prefWidth="113.0" text="Preparation:">
+                <Label prefHeight="28.0" prefWidth="113.0" text="%txt.prepareHeader">
                     <font>
                         <Font name="System Bold" size="19.0" />
                     </font>
@@ -66,7 +65,7 @@
                     </VBox.margin>
                 </Label>
                 <TextArea fx:id="preparationsArea" maxHeight="1.7976931348623157E308" prefHeight="150.0" prefWidth="507.0" styleClass="items-container" />
-                <Label prefHeight="28.0" prefWidth="113.0" text="Servings:">
+                <Label prefHeight="28.0" prefWidth="113.0" text="%txt.servingsHead">
                     <font>
                         <Font name="System Bold" size="19.0" />
                     </font>
@@ -83,33 +82,33 @@
                 <ComboBox fx:id="languageChoise" maxHeight="5.0" minWidth="40.0" styleClass="items-container">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="English"/>
-                            <String fx:value="Dutch"/>
-                            <String fx:value="Polish"/>
+                            <String fx:value="English" />
+                            <String fx:value="Dutch" />
+                            <String fx:value="Polish" />
                         </FXCollections>
                     </items>
                 </ComboBox>
 
                 <HBox spacing="20.0">
                     <children>
-                        <CheckBox fx:id="cheapCheckBox" mnemonicParsing="false" text="Cheap">
+                        <CheckBox fx:id="cheapCheckBox" mnemonicParsing="false" text="%txt.cheap">
                             <font>
                                 <Font size="16.0" />
                             </font>
                         </CheckBox>
-                        <CheckBox fx:id="fastCheckBox" mnemonicParsing="false" text="Fast">
+                        <CheckBox fx:id="fastCheckBox" mnemonicParsing="false" text="%txt.fast">
                             <font>
                                 <Font size="16.0" />
                             </font>
                         </CheckBox>
-                        <CheckBox fx:id="veganCheckBox" mnemonicParsing="false" text="Vegan">
+                        <CheckBox fx:id="veganCheckBox" mnemonicParsing="false" text="%txt.vegan">
                             <font>
                                 <Font size="16.0" />
                             </font>
                         </CheckBox>
                     </children>
                     <VBox.margin>
-                        <Insets left="10.0" bottom="10.0" />
+                        <Insets bottom="10.0" left="10.0" />
                     </VBox.margin>
                 </HBox>
 

@@ -28,7 +28,7 @@
                         <Insets left="10.0" top="5.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="nameTextField" managed="false" prefHeight="35.0" promptText="Edit title" style="-fx-font-size: 24px;" visible="false">
+                  <TextField fx:id="nameTextField" managed="false" prefHeight="35.0" promptText="%pmpt.editTitle" style="-fx-font-size: 24px;" visible="false">
                      <HBox.margin>
                         <Insets left="10.0" top="5.0" />
                      </HBox.margin>
@@ -89,17 +89,17 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <CheckBox fx:id="cheapCheckBox" disable="true" mnemonicParsing="false" text="Cheap">
+                  <CheckBox fx:id="cheapCheckBox" disable="true" mnemonicParsing="false" text="%txt.cheap">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="fastCheckBox" disable="true" mnemonicParsing="false" text="Fast">
+                  <CheckBox fx:id="fastCheckBox" disable="true" mnemonicParsing="false" text="%txt.fast">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </CheckBox>
-                  <CheckBox fx:id="veganCheckBox" disable="true" mnemonicParsing="false" text="Vegan">
+                  <CheckBox fx:id="veganCheckBox" disable="true" mnemonicParsing="false" text="%txt.vegan">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -183,7 +183,7 @@
                   <Insets bottom="20.0" />
                </padding>
             </HBox>
-            <Label text="Metrics:">
+            <Label text="%txt.metrics">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>
@@ -219,7 +219,7 @@
                      <Insets left="10.0" />
                  </VBox.margin>
              </GridPane>
-          <Label text="Allergens:">
+          <Label text="%txt.allergens">
               <VBox.margin>
                   <Insets left="10.0" />
               </VBox.margin>

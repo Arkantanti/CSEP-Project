@@ -114,7 +114,7 @@
             </GridPane>
             <VBox maxWidth="1.7976931348623157E308" prefWidth="520.0">
                <children>
-                   <Label prefHeight="28.0" prefWidth="200.0" text="Category:">
+                   <Label prefHeight="28.0" prefWidth="200.0" text="%txt.categorie">
                        <font>
                            <Font name="System Bold" size="19.0" />
                        </font>
@@ -129,7 +129,7 @@
                    </ComboBox>
                </children>
             </VBox>
-             <Label text="Allergens:">
+             <Label text="%txt.allergens">
                  <VBox.margin>
                      <Insets left="10.0" />
                  </VBox.margin>
