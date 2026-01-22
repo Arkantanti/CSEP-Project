@@ -43,12 +43,12 @@ class PrinterTest {
                 ## Pancakes
                 
                 
-                **Servings:** 4
+                **Servings:** 4.0
                 
                 **Ingredients:**
-                 - Butter - 70 grams
-                 - Bread - 2 pinches
-                 - Cheese -  just a bit
+                 - 70.00 g Butter
+                 - pinches Bread
+                 - just a bit Cheese
                 
                 **Preparation steps:**
                 1. step1
@@ -56,12 +56,21 @@ class PrinterTest {
                 3. step3
                 
                 HAVE A GOOD MEAL!!""";
-        assertEquals(expected,printer.recipePrint(recipe, recipeIngredients));
+        try {
+            assertEquals(expected, printer.recipePrint(recipe, recipeIngredients, recipe.getServings()));
+        } catch (IOException ex) {
+            fail();
+        }
     }
 
     @Test
     void markdownToPDF(){
-        String markdown = printer.recipePrint(recipe, recipeIngredients);
+        String markdown = "";
+        try {
+            markdown = printer.recipePrint(recipe, recipeIngredients, recipe.getServings());
+        } catch (IOException ex) {
+            fail();
+        }
         // Get a random path to a temp file
         try {
             Path dir = Files.createTempDirectory("config-test");
