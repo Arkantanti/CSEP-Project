@@ -75,12 +75,41 @@ public class RecipeService {
     /**
      * Searches for recipes, sorted alphabetically by name.
      */
-    public List<Recipe> searchRecipes(String query) {
+    public List<Recipe> searchRecipes(String query, boolean english, boolean polish, boolean dutch) {
         List<Recipe> results = server.searchRecipes(query);
         if (results != null) {
             results.sort(Comparator.comparing(Recipe::getName));
+
+            return results.stream().filter((Recipe recipeItem) -> {
+                if(english && dutch && polish){
+                    return true;
+                }
+                if(english && dutch){
+                    return (recipeItem.getLanguage().equals(Language.English) || recipeItem.getLanguage().equals(Language.Dutch));
+                }
+                if(english && polish){
+                    return (recipeItem.getLanguage().equals(Language.English) || recipeItem.getLanguage().equals(Language.Polish));
+                }
+                if(dutch && polish){
+                    return (recipeItem.getLanguage().equals(Language.Dutch) || recipeItem.getLanguage().equals(Language.Polish));
+                }
+                if (english) {
+                    return recipeItem.getLanguage().equals(Language.English);
+                }
+                if (polish) {
+                    return recipeItem.getLanguage().equals(Language.Polish);
+                }
+                if (dutch) {
+                    return recipeItem.getLanguage().equals(Language.Dutch);
+                }
+                return false;
+            })
+                    .toList();
+        } else {
+            return null;
         }
-        return results;
+
+
     }
 
     /**

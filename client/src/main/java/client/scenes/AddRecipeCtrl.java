@@ -189,7 +189,6 @@ public class AddRecipeCtrl {
             }
 
             Language language;
-            System.out.println(languageChoise.getValue());
             if(languageChoise.getValue().equals("English")){
                 language = Language.English;
             } else if(languageChoise.getValue().equals("Dutch")){

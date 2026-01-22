@@ -273,7 +273,7 @@ public class AppViewCtrl implements Initializable {
                     break;
                 case RECIPES:
                 default:
-                    items = isSearch ? recipeService.searchRecipes(query)
+                    items = isSearch ? recipeService.searchRecipes(query, engLanguage, polLanguage, dutLanguage)
                             : recipeService.getAllRecipesWithLanguage(engLanguage, polLanguage, dutLanguage);
                     additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
                     break;
