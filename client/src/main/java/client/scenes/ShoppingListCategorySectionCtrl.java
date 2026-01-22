@@ -13,6 +13,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 
 public class ShoppingListCategorySectionCtrl {
@@ -34,6 +35,9 @@ public class ShoppingListCategorySectionCtrl {
     private Function<ShoppingListItem, Void> onAddItem;
     private Function<ShoppingListItem, Void> onDeleteItem;
 
+    private ResourceBundle bundle;
+
+
     /**
      * constructor for ShoppingListCategorySectionCtrl.
      */
@@ -46,6 +50,7 @@ public class ShoppingListCategorySectionCtrl {
      * @param category the category for this section
      * @param items the items in this category
      * @param fxml the FXML loader
+     * @param bundle ResourceBundle loader
      * @param onUpdate callback when items are updated
      * @param onAddItem callback when an item is added
      * @param onDeleteItem callback when an item is deleted
@@ -54,6 +59,7 @@ public class ShoppingListCategorySectionCtrl {
     public void initialize(IngredientCategory category,
                           List<ShoppingListItem> items,
                           MyFXML fxml,
+                          ResourceBundle bundle,
                           Function<Void, Void> onUpdate,
                           Function<ShoppingListItem, Void> onAddItem,
                           Function<ShoppingListItem, Void> onDeleteItem,
@@ -61,6 +67,7 @@ public class ShoppingListCategorySectionCtrl {
         this.category = category;
         this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
         this.fxml = fxml;
+        this.bundle = bundle;
         this.onUpdate = onUpdate;
         this.onAddItem = onAddItem;
         this.onDeleteItem = onDeleteItem;
@@ -87,7 +94,7 @@ public class ShoppingListCategorySectionCtrl {
      * @return the created ShoppingListElementCtrl/Parent pair
      */
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> element = fxml.load(ShoppingListElementCtrl.class,
+        Pair<ShoppingListElementCtrl, Parent> element = fxml.load(ShoppingListElementCtrl.class, bundle,
                 "client", "scenes", "ShoppingListElement.fxml");
         boolean isTextMode = baseItem.isTextOnly();
         element.getKey().initialize(baseItem,
