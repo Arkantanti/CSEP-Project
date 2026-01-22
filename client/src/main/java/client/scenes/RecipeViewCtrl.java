@@ -389,7 +389,7 @@ public class RecipeViewCtrl {
             return;
         }
         try {
-            String markdown = printer.recipePrint(recipe, ingredients);
+            String markdown = printer.recipePrint(recipe, ingredients, targetServings);
             printer.markdownToPDF(path, markdown);
         } catch (IOException e) {
             e.printStackTrace();
