@@ -106,21 +106,21 @@ class RecipeIngredientTest {
 
     @Test
     void formatIngredientScaled() {
-        double scaledAmount = 24.0;
+        double scale = 24.0;
 
-        String result = recipeIngredient.formatIngredientScaled(scaledAmount);
+        String result = recipeIngredient.formatIngredientScaled(scale);
 
         assertNotNull(result);
-        assertTrue(result.contains("24"));
+        assertTrue(result.contains("288"));
         assertTrue(result.contains("Sugar"));
     }
 
     @Test
     void formatIngredientInternal() {
-        String result = recipeIngredient.formatIngredientInternal(12.0);
+        String result = recipeIngredient.formatIngredientScaled(12.0);
 
         assertNotNull(result);
-        assertTrue(result.contains("12"));
+        assertTrue(result.contains("144"));
         assertTrue(result.contains("Sugar"));
     }
 

@@ -104,26 +104,16 @@ public class RecipeIngredient {
      * @return the String format of RecipeIngredient
      */
     public String formatIngredient(){
-        return formatIngredientInternal(this.amount);
-    }
-
-    /**
-     *
-     * when displaying a RecipeIngredient with scaled amount
-     * @param amount the scaled amount to be displayed
-     * @return the String format of RecipeIngredient
-     */
-    public String formatIngredientScaled(double amount){
-        return formatIngredientInternal(amount);
+        return formatIngredientScaled(1.0);
     }
 
     /**
      *  helper function to format recipeIngredient
      * @return a formatted version of the toString. ex: 100 L salt
      */
-    public String formatIngredientInternal(double amount) {
+    public String formatIngredientScaled(double factor) {
         StringBuilder s = new StringBuilder();
-
+        double amount = getAmount()*factor;
         // List politely yoinked from https://en.wikipedia.org/wiki/Metric_prefix
         Dictionary<Integer, String> metricPrefixes = new Hashtable<Integer, String>(){
             {
