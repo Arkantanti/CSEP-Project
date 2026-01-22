@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -27,6 +28,7 @@ public class Recipe implements Showable{
 
     private String name;
     private int servings;
+    private String language;
     private boolean cheap;
     private boolean fast;
     private boolean vegan;
@@ -49,14 +51,17 @@ public class Recipe implements Showable{
      * @param name             the name of the recipe
      * @param servings         the number of servings this recipe provides
      * @param preparationSteps the list of ordered preparation instructions
+     * @param language         the language of the recipe
      * @param cheap            whether this recipe is cheap
      * @param fast             whether this recipe is fast
      * @param vegan            whether this recipe is vegan
      */
-    public Recipe(String name, int servings, List<String> preparationSteps,
+    public Recipe(String name, int servings, List<String> preparationSteps, String language,
                   boolean cheap, boolean fast, boolean vegan) {
         this.name = name;
         this.servings = servings;
+        this.preparationSteps = preparationSteps;
+        this.language = language;
         this.preparationSteps = preparationSteps==null ? null : new ArrayList<>(preparationSteps);
         this.cheap = cheap;
         this.fast = fast;
@@ -88,6 +93,10 @@ public class Recipe implements Showable{
 
     public List<RecipeIngredient> getRecipeIngredients() {
         return recipeIngredients;}
+
+    public String getLanguage(){
+        return this.language;
+    }
 
     public void setName(String name){ this.name = name;}
 

@@ -23,8 +23,8 @@ class RecipeIngredientTest {
         ArrayList<String> preparationList = new ArrayList<>(Arrays.asList("Food", "place"));
         sugar = new Ingredient("Sugar", 0.0, 0.0, 56.0, Set.of());
         flour = new Ingredient("Sugar", 0.0, 10.0, 78.0, Set.of());
-        recipe = new Recipe("Cheese", 3, preparationList,false,false,false);
-        recipe2 = new Recipe("CheeseBread", 3, preparationList,false,false,false);
+        recipe = new Recipe("Cheese", 3, preparationList, "English",false,false,false);
+        recipe2 = new Recipe("CheeseBread", 3, preparationList, "English",false,false,false);
         recipeIngredient = new RecipeIngredient(recipe, sugar, "", 12.0, Unit.GRAM);
         recipeIngredient2 = new RecipeIngredient(recipe2, flour, "", 12.0, Unit.GRAM);
     }

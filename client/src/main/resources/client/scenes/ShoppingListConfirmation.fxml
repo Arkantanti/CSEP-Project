@@ -14,7 +14,7 @@
    <top>
       <HBox styleClass="shopping-list-header" BorderPane.alignment="CENTER">
          <children>
-            <Label styleClass="shopping-list-title" text="These items will be added">
+            <Label styleClass="shopping-list-title" text="%txt.shopping">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -28,7 +28,7 @@
    <bottom>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <items>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#onConfirmPressed" text="Add to shopping list" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#onConfirmPressed" text="%txt.shoppingTwo" />
          </items>
       </ToolBar>
    </bottom>

@@ -296,7 +296,7 @@ public class RecipeViewCtrl {
             return;
         }
         for (RecipeIngredient ri : ingredients) {
-            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                     "client", "scenes", "RecipeIngredient.fxml");
             RecipeIngredientCtrl ctrl = item.getKey();
             ctrl.initialize(ri, recipe, this::loadIngredients);
@@ -323,7 +323,7 @@ public class RecipeViewCtrl {
             String step = steps.get(i);
 
             Pair<EditableItemCtrl, Parent> item = fxml.load(
-                    EditableItemCtrl.class,
+                    EditableItemCtrl.class, mainCtrl.getBundle(),
                     "client", "scenes", "EditableItem.fxml"
             );
 
@@ -360,7 +360,7 @@ public class RecipeViewCtrl {
         steps.add("");
         int index = steps.size() - 1;
 
-        Pair<EditableItemCtrl, Parent> item = fxml.load(EditableItemCtrl.class,
+        Pair<EditableItemCtrl, Parent> item = fxml.load(EditableItemCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "EditableItem.fxml");
 
         EditableItemCtrl ctrl = item.getKey();
@@ -386,7 +386,7 @@ public class RecipeViewCtrl {
      */
     @FXML
     private void onAddRecipeIngredient(){
-        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "RecipeIngredient.fxml");
         item.getKey().initialize(null, recipe, this::loadIngredients);
         ingredientsContainer.getChildren().add(item.getValue());

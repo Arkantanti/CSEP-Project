@@ -1,5 +1,6 @@
 package server.api;
 
+import commons.Allergen;
 import commons.Ingredient;
 import commons.Recipe;
 import org.junit.jupiter.api.BeforeEach;
