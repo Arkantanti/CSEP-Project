@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
@@ -56,7 +57,7 @@ public class Recipe implements Showable{
                   boolean cheap, boolean fast, boolean vegan) {
         this.name = name;
         this.servings = servings;
-        this.preparationSteps = preparationSteps;
+        this.preparationSteps = preparationSteps==null ? null : new ArrayList<>(preparationSteps);
         this.cheap = cheap;
         this.fast = fast;
         this.vegan = vegan;
@@ -85,7 +86,8 @@ public class Recipe implements Showable{
         return preparationSteps;
     }
 
-    public List<RecipeIngredient> getRecipeIngredients() {return recipeIngredients;}
+    public List<RecipeIngredient> getRecipeIngredients() {
+        return recipeIngredients;}
 
     public void setName(String name){ this.name = name;}
 
@@ -94,14 +96,14 @@ public class Recipe implements Showable{
     public void setServings(int servings){ this.servings = servings; }
 
     public void setPreparationSteps(List<String> preparationSteps) {
-        this.preparationSteps = preparationSteps;
+        this.preparationSteps = preparationSteps==null ? null : new ArrayList<>(preparationSteps);
     }
     public void setCheap(boolean cheap) { this.cheap = cheap; }
     public void setFast(boolean fast) { this.fast = fast; }
     public void setVegan(boolean vegan) { this.vegan = vegan; }
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-        this.recipeIngredients = recipeIngredients;
+        this.recipeIngredients = recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);
     }
 
     /**

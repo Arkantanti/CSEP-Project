@@ -12,6 +12,7 @@ import server.database.*;
 import server.websocket.WebSocketHandler;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,9 +43,9 @@ class RecipeIngredientControllerTest {
         r1 = recipeRepo.save(new Recipe("Pancakes", 4, List.of("step 1","step 2"),false,false,false));
         r2 = recipeRepo.save(new Recipe("Spaghetti", 3, List.of("step 3","step 4"),false,false,false));
 
-        ing1 = ingredientRepo.save(new Ingredient("Chilli", 3, 1, 1.2));
-        ing2 = ingredientRepo.save(new Ingredient("Potato", 3, 1, 1.2));
-        ing3 = ingredientRepo.save(new Ingredient("Oil", 10, 1, 1.2));
+        ing1 = ingredientRepo.save(new Ingredient("Chilli", 3, 1, 1.2, Set.of()));
+        ing2 = ingredientRepo.save(new Ingredient("Potato", 3, 1, 1.2, Set.of()));
+        ing3 = ingredientRepo.save(new Ingredient("Oil", 10, 1, 1.2, Set.of()));
 
         ri1 = repo.save(new RecipeIngredient(r1, ing2, null, 4, Unit.GRAM));
         ri2 = repo.save(new RecipeIngredient(r2, ing1, null, 3, Unit.GRAM));
@@ -124,10 +125,18 @@ class RecipeIngredientControllerTest {
         assertEquals(404, response.getStatusCode().value());
     }
 
-//    @Test
-//    void recipeCountSuccess() {
-//        ResponseEntity<Long> response = controller.getRecipeCount(ing2.getId());
-//        assertEquals(200, response.getStatusCode().value());
-//        assertEquals(2,response.getBody());
-//    }
+    @Test
+    void post_doesnt_update() {
+        RecipeIngredient ri4 = new RecipeIngredient(r2, ing3, null, 4, Unit.GRAM);
+        ri4.setId(2L); // Set a false ID
+        controller.add(ri4);
+        assertEquals(5, repo.findAll().size()); // Check if the ing got added not updated
+    }
+
+    @Test
+    void recipeCountSuccess() {
+        ResponseEntity<Long> response = controller.getRecipeCount(ing2.getId());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(2,response.getBody());
+    }
 }

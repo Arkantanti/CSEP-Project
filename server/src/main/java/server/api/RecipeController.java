@@ -97,6 +97,7 @@ public class RecipeController {
                 || recipe.getPreparationSteps() == null) {
             return ResponseEntity.badRequest().build();
         }
+        recipe.setName(capitalize(recipe.getName()));
 
         //check for the database when the name is the same
         for(Recipe recipeName : getAll()){
@@ -105,7 +106,7 @@ public class RecipeController {
             }
         }
 
-        boolean created = !repo.existsById(recipe.getId());
+        recipe.setId(0L);
         Recipe saved = repo.save(recipe);
 
         wsHandler.broadcast(new SyncEvent.RecipeCreated(saved));
@@ -153,7 +154,7 @@ public class RecipeController {
 
         recipe.setRecipeIngredients(repo.findById(id).get().getRecipeIngredients());
         recipe.setId(id);
-
+        recipe.setName(capitalize(recipe.getName()));
         Recipe saved = repo.save(recipe);
 
         wsHandler.broadcast(new SyncEvent.RecipeContentUpdated(recipe));
@@ -161,7 +162,17 @@ public class RecipeController {
         return ResponseEntity.ok(saved);
     }
 
-
+    /**
+     * Helper to convert "cake" -> "Cake" and "CAKE" -> "Cake".
+     */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        // 1. Capitalize first letter
+        // 2. Lowercase the rest
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1).toLowerCase();
+    }
     /**
      * Deletes the recipe with the specified ID.
      *

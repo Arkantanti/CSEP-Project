@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import static commons.Unit.LITER;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,8 +21,8 @@ class RecipeIngredientTest {
     @BeforeEach
     void setUp(){
         ArrayList<String> preparationList = new ArrayList<>(Arrays.asList("Food", "place"));
-        sugar = new Ingredient("Sugar", 0.0, 0.0, 56.0);
-        flour = new Ingredient("Sugar", 0.0, 10.0, 78.0);
+        sugar = new Ingredient("Sugar", 0.0, 0.0, 56.0, Set.of());
+        flour = new Ingredient("Sugar", 0.0, 10.0, 78.0, Set.of());
         recipe = new Recipe("Cheese", 3, preparationList,false,false,false);
         recipe2 = new Recipe("CheeseBread", 3, preparationList,false,false,false);
         recipeIngredient = new RecipeIngredient(recipe, sugar, "", 12.0, Unit.GRAM);
@@ -105,21 +106,21 @@ class RecipeIngredientTest {
 
     @Test
     void formatIngredientScaled() {
-        double scaledAmount = 24.0;
+        double scale = 24.0;
 
-        String result = recipeIngredient.formatIngredientScaled(scaledAmount);
+        String result = recipeIngredient.formatIngredientScaled(scale);
 
         assertNotNull(result);
-        assertTrue(result.contains("24"));
+        assertTrue(result.contains("288"));
         assertTrue(result.contains("Sugar"));
     }
 
     @Test
     void formatIngredientInternal() {
-        String result = recipeIngredient.formatIngredientInternal(12.0);
+        String result = recipeIngredient.formatIngredientScaled(12.0);
 
         assertNotNull(result);
-        assertTrue(result.contains("12"));
+        assertTrue(result.contains("144"));
         assertTrue(result.contains("Sugar"));
     }
 

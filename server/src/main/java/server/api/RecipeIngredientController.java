@@ -86,6 +86,8 @@ public class RecipeIngredientController {
             return ResponseEntity.badRequest().build();
         }
 
+        ri.setId(0L);
+
         RecipeIngredient saved = repo.save(ri);
 
         wsHandler.broadcast(new SyncEvent.RecipeIngredientCreated(saved));

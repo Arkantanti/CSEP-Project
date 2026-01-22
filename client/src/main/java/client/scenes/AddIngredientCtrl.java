@@ -2,9 +2,13 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Allergen;
 import commons.Ingredient;
 import commons.IngredientCategory;
 import javafx.fxml.FXML;
+import javafx.geometry.Side;
+import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -13,8 +17,10 @@ import javafx.util.converter.DoubleStringConverter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.UnaryOperator;
 
 public class AddIngredientCtrl {
@@ -30,6 +36,10 @@ public class AddIngredientCtrl {
     @FXML
     private TextField carbsTf;
     @FXML
+    private FlowPane fpAllergens;
+    @FXML
+    private Button addAllergenButton;
+    @FXML
     private ComboBox<IngredientCategory> categoryComboBox;
 
     private final ServerUtils server;
@@ -39,6 +49,9 @@ public class AddIngredientCtrl {
 
     private boolean separateWindow;
     private boolean ingredientSaved;
+
+    private ContextMenu allergenMenu;
+    private final Set<Allergen> selectedAllergens;
 
     /**
      * Constructor for IngredientViewCtrl.
@@ -50,6 +63,7 @@ public class AddIngredientCtrl {
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.mainCtrl = mainCtrl;
+        selectedAllergens = new HashSet<>();
     }
 
     /**
@@ -80,12 +94,29 @@ public class AddIngredientCtrl {
         nameTextField.focusedProperty().addListener((obs, was, focused) -> {
             if (!focused) this.onStopEditingText();
         });
+
         nameTextField.setOnAction(e -> this.onStopEditingText());
 
         categoryComboBox.getItems().setAll(IngredientCategory.values());
         categoryComboBox.setValue(IngredientCategory.UNCATEGORIZED);
 
-        setIngredient(new Ingredient("NewIngredient",0,0,0));
+        setIngredient(new Ingredient("NewIngredient",0,0,0, Set.of()));
+
+        allergenMenu = new ContextMenu();
+
+        for (Allergen a : Allergen.values()) {
+            CheckMenuItem item = new CheckMenuItem(a.getDisplayName());
+            item.setOnAction(e -> {
+                if (item.isSelected()) {
+                    addChip(a);
+                } else {
+                    removeChip(a);
+                }
+            });
+            allergenMenu.getItems().add(item);
+        }
+
+
     }
 
     /**
@@ -176,8 +207,44 @@ public class AddIngredientCtrl {
         return ingredientSaved;
     }
 
-    public Ingredient getIngredient() {
+    public Ingredient getIngredient(){
         return ingredient;
+    }
+
+    /**
+     * Adds a new allergen and refreshes the view.
+     */
+    public void addAllergen() {
+        allergenMenu.show(addAllergenButton, Side.BOTTOM, 0, 0);
+    }
+
+
+    /**
+     * Adds a new allergen
+     * @param a Allergen reference to add.
+     */
+    private void addChip(Allergen a) {
+        if (!selectedAllergens.add(a)) return;
+
+        Label label = new Label(a.getDisplayName());
+        label.getStyleClass().add("allergen-label");
+        label.setStyle("-fx-background-color:" + a.getColor()+";");
+        fpAllergens.getChildren().addFirst(label);
+        ingredient.setAllergens(selectedAllergens);
+    }
+
+    /**
+     * Removes an allergen.
+     * @param a Allergen reference.
+     */
+    private void removeChip(Allergen a) {
+        selectedAllergens.remove(a);
+
+        fpAllergens.getChildren().removeIf(node ->
+                node instanceof Label &&
+                        ((Label) node).getText().equals(a.getDisplayName())
+        );
+        ingredient.setAllergens(selectedAllergens);
     }
 }
 

@@ -79,6 +79,8 @@ public class MainCtrl {
         this.fxml = fxml;
         this.firstOpen = true;
 
+        primaryStage.setResizable(false);
+
         showAppView();
         primaryStage.show();
         showDefaultView();
@@ -223,6 +225,7 @@ public class MainCtrl {
             shoppingListStage = new Stage();
             shoppingListStage.setTitle("Shopping List");
             shoppingListStage.setScene(new Scene(shoppingListView.getValue()));
+            shoppingListStage.setResizable(false);
             shoppingListCtrl = shoppingListView.getKey();
 
             shoppingListCtrl.initialize(fxml);
@@ -313,6 +316,7 @@ public class MainCtrl {
         ingredientAddStage.initModality(Modality.APPLICATION_MODAL);
         ingredientAddStage.initOwner(primaryStage);
         ingredientAddStage.setTitle("Add Ingredient");
+        ingredientAddStage.setResizable(false);
         ingredientAddStage.showAndWait();
 
         if(addIngredientCtrl.getIngredientSaved()) {
@@ -344,6 +348,7 @@ public class MainCtrl {
             shoppingListConfirmationStage = new Stage();
             shoppingListConfirmationStage.setTitle("Shopping List Confirmation");
             shoppingListConfirmationStage.setScene(new Scene(shoppingListConfirmation.getValue()));
+            shoppingListConfirmationStage.setResizable(false);
             shoppingListConfirmationCtrl = shoppingListConfirmation.getKey();
 
             shoppingListConfirmationCtrl.initialize(fxml, shoppingListConfirmationStage);

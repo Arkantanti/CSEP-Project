@@ -1,5 +1,6 @@
 package server.api;
 
+import commons.Ingredient;
 import commons.Recipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -111,12 +112,12 @@ class RecipeControllerTest {
         assertEquals(404, result.getStatusCode().value());
     }
 
-//    @Test
-//    void updateRecipe_NullBody_ReturnsBadRequest() {
-//        ResponseEntity<Recipe> result = controller.update(r1.getId(), null);
-//
-//        assertThrows(NullPointerException.class, () -> {result.getStatusCode().value();});
-//    }
+    @Test
+    void updateRecipe_NullBody_ReturnsBadRequest() {
+        ResponseEntity<Recipe> result = controller.update(r1.getId(), null);
+
+        assertEquals(400, result.getStatusCode().value());
+    }
 
     @Test
     void deleteRecipe_Success() {
@@ -138,5 +139,30 @@ class RecipeControllerTest {
         ResponseEntity<Void> result = controller.delete(999);
 
         assertEquals(404, result.getStatusCode().value());
+    }
+    @Test
+    void post_doesnt_update() {
+        Recipe r4 = new Recipe("Test Name", 4, List.of("Bake"), true, false, true);
+        r4.setId(2L); // Set a false ID
+        controller.add(r4);
+        assertEquals(4, repo.findAll().size()); // Check if the ing got added not updated
+    }
+    @Test
+    void addRecipe_nameExists() {
+        Recipe r = new Recipe("pancakes  ", 2, null, true, true, false);
+        ResponseEntity<Recipe> result = controller.add(r);
+        assertEquals(400, result.getStatusCode().value());
+    }
+    @Test
+    void updateRecipe_nameExists_BadRequest() {
+        Recipe r = new Recipe("pancakes  ", 2, List.of("step1"), true, true, false);
+        ResponseEntity<Recipe> result = controller.update(2,r);
+        assertEquals(400, result.getStatusCode().value());
+    }
+    @Test
+    void updateRecipe_nameExists_OK() {
+        Recipe r = new Recipe("pancakes  ", 2, List.of("step1"), true, true, false);
+        ResponseEntity<Recipe> result = controller.update(1,r);
+        assertEquals(200, result.getStatusCode().value());
     }
 }
