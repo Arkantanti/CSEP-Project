@@ -1,5 +1,6 @@
 package server.api;
 
+import commons.Allergen;
 import commons.Ingredient;
 import commons.Recipe;
 import org.junit.jupiter.api.BeforeEach;
@@ -122,7 +123,7 @@ class IngredientControllerTest {
 
     @Test
     void post_doesnt_update() {
-        Ingredient i4 = new Ingredient("Bread", 5.3, 5.4, 1);
+        Ingredient i4 = new Ingredient("Bread", 5.3, 5.4, 1, Set.of());
         i4.setId(2L); // Set a false ID
         controller.add(i4);
         assertEquals(4, repo.findAll().size()); // Check if the ing got added not updated

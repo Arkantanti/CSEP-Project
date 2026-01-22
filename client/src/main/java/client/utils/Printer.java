@@ -27,20 +27,16 @@ public class Printer {
      * @param recipe {@link Recipe} object which is to be saved in markdown
      * @return String with markdown formatted description of the recipe
      */
-    public String recipePrint(Recipe recipe, List<RecipeIngredient> recipeIngredients) {
+    public String recipePrint(Recipe recipe, List<RecipeIngredient> recipeIngredients, double targetServings) throws IOException {
         StringBuilder output = new StringBuilder();
         output.append("## ").append(recipe.getName()).append("\n\n");
-        output.append("\n**Servings:** ").append(recipe.getServings());
+        output.append("\n**Servings:** ").append(targetServings);
         output.append("\n\n**Ingredients:**");
+
+        double factor = (recipe.getServings() <= 0) ? 1.0 : targetServings / recipe.getServings();
+
         for(RecipeIngredient ing : recipeIngredients) {
-            output.append("\n - ").append(ing.getIngredient().getName());
-            String amount = new BigDecimal(Double.toString(ing.getAmount()))
-                    .stripTrailingZeros()
-                    .toPlainString();
-            output.append(" - ").append(amount.equals("0") ? "" : amount).append(" ");
-            String unit =
-                    ing.getUnit()==Unit.CUSTOM ? ing.getInformalUnit() : ing.getUnit().toString();
-            output.append(unit==null ? "" : unit);
+            output.append("\n - ").append(ing.formatIngredientScaled(factor));
         }
         output.append("\n\n**Preparation steps:**");
         for(int i=1; i<=recipe.getPreparationSteps().size(); i++) {

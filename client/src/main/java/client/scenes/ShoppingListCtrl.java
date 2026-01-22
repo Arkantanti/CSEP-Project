@@ -141,7 +141,7 @@ public class ShoppingListCtrl {
 
             if (!categoryItems.isEmpty()) {
                 Pair<ShoppingListCategorySectionCtrl, Parent> section = fxml.load(
-                        ShoppingListCategorySectionCtrl.class, bundle,
+                        ShoppingListCategorySectionCtrl.class,
                         "client", "scenes", "ShoppingListCategorySection.fxml");
                 section.getKey().initialize(category, categoryItems, fxml,
                         (_) -> {
@@ -188,7 +188,7 @@ public class ShoppingListCtrl {
      * @return the created ShoppingListElementCtrl/Parent pair
      */
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, bundle,
+        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class,
                 "client", "scenes", "ShoppingListElement.fxml");
         boolean isTextMode = baseItem == null ? (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
         item.getKey().initialize(baseItem,

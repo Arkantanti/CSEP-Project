@@ -9,6 +9,7 @@ import commons.RecipeIngredient;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -168,7 +169,7 @@ public class ShoppingListItem {
             case CUSTOM -> "";
         };
 
-        return (amount / Math.pow(10, magnitude)) + " "
+        return String.format(Locale.US,"%.2f",amount / Math.pow(10, magnitude)) + " "
                 + metricPrefixes.get(magnitude) + unitChar;
     }
 

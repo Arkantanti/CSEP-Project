@@ -7,137 +7,231 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="400.0" prefWidth="521.0"
-            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.scenes.IngredientViewCtrl">
-    <content>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0"
-              spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
-            <children>
-
-                <!-- Title -->
-                <HBox maxWidth="1.7976931348623157E308" prefHeight="32.0" prefWidth="520.0" styleClass="recipe-title-section">
-                    <children>
-                        <Label fx:id="nameLabel" prefHeight="35.0" prefWidth="312.0" styleClass="recipe-title" text="Pizza Dough">
-                            <font>
-                                <Font size="24.0" />
-                            </font>
-                            <HBox.margin>
-                                <Insets left="10.0" top="5.0" />
-                            </HBox.margin>
+<?import javafx.scene.layout.FlowPane?>
+<ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" stylesheets="@/styles/ingredients-view.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.IngredientViewCtrl">
+   <content>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="521.0" spacing="12.0" styleClass="recipe-view-root" stylesheets="/styles/recipe-view.css">
+         <children>
+            <HBox maxWidth="1.7976931348623157E308" prefHeight="32.0" prefWidth="520.0" styleClass="recipe-title-section">
+               <children>
+                   <Label fx:id="nameLabel" prefHeight="35.0" prefWidth="312.0" styleClass="recipe-title" text="Pizza Dough">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" top="5.0" />
+                     </HBox.margin></Label>
+                   <TextField fx:id="nameTextField" managed="false" prefHeight="35.0" promptText="Edit title" style="-fx-font-size: 24px;" visible="false">
+                     <HBox.margin>
+                        <Insets left="10.0" top="5.0" />
+                     </HBox.margin></TextField>
+                  <Button fx:id="titleEditButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" onAction="#onEditClicked" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="✏" textFill="#1e00ff">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets top="2.0" />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="1.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="deleteIngredient" minHeight="26.0" minWidth="26.0" mnemonicParsing="false" onAction="#deleteIngredient" prefHeight="34.0" prefWidth="38.0" styleClass="action-button" stylesheets="/styles/action-button.css" text="🗑">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="1.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets left="2.0" top="2.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+             <Label prefHeight="28.0" prefWidth="402.0" text="%txt.nutriHead">
+                 <font>
+                     <Font name="System Bold" size="19.0" />
+                 </font>
+                 <VBox.margin>
+                     <Insets left="10.0" />
+                 </VBox.margin>
+             </Label>
+            <GridPane alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane GridPane.rowIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.carbs">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
                         </Label>
-
-                        <TextField fx:id="nameTextField" managed="false" prefHeight="35.0" promptText="Edit title"
-                                   style="-fx-font-size: 24px;" visible="false">
-                            <HBox.margin>
-                                <Insets left="10.0" top="5.0" />
-                            </HBox.margin>
-                        </TextField>
-
-                        <Button fx:id="titleEditButton" minHeight="26.0" minWidth="26.0" mnemonicParsing="false"
-                                onAction="#onEditClicked" prefHeight="34.0" prefWidth="38.0"
-                                styleClass="action-button" stylesheets="/styles/action-button.css"
-                                text="✏" textFill="#1e00ff">
-                            <font>
-                                <Font size="22.0" />
-                            </font>
-                            <HBox.margin>
-                                <Insets top="2.0" />
-                            </HBox.margin>
-                            <padding>
-                                <Insets bottom="1.0" />
-                            </padding>
-                        </Button>
-
-                        <Button fx:id="deleteIngredient" minHeight="26.0" minWidth="26.0" mnemonicParsing="false"
-                                onAction="#deleteIngredient" prefHeight="34.0" prefWidth="38.0"
-                                styleClass="action-button" stylesheets="/styles/action-button.css"
-                                text="🗑">
-                            <font>
-                                <Font size="22.0" />
-                            </font>
-                            <padding>
-                                <Insets bottom="1.0" />
-                            </padding>
-                            <HBox.margin>
-                                <Insets left="2.0" top="2.0" />
-                            </HBox.margin>
-                        </Button>
-                    </children>
-                </HBox>
-
-                <!-- Nutrients -->
-                <Label prefHeight="28.0" prefWidth="402.0" text="%txt.nutriHead">
-                    <font>
-                        <Font name="System Bold" size="19.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets left="10.0" />
-                    </VBox.margin>
-                </Label>
-
-                <GridPane alignment="CENTER">
+                        <TextField fx:id="carbsTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.protein">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="proteinTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
-                    <children>
-
-                        <GridPane GridPane.rowIndex="1">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308"
-                                       styleClass="first-info-label" stylesheets="/styles/ingredients-view.css"
-                                       text="%txt.carbs">
-                                    <font>
-                                        <Font size="20.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="carbsTf" maxWidth="1.7976931348623157E308"
-                                           styleClass="info-tf" stylesheets="/styles/ingredients-view.css"
-                                           GridPane.columnIndex="1" />
-                            </children>
-                        </GridPane>
-
-                        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <children>
-                                <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308"
-                                       styleClass="first-info-label" stylesheets="/styles/ingredients-view.css"
-                                       text="%txt.protein">
-                                    <font>
-                                        <Font size="20.0" />
-                                    </font>
-                                </Label>
-                                <TextField fx:id="proteinTf" maxWidth="1.7976931348623157E308"
-                                           styleClass="info-tf" stylesheets="/styles/ingredients-view.css"
-                                           GridPane.columnIndex="1" />
-                            </children>
-                        </GridPane>
-
-                        <GridPane GridPane.columnIndex="2" GridPane.ro
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.fat">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="fatTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets right="5.0" />
+                           </GridPane.margin></TextField>
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
+            <VBox maxWidth="1.7976931348623157E308" prefWidth="520.0">
+               <children>
+                   <Label prefHeight="28.0" prefWidth="200.0" text="txt.categorie">
+                       <font>
+                           <Font name="System Bold" size="19.0" />
+                       </font>
+                       <VBox.margin>
+                           <Insets left="10.0" />
+                       </VBox.margin>
+                   </Label>
+                   <Label fx:id="categoryLabel" prefHeight="28.0" prefWidth="200.0" styleClass="info-label" stylesheets="/styles/ingredients-view.css">
+                       <font>
+                           <Font size="20.0" />
+                       </font>
+                       <VBox.margin>
+                           <Insets left="10.0" top="5.0" />
+                       </VBox.margin>
+                   </Label>
+                   <ComboBox fx:id="categoryComboBox" managed="false" prefHeight="35.0" prefWidth="200.0" visible="false">
+                       <VBox.margin>
+                           <Insets left="10.0" top="5.0" />
+                       </VBox.margin>
+                   </ComboBox>
+               </children>
+            </VBox>
+             <Label prefHeight="28.0" prefWidth="113.0" text="%txt.InfoHead">
+                 <font>
+                     <Font name="System Bold" size="19.0" />
+                 </font>
+                 <VBox.margin>
+                     <Insets left="10.0" />
+                 </VBox.margin>
+             </Label>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.usedIn">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="usedCountLabel" maxWidth="60.0" styleClass="info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" text="%txt.kcalHead">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="kcalLabel" maxWidth="1.7976931348623157E308" styleClass="info-label" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets right="5.0" />
+                           </GridPane.margin></Label>
+                     </children>
+                  </GridPane>
+               </children>
+            </GridPane>
+            <Label text="Allergens:">
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Label>
+             <FlowPane fx:id="hboxAllergens"
+                       hgap="6"
+                       vgap="6"
+                       prefHeight="80"
+                       prefWrapLength="180">
+                 <padding>
+                     <Insets left="10" right="10"/>
+                 </padding>
+                 <Button fx:id="addAllergenButton" mnemonicParsing="false" onAction="#addAllergen"
+                         styleClass="allergen-button" text="+/-">
+                 </Button>
+             </FlowPane>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

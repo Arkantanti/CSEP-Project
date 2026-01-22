@@ -30,6 +30,8 @@ public class AddRecipeCtrl {
     @FXML
     private Button cancelButton;
     @FXML
+    private ComboBox<String> languageChoise;
+    @FXML
     private CheckBox cheapCheckBox;
     @FXML
     private CheckBox fastCheckBox;
@@ -112,8 +114,18 @@ public class AddRecipeCtrl {
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
 
-            recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
+            String language = null;
+            if(languageChoise.getValue() == null){
+                language = "english";
+            } else {
+                language = languageChoise.getValue();
+            }
 
+            if (isCloneMode) {
+                recipe = new Recipe(name, servings, steps, language, isCheap, isFast, isVegan);
+            } else {
+                recipe = server.add(new Recipe(name, servings, steps, language, isCheap, isFast, isVegan));
+            }
         }
 
         Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
@@ -166,15 +178,21 @@ public class AddRecipeCtrl {
                 mainCtrl.showError("Input Error", "Preparation steps cannot be empty.");
                 return;
             }
+
+            String language = languageChoise.getValue();
+            if(language == null){
+                mainCtrl.showError("Input Error", "There was no language selected");
+                return;
+            }
+
             isSaved = true;
 
             // Check if a recipe exists before adding the ingredients.
             if (recipe == null) {
                 // If not first create the recipe.
-                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, language, isCheap, isFast, isVegan));
             } else if (isCloneMode && recipe.getId() == 0) {
-                // to make sure that the clone gets properly added.
-                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, language, isCheap, isFast, isVegan));
                 isCloneMode = false;
             } else {
                 // Update the existing recipe.
@@ -269,11 +287,18 @@ public class AddRecipeCtrl {
         cheapCheckBox.setSelected(originalRecipe.isCheap());
         fastCheckBox.setSelected(originalRecipe.isFast());
         veganCheckBox.setSelected(originalRecipe.isVegan());
+        try{
+            languageChoise.setValue(originalRecipe.getLanguage());
+        } catch(Exception _){
+
+        }
+
 
         this.recipe = new Recipe(
                 (originalRecipe.getName() + " - Clone"),
                 originalRecipe.getServings(),
                 new ArrayList<>(originalRecipe.getPreparationSteps()),
+                originalRecipe.getLanguage(),
                 originalRecipe.isCheap(),
                 originalRecipe.isFast(),
                 originalRecipe.isVegan()

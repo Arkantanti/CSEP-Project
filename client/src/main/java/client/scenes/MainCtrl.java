@@ -20,12 +20,12 @@ import client.utils.FavoritesManager;
 import client.utils.FavoritesPollingService;
 import commons.Ingredient;
 import commons.Recipe;
-import javafx.fxml.FXML;
 import commons.RecipeIngredient;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,10 +33,10 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
-import java.util.List;
 
 /**
  * The Main Controller that manages the execution flow and scene switching.
@@ -217,7 +217,8 @@ public class MainCtrl {
      */
     public void openShoppingList(){
         if (shoppingListStage == null || shoppingListCtrl == null) {
-            Pair<ShoppingListCtrl, Parent> shoppingListView = fxml.load(ShoppingListCtrl.class, bundle(),
+            Pair<ShoppingListCtrl, Parent> shoppingListView =
+                    fxml.load(ShoppingListCtrl.class, bundle(),
                     "client", "scenes", "ShoppingList.fxml");
             shoppingListStage = new Stage();
             shoppingListStage.setTitle("Shopping List");
@@ -288,6 +289,69 @@ public class MainCtrl {
     }
 
     /**
+     * Resets the app to the default view and applies language change
+     * @param locale path to the properties file
+     * @param flagPath path to the flag's image
+     */
+    public void changeLanguageAndReset(Locale locale, String flagPath) {
+        setLocale(locale);
+        setFlagPath(flagPath);
+        showAppView();
+        showDefaultView();
+        //herea
+    }
+
+    /**
+     * Provides file with encoded labels
+     * @return ResourceBundle file with hardcoded text in chosen language
+     */
+    private ResourceBundle bundle() {
+        return ResourceBundle.getBundle("i18n.messages", locale);
+    }
+
+    /**
+     * Provides file with encoded labels for other Controllers
+     * @return ResourceBundle file with hardcoded text in chosen language
+     */
+    public ResourceBundle getBundle() {
+        return ResourceBundle.getBundle("i18n.messages", locale);
+    }
+
+    /**
+     * Setter method for updating path to the Properties file
+     * @param locale Locale with path to the file
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+        prefs.put("lang", locale.toLanguageTag());
+    }
+
+    /**
+     * Getter for the Locale variable
+     * @return Locale for chosen language
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Setter for path to a flag's image
+     * @param flagPath path to the chosen language flag's image
+     */
+    public void setFlagPath(String flagPath) {
+        this.flagPath = flagPath;
+        prefs.put("flagPath", flagPath);
+    }
+
+    /**
+     * Getter for the flag path
+     * @return String of the path to the image
+     */
+    public String getFlagPath() {
+        return flagPath;
+    }
+
+    /**
      * To show an error for if something goes wrong
      * @param header The head text of the error
      * @param content The main text of the error
@@ -353,67 +417,5 @@ public class MainCtrl {
         shoppingListConfirmationStage.show();
         shoppingListConfirmationStage.toFront();
         shoppingListConfirmationCtrl.loadList(ingredients, scalar, recipeName);
-    }
-
-    /**
-     * Resets the app to the default view and applies language change
-     * @param locale path to the properties file
-     * @param flagPath path to the flag's image
-     */
-    public void changeLanguageAndReset(Locale locale, String flagPath) {
-        setLocale(locale);
-        setFlagPath(flagPath);
-        showAppView();
-        showDefaultView();
-    }
-
-    /**
-     * Provides file with encoded labels
-     * @return ResourceBundle file with hardcoded text in chosen language
-     */
-    private ResourceBundle bundle() {
-        return ResourceBundle.getBundle("i18n.messages", locale);
-    }
-
-    /**
-     * Provides file with encoded labels for other Controllers
-     * @return ResourceBundle file with hardcoded text in chosen language
-     */
-    public ResourceBundle getBundle() {
-        return ResourceBundle.getBundle("i18n.messages", locale);
-    }
-
-    /**
-     * Setter method for updating path to the Properties file
-     * @param locale Locale with path to the file
-     */
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-        prefs.put("lang", locale.toLanguageTag());
-    }
-
-    /**
-     * Getter for the Locale variable
-     * @return Locale for chosen language
-     */
-    public Locale getLocale() {
-        return locale;
-    }
-
-    /**
-     * Setter for path to a flag's image
-     * @param flagPath path to the chosen language flag's image
-     */
-    public void setFlagPath(String flagPath) {
-        this.flagPath = flagPath;
-        prefs.put("flagPath", flagPath);
-    }
-
-    /**
-     * Getter for the flag path
-     * @return String of the path to the image
-     */
-    public String getFlagPath() {
-        return flagPath;
     }
 }
