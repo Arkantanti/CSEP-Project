@@ -369,7 +369,7 @@ public class MainCtrl {
      */
     public Ingredient showAddIngredientsNewWindow() {
         ingredientAddStage = new Stage();
-        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class, bundle(),
                 "client", "scenes", "AddIngredient.fxml");
         AddIngredientCtrl addIngredientCtrl = addIngredientView.getKey();
         addIngredientCtrl.initialize(true);
@@ -405,7 +405,8 @@ public class MainCtrl {
      */
     public void openShoppingListConfirmation(List<RecipeIngredient> ingredients, double scalar, String recipeName) {
         if (shoppingListConfirmationCtrl == null || shoppingListConfirmationStage == null){
-            Pair<ShoppingListConfirmationCtrl, Parent> shoppingListConfirmation = fxml.load(ShoppingListConfirmationCtrl.class, "client", "scenes", "ShoppingListConfirmation.fxml");
+            Pair<ShoppingListConfirmationCtrl, Parent> shoppingListConfirmation = fxml.load(ShoppingListConfirmationCtrl.class, bundle(),
+                    "client", "scenes", "ShoppingListConfirmation.fxml");
             shoppingListConfirmationStage = new Stage();
             shoppingListConfirmationStage.setTitle("Shopping List Confirmation");
             shoppingListConfirmationStage.setScene(new Scene(shoppingListConfirmation.getValue()));
