@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import server.database.RecipeRepository;
 import server.database.RecipeRepositoryTest;
+import server.websocket.WebSocketHandler;
 
 import java.util.List;
 
@@ -47,7 +48,8 @@ class RecipeControllerTest {
     @BeforeEach
     void setUp() {
         repo = new RecipeRepositoryTest();
-        controller = new RecipeController(repo);// uncommit this to test
+        WebSocketHandler handler = new WebSocketHandler();
+        controller = new RecipeController(repo, handler);// uncommit this to test
 
         r1 = new Recipe("Pancakes", 2, null, "English", true, true, false);
         r2 = new Recipe("Tomato Soup", 4, null, "English", true, true, true);

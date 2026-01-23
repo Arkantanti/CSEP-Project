@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeIngredientCtrl {
@@ -116,7 +117,16 @@ public class RecipeIngredientCtrl {
      */
     @FXML
     private void onDeleteClicked() {
-        serverUtils.deleteRecipeIngredient(recipeIngredient.getId());
+        // Fix: check if this is a local draft (ID 0) or a persisted recipe
+        if (recipe.getId() == 0) {
+            // Local deletion: remove from the recipe's list if it exists
+            if (recipe.getRecipeIngredients() != null) {
+                recipe.getRecipeIngredients().remove(recipeIngredient);
+            }
+        } else {
+            // Server deletion
+            serverUtils.deleteRecipeIngredient(recipeIngredient.getId());
+        }
         this.updateIngredientList.run();
     }
 
@@ -165,17 +175,39 @@ public class RecipeIngredientCtrl {
             return;         // so I will simply not allow that
         }
 
-        if (recipeIngredient == null){
-            recipeIngredient = serverUtils.addRecipeIngredient(
-                    new RecipeIngredient(recipe, ingredient, informalAmount, amount, unit)
-            );
-        }
-        else {
-            recipeIngredient.setAmount(amount);
-            recipeIngredient.setUnit(unit);
-            recipeIngredient.setInformalUnit(informalAmount);
-            recipeIngredient.setIngredient(ingredient);
-            serverUtils.updateRecipeIngredient(recipeIngredient);
+        // Fix: Split logic between local drafts and persisted recipes
+        if (recipe.getId() == 0) {
+            // --- LOCAL UPDATE (No Server Call) ---
+
+            // Ensure the list exists
+            if (recipe.getRecipeIngredients() == null) {
+                recipe.setRecipeIngredients(new ArrayList<>());
+            }
+
+            if (recipeIngredient == null) {
+                // New ingredient
+                recipeIngredient = new RecipeIngredient(recipe, ingredient, informalAmount, amount, unit);
+                recipe.getRecipeIngredients().add(recipeIngredient);
+            } else {
+                // Update existing local ingredient
+                recipeIngredient.setAmount(amount);
+                recipeIngredient.setUnit(unit);
+                recipeIngredient.setInformalUnit(informalAmount);
+                recipeIngredient.setIngredient(ingredient);
+            }
+        } else {
+            // --- SERVER UPDATE ---
+            if (recipeIngredient == null) {
+                recipeIngredient = serverUtils.addRecipeIngredient(
+                        new RecipeIngredient(recipe, ingredient, informalAmount, amount, unit)
+                );
+            } else {
+                recipeIngredient.setAmount(amount);
+                recipeIngredient.setUnit(unit);
+                recipeIngredient.setInformalUnit(informalAmount);
+                recipeIngredient.setIngredient(ingredient);
+                serverUtils.updateRecipeIngredient(recipeIngredient);
+            }
         }
 
         updateIngredientList.run();

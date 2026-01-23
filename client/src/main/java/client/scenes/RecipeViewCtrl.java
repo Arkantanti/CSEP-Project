@@ -114,6 +114,14 @@ public class RecipeViewCtrl {
      */
     public void setRecipe(Recipe recipe, MyFXML fxml) {
         this.fxml = fxml;
+        loadRecipe(recipe, true);
+    }
+
+    /**
+     * loads a recipe into the RecipeView
+     * @param recipe the recipe to load;
+     */
+    public void loadRecipe(Recipe recipe, boolean reloadIngredientList) {
         this.recipe = recipe;
         if (recipe == null) return;
 
@@ -128,7 +136,9 @@ public class RecipeViewCtrl {
         if (editing) {
             finishEditing();
         }
-        loadIngredients();
+        if (reloadIngredientList) {
+            loadIngredients();
+        }
         loadPreparationSteps(recipe.getPreparationSteps());
         updateFavoriteButton();
         rerenderIngredientsScaled();
@@ -150,6 +160,10 @@ public class RecipeViewCtrl {
             label.setStyle("-fx-background-color:" + allergen.getColor()+";");
             hboxAllergens.getChildren().add(label);
         }
+    }
+
+    public Recipe getRecipe(){
+        return recipe;
     }
 
     /**
@@ -274,7 +288,7 @@ public class RecipeViewCtrl {
     /**
      * Loads ingredients from the server into the ingredients container using EditableItem components.
      */
-    private void loadIngredients() {
+    public void loadIngredients() {
         ingredientsContainer.getChildren().clear();
         ingredientRowCtrls.clear();
         this.ingredients = server.getRecipeIngredients(recipe.getId());

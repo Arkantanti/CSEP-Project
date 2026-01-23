@@ -16,8 +16,10 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.services.WebsocketService;
 import client.utils.FavoritesManager;
 import client.utils.FavoritesPollingService;
+import com.google.inject.Inject;
 import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
@@ -61,6 +63,17 @@ public class MainCtrl {
     private final Preferences prefs = Preferences.userNodeForPackage(MainCtrl.class);
     private String flagPath = "/images/UK-flag.png";
 
+    private WebsocketService websocketService;
+
+    /**
+     * Injected Constructor
+     * @param websocketService the websocket service
+     */
+    @Inject
+    public MainCtrl(WebsocketService websocketService){
+        this.websocketService = websocketService;
+    }
+
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
@@ -87,6 +100,8 @@ public class MainCtrl {
         pollingService = new FavoritesPollingService(favoritesManager);
         pollingService.setMainCtrl(this);
         pollingService.startPollingService();
+
+        websocketService.initialize(appViewCtrl, this);
     }
 
     /**
@@ -110,12 +125,8 @@ public class MainCtrl {
      * @param recipe the recipe to display
      */
     public void showRecipe(Recipe recipe) {
-        if (    (addRecipeCtrl != null) &&
-                !addRecipeCtrl.getIsSaved() &&
-                (addRecipeCtrl.getRecipe() != null)) {
-            addRecipeCtrl.deleter(addRecipeCtrl.getRecipe().getId());
-            addRecipeCtrl.setIsSavedTrue();
-        }
+        // Removed obsolete temp file cleanup code here
+
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
@@ -126,6 +137,8 @@ public class MainCtrl {
         if(firstOpen){
             switchFirstOpen();
         }
+
+        websocketService.setRecipeViewCtrl(recipeView.getKey());
     }
 
     /**
@@ -134,12 +147,8 @@ public class MainCtrl {
      * @param ingredient the recipe to display
      */
     public void showIngredient(Ingredient ingredient) {
-        if (    (addRecipeCtrl != null) &&
-                !addRecipeCtrl.getIsSaved() &&
-                (addRecipeCtrl.getRecipe() != null)) {
-            addRecipeCtrl.deleter(addRecipeCtrl.getRecipe().getId());
-            addRecipeCtrl.setIsSavedTrue();
-        }
+        // Removed obsolete temp file cleanup code here
+
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
