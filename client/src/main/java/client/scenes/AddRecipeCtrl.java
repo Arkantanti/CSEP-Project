@@ -30,6 +30,8 @@ public class AddRecipeCtrl {
     @FXML
     private Button cancelButton;
     @FXML
+    private ComboBox<String> languageChoise;
+    @FXML
     private CheckBox cheapCheckBox;
     @FXML
     private CheckBox fastCheckBox;
@@ -112,12 +114,21 @@ public class AddRecipeCtrl {
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
 
-            // Create a local recipe object. ID will be 0.
-            // Do NOT call server.add() here to avoid creating temp files on server.
-            recipe = new Recipe(name, servings, steps, isCheap, isFast, isVegan);
+            String language = null;
+            if(languageChoise.getValue() == null){
+                language = "english";
+            } else {
+                language = languageChoise.getValue();
+            }
+
+            if (isCloneMode) {
+                recipe = new Recipe(name, servings, steps, language, isCheap, isFast, isVegan);
+            } else {
+                recipe = server.add(new Recipe(name, servings, steps, language, isCheap, isFast, isVegan));
+            }
         }
 
-        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "RecipeIngredient.fxml");
 
         // Use refreshIngredients instead of showIngredients to avoid wiping local data
@@ -179,12 +190,19 @@ public class AddRecipeCtrl {
                 mainCtrl.showError("Input Error", "Preparation steps cannot be empty.");
                 return;
             }
+
+            String language = languageChoise.getValue();
+            if(language == null){
+                mainCtrl.showError("Input Error", "There was no language selected");
+                return;
+            }
+
             isSaved = true;
 
             // Check if it is a new/local recipe (null or ID 0)
             if (recipe == null || recipe.getId() == 0) {
                 // Create the recipe on the server for the first time
-                recipe = server.add(new Recipe(name, servings, preparationSteps, isCheap, isFast, isVegan));
+                recipe = server.add(new Recipe(name, servings, preparationSteps,language, isCheap, isFast, isVegan));
 
                 // If it was clone mode, we have successfully saved the clone
                 if (isCloneMode) {
@@ -286,12 +304,19 @@ public class AddRecipeCtrl {
         cheapCheckBox.setSelected(originalRecipe.isCheap());
         fastCheckBox.setSelected(originalRecipe.isFast());
         veganCheckBox.setSelected(originalRecipe.isVegan());
+        try{
+            languageChoise.setValue(originalRecipe.getLanguage());
+        } catch(Exception _){
+
+        }
+
 
         // Create LOCAL recipe only. Do NOT save to server yet.
         this.recipe = new Recipe(
                 (originalRecipe.getName() + " - Clone"),
                 originalRecipe.getServings(),
                 new ArrayList<>(originalRecipe.getPreparationSteps()),
+                originalRecipe.getLanguage(),
                 originalRecipe.isCheap(),
                 originalRecipe.isFast(),
                 originalRecipe.isVegan()
@@ -345,7 +370,7 @@ public class AddRecipeCtrl {
                     originalIngredient.getUnit()
             );
 
-            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                     "client", "scenes", "RecipeIngredient.fxml");
 
             // Use refreshIngredients to protect local data
@@ -411,7 +436,7 @@ public class AddRecipeCtrl {
                 //To make sure the ingredients are set on the correct recipe.
                 ri.setRecipe(recipe);
 
-                Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                         "client", "scenes", "RecipeIngredient.fxml");
                 // Use the safe refresh method
                 item.getKey().initialize(ri, recipe, this::refreshIngredients);

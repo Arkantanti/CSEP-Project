@@ -15,6 +15,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
+import java.util.ResourceBundle;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -51,6 +53,9 @@ public class ShoppingListCtrl {
     private final Printer printer;
     private MyFXML fxml;
 
+    private ResourceBundle bundle;
+
+
     /**
      * Constructor for ShoppingListCtrl.
      *
@@ -68,7 +73,8 @@ public class ShoppingListCtrl {
     /**
      * called when the shopping list is opened
      */
-    public void initialize(MyFXML fxml) {
+    public void initialize(MyFXML fxml, ResourceBundle bundle) {
+        this.bundle = bundle;
         this.fxml = fxml;
         setupAddModeButtons();
         updateGroupingButtonStyle();
@@ -135,9 +141,9 @@ public class ShoppingListCtrl {
 
             if (!categoryItems.isEmpty()) {
                 Pair<ShoppingListCategorySectionCtrl, Parent> section = fxml.load(
-                        ShoppingListCategorySectionCtrl.class,
+                        ShoppingListCategorySectionCtrl.class, bundle,
                         "client", "scenes", "ShoppingListCategorySection.fxml");
-                section.getKey().initialize(category, categoryItems, fxml,
+                section.getKey().initialize(category, categoryItems, fxml, mainCtrl.getBundle(),
                         (_) -> {
                             loadShoppingList();
                             shoppingListService.saveChanges();
@@ -182,7 +188,7 @@ public class ShoppingListCtrl {
      * @return the created ShoppingListElementCtrl/Parent pair
      */
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class,
+        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, bundle,
                 "client", "scenes", "ShoppingListElement.fxml");
         boolean isTextMode = baseItem == null ? (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
         item.getKey().initialize(baseItem,

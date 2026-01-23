@@ -77,7 +77,7 @@ public class ShoppingListConfirmationCtrl {
      * @return the created ShoppingListElementCtrl/Parent pair
      */
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class,
+        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "ShoppingListElement.fxml");
         item.getKey().initialize(baseItem,
                 (_) -> {                        // onUpdate

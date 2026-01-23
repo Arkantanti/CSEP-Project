@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.FlowPane?>
 
 <ScrollPane fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="521.0" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddIngredientCtrl">
    <content>
@@ -19,7 +20,7 @@
          <children>
             <VBox maxWidth="1.7976931348623157E308" prefWidth="520.0" styleClass="recipe-title-section">
                <children>
-                   <Label fx:id="nameLabel" prefHeight="28.0" prefWidth="1.7976931348623157E308" text="Name of the ingredient:">
+                   <Label fx:id="nameLabel" prefHeight="28.0" prefWidth="1.7976931348623157E308" text="%txt.ingNameHead">
                        <font>
                            <Font name="System Bold" size="19.0" />
                        </font>
@@ -27,14 +28,14 @@
                            <Insets left="10.0" />
                        </VBox.margin>
                    </Label>
-                   <TextField fx:id="nameTextField" maxWidth="300.0" prefHeight="35.0" prefWidth="300.0" promptText="Edit name" style="-fx-font-size: 20px;">
+                   <TextField fx:id="nameTextField" maxWidth="300.0" prefHeight="35.0" prefWidth="300.0" promptText="%pmpt.editName" style="-fx-font-size: 20px;">
                        <VBox.margin>
                            <Insets left="10.0" top="5.0" />
                        </VBox.margin>
                    </TextField>
                </children>
             </VBox>
-             <Label prefHeight="28.0" prefWidth="200.0" text="Nutrients (g/100g):">
+             <Label prefHeight="28.0" prefWidth="200.0" text="%txt.nutriHead">
                  <font>
                      <Font name="System Bold" size="19.0" />
                  </font>
@@ -62,7 +63,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Carbs: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="%txt.carbs">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -79,7 +80,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Protein: ">
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="%txt.protein">
                            <font>
                               <Font size="20.0" />
                            </font>
@@ -89,17 +90,19 @@
                   </GridPane>
                   <GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
-                     <children>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" styleClass="first-info-label" stylesheets="/styles/ingredients-view.css" text="Fat: ">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
+                    <children>
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308"
+                               styleClass="first-info-label" stylesheets="/styles/ingredients-view.css"
+                               text="%txt.fat">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
                         </Label>
                         <TextField fx:id="fatTf" maxWidth="1.7976931348623157E308" styleClass="info-tf" stylesheets="/styles/ingredients-view.css" GridPane.columnIndex="1">
                            <GridPane.margin>
@@ -111,7 +114,7 @@
             </GridPane>
             <VBox maxWidth="1.7976931348623157E308" prefWidth="520.0">
                <children>
-                   <Label prefHeight="28.0" prefWidth="200.0" text="Category:">
+                   <Label prefHeight="28.0" prefWidth="200.0" text="%txt.categorie">
                        <font>
                            <Font name="System Bold" size="19.0" />
                        </font>
@@ -126,25 +129,45 @@
                    </ComboBox>
                </children>
             </VBox>
+             <Label text="%txt.allergens">
+                 <VBox.margin>
+                     <Insets left="10.0" />
+                 </VBox.margin>
+                 <font>
+                     <Font name="System Bold" size="19.0" />
+                 </font>
+             </Label>
+             <FlowPane fx:id="fpAllergens"
+                       hgap="6"
+                       vgap="6"
+                       prefHeight="40"
+                       prefWrapLength="180">
+                 <padding>
+                     <Insets left="10" right="10"/>
+                 </padding>
+                 <Button fx:id="addAllergenButton" mnemonicParsing="false" onAction="#addAllergen"
+                         styleClass="allergen-button" text="+/-">
+                 </Button>
+             </FlowPane>
              <HBox>
-                 <children>
-                     <Button fx:id="saveButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onSave" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="✓">
-                         <font>
-                             <Font name="System Bold" size="18.0" />
-                         </font>
-                         <VBox.margin>
-                             <Insets left="10.0" top="5.0" />
-                         </VBox.margin>
-                     </Button>
-                     <Button fx:id="cancelButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="X">
-                         <font>
-                             <Font name="System Bold" size="18.0" />
-                         </font>
-                         <VBox.margin>
-                             <Insets left="10.0" top="5.0" />
-                         </VBox.margin>
-                     </Button>
-                 </children>
+                 <Button fx:id="saveButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false" onAction="#onSave"
+                         prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="✓">
+                     <font>
+                         <Font name="System Bold" size="18.0"/>
+                     </font>
+                     <HBox.margin>
+                         <Insets left="10.0" top="5.0"/>
+                     </HBox.margin>
+                 </Button>
+                 <Button fx:id="cancelButton" minHeight="35.0" minWidth="40.0" mnemonicParsing="false"
+                         onAction="#onCancel" prefHeight="35.0" prefWidth="40.0" styleClass="add-button" text="X">
+                     <font>
+                         <Font name="System Bold" size="18.0"/>
+                     </font>
+                     <HBox.margin>
+                         <Insets left="10.0" top="5.0"/>
+                     </HBox.margin>
+                 </Button>
              </HBox>
          </children>
       </VBox>

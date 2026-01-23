@@ -104,26 +104,17 @@ public class RecipeIngredient {
      * @return the String format of RecipeIngredient
      */
     public String formatIngredient(){
-        return formatIngredientInternal(this.amount);
+        return formatIngredientScaled(1.0);
     }
 
     /**
-     *
-     * when displaying a RecipeIngredient with scaled amount
-     * @param amount the scaled amount to be displayed
-     * @return the String format of RecipeIngredient
-     */
-    public String formatIngredientScaled(double amount){
-        return formatIngredientInternal(amount);
-    }
-
-    /**
-     *  helper function to format recipeIngredient
+     * Helper function to format recipeIngredient.
+     * @param factor double to multiply the amount by.
      * @return a formatted version of the toString. ex: 100 L salt
      */
-    public String formatIngredientInternal(double amount) {
+    public String formatIngredientScaled(double factor) {
         StringBuilder s = new StringBuilder();
-
+        double amount = getAmount()*factor;
         // List politely yoinked from https://en.wikipedia.org/wiki/Metric_prefix
         Dictionary<Integer, String> metricPrefixes = new Hashtable<Integer, String>(){
             {
@@ -172,9 +163,13 @@ public class RecipeIngredient {
         if (unit != Unit.CUSTOM || informalUnit == null) {
             s.append(String.format(Locale.US,"%.2f",amount / Math.pow(10, magnitude))).append(" ")
                     .append(metricPrefixes.get(magnitude)).append(unitChar);
-        }
-        else {
-            s.append(informalUnit);
+        } else {
+            try {
+                double informalAmount = Double.parseDouble(informalUnit);
+                s.append(String.format(Locale.US,"%.2f",informalAmount*factor));
+            } catch (NumberFormatException e) {
+                s.append(informalUnit);
+            }
         }
         s.append(" ").append(ingredient.getName());
         return s.toString();

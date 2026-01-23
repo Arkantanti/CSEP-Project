@@ -16,14 +16,18 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.services.WebsocketService;
 import client.utils.FavoritesManager;
 import client.utils.FavoritesPollingService;
+import com.google.inject.Inject;
 import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -32,6 +36,9 @@ import javafx.util.Pair;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 /**
  * The Main Controller that manages the execution flow and scene switching.
@@ -52,6 +59,21 @@ public class MainCtrl {
     private boolean firstOpen;
     private FavoritesPollingService pollingService;
 
+    private Locale locale = Locale.ENGLISH;
+    private final Preferences prefs = Preferences.userNodeForPackage(MainCtrl.class);
+    private String flagPath = "/images/UK-flag.png";
+
+    private WebsocketService websocketService;
+
+    /**
+     * Injected Constructor
+     * @param websocketService the websocket service
+     */
+    @Inject
+    public MainCtrl(WebsocketService websocketService){
+        this.websocketService = websocketService;
+    }
+
     /**
      * Initializes the main controller with the primary stage and the necessary scenes.
      *
@@ -66,6 +88,11 @@ public class MainCtrl {
         this.fxml = fxml;
         this.firstOpen = true;
 
+        locale = Locale.forLanguageTag(prefs.get("lang", "en"));
+        flagPath = prefs.get("flagPath", "/images/UK-flag.png");
+
+        primaryStage.setResizable(false);
+
         showAppView();
         primaryStage.show();
         showDefaultView();
@@ -73,6 +100,8 @@ public class MainCtrl {
         pollingService = new FavoritesPollingService(favoritesManager);
         pollingService.setMainCtrl(this);
         pollingService.startPollingService();
+
+        websocketService.initialize(appViewCtrl, this);
     }
 
     /**
@@ -81,11 +110,13 @@ public class MainCtrl {
      */
     public void showAppView() {
         primaryStage.setTitle("FoodPal");
-        var overview = fxml.load(AppViewCtrl.class,
+        var overview = fxml.load(AppViewCtrl.class, bundle(),
                 "client", "scenes", "AppView.fxml");
 
         this.appViewCtrl = overview.getKey();
         primaryStage.setScene(new Scene(overview.getValue()));
+
+        appViewCtrl.applyLanguageIcon(flagPath);
     }
 
     /**
@@ -99,13 +130,15 @@ public class MainCtrl {
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
-        Pair<RecipeViewCtrl, Parent> recipeView = fxml.load(RecipeViewCtrl.class,
+        Pair<RecipeViewCtrl, Parent> recipeView = fxml.load(RecipeViewCtrl.class, bundle(),
                 "client", "scenes", "RecipeView.fxml");
         recipeView.getKey().setRecipe(recipe, fxml);
         appViewCtrl.setContent(recipeView.getValue());
         if(firstOpen){
             switchFirstOpen();
         }
+
+        websocketService.setRecipeViewCtrl(recipeView.getKey());
     }
 
     /**
@@ -119,7 +152,7 @@ public class MainCtrl {
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
-        Pair<IngredientViewCtrl, Parent> ingredientView = fxml.load(IngredientViewCtrl.class,
+        Pair<IngredientViewCtrl, Parent> ingredientView = fxml.load(IngredientViewCtrl.class, bundle(),
                 "client", "scenes", "IngredientView.fxml");
         ingredientView.getKey().setIngredient(ingredient, fxml);
         appViewCtrl.setContent(ingredientView.getValue());
@@ -133,7 +166,7 @@ public class MainCtrl {
      */
 
     public void showAddIngredient() {
-        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class, bundle(),
                 "client", "scenes", "AddIngredient.fxml");
         addIngredientView.getKey().initialize(false);
         appViewCtrl.setContent(addIngredientView.getValue());
@@ -143,9 +176,13 @@ public class MainCtrl {
      * The function to show the addRecipe fxml file
      */
     public void showAddRecipe() {
-        // Removed obsolete temp file cleanup code here
-
-        Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class,
+        if (    (addRecipeCtrl != null) &&
+                !addRecipeCtrl.getIsSaved() &&
+                (addRecipeCtrl.getRecipe() != null)) {
+            addRecipeCtrl.deleter(addRecipeCtrl.getRecipe().getId());
+            addRecipeCtrl.setIsSavedTrue();
+        }
+        Pair<AddRecipeCtrl, Parent> addRecipeView = fxml.load(AddRecipeCtrl.class, bundle(),
                 "client", "scenes", "AddRecipe.fxml");
         this.addRecipeCtrl = addRecipeView.getKey();
         addRecipeCtrl.initialize(fxml);
@@ -157,7 +194,7 @@ public class MainCtrl {
      * and then a recipe gets added and canceled immediately.
      */
     public void showDefaultView(){
-        Pair<RecipeViewCtrl, Parent> defaultScreen = fxml.load(RecipeViewCtrl.class,
+        Pair<RecipeViewCtrl, Parent> defaultScreen = fxml.load(RecipeViewCtrl.class, bundle(),
                 "client", "scenes", "DefaultView.fxml");
         appViewCtrl.setContent(defaultScreen.getValue());
     }
@@ -190,13 +227,15 @@ public class MainCtrl {
     public void openShoppingList(){
         if (shoppingListStage == null || shoppingListCtrl == null) {
             Pair<ShoppingListCtrl, Parent> shoppingListView =
-                    fxml.load(ShoppingListCtrl.class, "client", "scenes", "ShoppingList.fxml");
+                    fxml.load(ShoppingListCtrl.class, bundle(),
+                    "client", "scenes", "ShoppingList.fxml");
             shoppingListStage = new Stage();
             shoppingListStage.setTitle("Shopping List");
             shoppingListStage.setScene(new Scene(shoppingListView.getValue()));
+            shoppingListStage.setResizable(false);
             shoppingListCtrl = shoppingListView.getKey();
 
-            shoppingListCtrl.initialize(fxml);
+            shoppingListCtrl.initialize(fxml, getBundle());
         }
         shoppingListStage.show();
         shoppingListStage.toFront();
@@ -259,6 +298,69 @@ public class MainCtrl {
     }
 
     /**
+     * Resets the app to the default view and applies language change
+     * @param locale path to the properties file
+     * @param flagPath path to the flag's image
+     */
+    public void changeLanguageAndReset(Locale locale, String flagPath) {
+        setLocale(locale);
+        setFlagPath(flagPath);
+        showAppView();
+        showDefaultView();
+        //herea
+    }
+
+    /**
+     * Provides file with encoded labels
+     * @return ResourceBundle file with hardcoded text in chosen language
+     */
+    private ResourceBundle bundle() {
+        return ResourceBundle.getBundle("i18n.messages", locale);
+    }
+
+    /**
+     * Provides file with encoded labels for other Controllers
+     * @return ResourceBundle file with hardcoded text in chosen language
+     */
+    public ResourceBundle getBundle() {
+        return ResourceBundle.getBundle("i18n.messages", locale);
+    }
+
+    /**
+     * Setter method for updating path to the Properties file
+     * @param locale Locale with path to the file
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+        prefs.put("lang", locale.toLanguageTag());
+    }
+
+    /**
+     * Getter for the Locale variable
+     * @return Locale for chosen language
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Setter for path to a flag's image
+     * @param flagPath path to the chosen language flag's image
+     */
+    public void setFlagPath(String flagPath) {
+        this.flagPath = flagPath;
+        prefs.put("flagPath", flagPath);
+    }
+
+    /**
+     * Getter for the flag path
+     * @return String of the path to the image
+     */
+    public String getFlagPath() {
+        return flagPath;
+    }
+
+    /**
      * To show an error for if something goes wrong
      * @param header The head text of the error
      * @param content The main text of the error
@@ -276,7 +378,7 @@ public class MainCtrl {
      */
     public Ingredient showAddIngredientsNewWindow() {
         ingredientAddStage = new Stage();
-        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class,
+        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class, bundle(),
                 "client", "scenes", "AddIngredient.fxml");
         AddIngredientCtrl addIngredientCtrl = addIngredientView.getKey();
         addIngredientCtrl.initialize(true);
@@ -284,6 +386,7 @@ public class MainCtrl {
         ingredientAddStage.initModality(Modality.APPLICATION_MODAL);
         ingredientAddStage.initOwner(primaryStage);
         ingredientAddStage.setTitle("Add Ingredient");
+        ingredientAddStage.setResizable(false);
         ingredientAddStage.showAndWait();
 
         if(addIngredientCtrl.getIngredientSaved()) {
@@ -311,10 +414,12 @@ public class MainCtrl {
      */
     public void openShoppingListConfirmation(List<RecipeIngredient> ingredients, double scalar, String recipeName) {
         if (shoppingListConfirmationCtrl == null || shoppingListConfirmationStage == null){
-            Pair<ShoppingListConfirmationCtrl, Parent> shoppingListConfirmation = fxml.load(ShoppingListConfirmationCtrl.class, "client", "scenes", "ShoppingListConfirmation.fxml");
+            Pair<ShoppingListConfirmationCtrl, Parent> shoppingListConfirmation = fxml.load(ShoppingListConfirmationCtrl.class, bundle(),
+                    "client", "scenes", "ShoppingListConfirmation.fxml");
             shoppingListConfirmationStage = new Stage();
             shoppingListConfirmationStage.setTitle("Shopping List Confirmation");
             shoppingListConfirmationStage.setScene(new Scene(shoppingListConfirmation.getValue()));
+            shoppingListConfirmationStage.setResizable(false);
             shoppingListConfirmationCtrl = shoppingListConfirmation.getKey();
 
             shoppingListConfirmationCtrl.initialize(fxml, shoppingListConfirmationStage);

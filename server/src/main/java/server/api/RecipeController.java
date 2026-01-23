@@ -1,9 +1,13 @@
 package server.api;
 
 import commons.Recipe;
+import commons.SyncEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.RecipeRepository;
+import server.websocket.WebSocketHandler;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -21,14 +25,16 @@ import java.util.ArrayList;
 @RequestMapping("/api/recipes/")
 public class RecipeController {
     private final RecipeRepository repo;
+    private final WebSocketHandler wsHandler;
 
     /**
      * Constructs a new {@code RecipeController} with the given repository.
      *
      * @param repo the {@link RecipeRepository} used for database operations
      */
-    public RecipeController(RecipeRepository repo){
+    public RecipeController(RecipeRepository repo, WebSocketHandler webSocketHandler) {
         this.repo = repo;
+        this.wsHandler = webSocketHandler;
     }
 
     /**
@@ -84,13 +90,15 @@ public class RecipeController {
      * otherwise {@code 200 OK} containing the saved recipe
      */
     @PostMapping("")
-    public ResponseEntity<Recipe> add(@RequestBody Recipe recipe) {
+    public ResponseEntity<Recipe> add(@RequestBody Recipe recipe){
         if (recipe == null
                 || isNullOrEmpty(recipe.getName())
                 || recipe.getServings() < 1
-                || recipe.getPreparationSteps() == null) {
+                || recipe.getPreparationSteps() == null
+                || recipe.getLanguage() == null) {
             return ResponseEntity.badRequest().build();
         }
+        recipe.setName(capitalize(recipe.getName()));
 
         //check for the database when the name is the same
         for(Recipe recipeName : getAll()){
@@ -99,7 +107,10 @@ public class RecipeController {
             }
         }
 
+        recipe.setId(0L);
         Recipe saved = repo.save(recipe);
+
+        wsHandler.broadcast(new SyncEvent.RecipeCreated(saved));
         return ResponseEntity.ok(saved);
     }
 
@@ -144,12 +155,25 @@ public class RecipeController {
 
         recipe.setRecipeIngredients(repo.findById(id).get().getRecipeIngredients());
         recipe.setId(id);
-
+        recipe.setName(capitalize(recipe.getName()));
         Recipe saved = repo.save(recipe);
+
+        wsHandler.broadcast(new SyncEvent.RecipeContentUpdated(recipe));
+
         return ResponseEntity.ok(saved);
     }
 
-
+    /**
+     * Helper to convert "cake" -> "Cake" and "CAKE" -> "Cake".
+     */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        // 1. Capitalize first letter
+        // 2. Lowercase the rest
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1).toLowerCase();
+    }
     /**
      * Deletes the recipe with the specified ID.
      *
@@ -169,6 +193,9 @@ public class RecipeController {
         }
 
         repo.deleteById(id);
+
+        wsHandler.broadcast(new SyncEvent.RecipeDeleted(id));
+
         return ResponseEntity.noContent().build();
     }
 

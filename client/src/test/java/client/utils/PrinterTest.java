@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,10 +26,10 @@ class PrinterTest {
 
     @BeforeEach
     public void setup() {
-        Ingredient i1 = new Ingredient("Butter",0,0,0);
-        Ingredient i2 = new Ingredient("Bread",0,0,0);
-        Ingredient i3 = new Ingredient("Cheese",0,0,0);
-        recipe = new Recipe("Pancakes", 4, List.of("step1", "step2", "step3"),false,false,false);
+        Ingredient i1 = new Ingredient("Butter",0,0,0, Set.of());
+        Ingredient i2 = new Ingredient("Bread",0,0,0, Set.of());
+        Ingredient i3 = new Ingredient("Cheese",0,0,0, Set.of());
+        recipe = new Recipe("Pancakes", 4, List.of("step1", "step2", "step3"), "English",false,false,false);
         RecipeIngredient ri1 = new RecipeIngredient(recipe,i1,null,70, Unit.GRAM);
         RecipeIngredient ri2 = new RecipeIngredient(recipe,i2,"pinches",2, Unit.CUSTOM);
         RecipeIngredient ri3 = new RecipeIngredient(recipe,i3,"just a bit",0, Unit.CUSTOM);
@@ -42,12 +43,12 @@ class PrinterTest {
                 ## Pancakes
                 
                 
-                **Servings:** 4
+                **Servings:** 4.0
                 
                 **Ingredients:**
-                 - Butter - 70 grams
-                 - Bread - 2 pinches
-                 - Cheese -  just a bit
+                 - 70.00 g Butter
+                 - pinches Bread
+                 - just a bit Cheese
                 
                 **Preparation steps:**
                 1. step1
@@ -55,12 +56,21 @@ class PrinterTest {
                 3. step3
                 
                 HAVE A GOOD MEAL!!""";
-        assertEquals(expected,printer.recipePrint(recipe, recipeIngredients));
+        try {
+            assertEquals(expected, printer.recipePrint(recipe, recipeIngredients, recipe.getServings()));
+        } catch (IOException ex) {
+            fail();
+        }
     }
 
     @Test
     void markdownToPDF(){
-        String markdown = printer.recipePrint(recipe, recipeIngredients);
+        String markdown = "";
+        try {
+            markdown = printer.recipePrint(recipe, recipeIngredients, recipe.getServings());
+        } catch (IOException ex) {
+            fail();
+        }
         // Get a random path to a temp file
         try {
             Path dir = Files.createTempDirectory("config-test");

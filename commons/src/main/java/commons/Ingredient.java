@@ -7,7 +7,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -32,6 +34,10 @@ public class Ingredient implements Showable{
     private double carbs;
 
     @Enumerated(EnumType.STRING)
+    @ElementCollection
+    private Set<Allergen> allergens;
+
+    @Enumerated(EnumType.STRING)
     private IngredientCategory category;
 
     /**
@@ -42,15 +48,18 @@ public class Ingredient implements Showable{
      * @param fat     the amount of fat per 100 grams of the ingredient
      * @param protein the amount of protein per 100 grams of the ingredient
      * @param carbs   the amount of carbohydrates per 100 grams of the ingredient
+     * @param allergens Set of allergens of this ingredient.
      */
     public Ingredient(String name,
                       double fat,
                       double protein,
-                      double carbs) {
+                      double carbs,
+                      Set<Allergen> allergens) {
         this.name = name;
         this.fat = fat;
         this.protein = protein;
         this.carbs = carbs;
+        this.allergens = new HashSet<>(allergens);
         this.category = IngredientCategory.UNCATEGORIZED;
     }
 
@@ -62,17 +71,20 @@ public class Ingredient implements Showable{
      * @param fat     the amount of fat per 100 grams of the ingredient
      * @param protein the amount of protein per 100 grams of the ingredient
      * @param carbs   the amount of carbohydrates per 100 grams of the ingredient
-     * @param category the category of the ingredient
+     * @param category the category of the ingredient.
+     * @param allergens Set of allergens of this ingredient.
      */
     public Ingredient(String name,
                       double fat,
                       double protein,
                       double carbs,
-                      IngredientCategory category) {
+                      IngredientCategory category,
+                      Set<Allergen> allergens) {
         this.name = name;
         this.fat = fat;
         this.protein = protein;
         this.carbs = carbs;
+        this.allergens = new HashSet<>(allergens);
         this.category = category;
     }
 
@@ -104,7 +116,11 @@ public class Ingredient implements Showable{
         return carbs;
     }
 
-    public List<RecipeIngredient> getRecipeIngredients() {return recipeIngredients;}
+    public List<RecipeIngredient> getRecipeIngredients() {
+        return recipeIngredients;}
+
+    public Set<Allergen> getAllergens() {
+        return allergens==null ? null : new HashSet<>(allergens);}
 
     public void setId(long id) { this.id = id;}
 
@@ -133,7 +149,11 @@ public class Ingredient implements Showable{
     }
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients){
-        this.recipeIngredients = recipeIngredients;
+        this.recipeIngredients = recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);
+    }
+
+    public void setAllergens(Set<Allergen> allergens){
+        this.allergens = allergens==null ? null : new HashSet<>(allergens);
     }
 
     @Override
@@ -152,7 +172,7 @@ public class Ingredient implements Showable{
     }
 
     /**
-     * Helper method for calculating the calories of Ingredient
+     * Helper method  for calculating the calories of Ingredient
      * @return number of calories of 1g of this Ingredient
      */
     public double calculateCalories() {
