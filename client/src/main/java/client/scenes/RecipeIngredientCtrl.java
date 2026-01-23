@@ -284,4 +284,28 @@ public class RecipeIngredientCtrl {
             ingredientComboBox.getSelectionModel().select(newIngredient);
         }
     }
+
+    public HBox getDefaultView() {
+        return defaultView;
+    }
+
+    public Label getTextLabel() {
+        return textLabel;
+    }
+
+    public HBox getEditView() {
+        return editView;
+    }
+
+    public TextField getAmountField() {
+        return amountField;
+    }
+
+    public ComboBox<Unit> getUnitComboBox() {
+        return unitComboBox;
+    }
+
+    public ComboBox<Ingredient> getIngredientComboBox() {
+        return ingredientComboBox;
+    }
 }

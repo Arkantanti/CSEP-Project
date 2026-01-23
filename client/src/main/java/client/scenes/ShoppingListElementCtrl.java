@@ -364,4 +364,7 @@ public class ShoppingListElementCtrl {
         amountField.setPromptText("Enter amount");
     }
 
+    public Label getTextLabel() {
+        return textLabel;
+    }
 }

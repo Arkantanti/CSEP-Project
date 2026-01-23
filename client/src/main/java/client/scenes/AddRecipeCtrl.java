@@ -491,39 +491,19 @@ public class AddRecipeCtrl {
         return this.recipe;
     }
 
-    public Label getNameLabel() {
-        return nameLabel;
-    }
-
-    public VBox getIngredientsContainer() {
-        return ingredientsContainer;
-    }
-
-    public Button getIngredientAddButton() {
-        return ingredientAddButton;
-    }
-
-    public Button getSaveButton() {
-        return saveButton;
-    }
-
-    public Button getCancelButton() {
-        return cancelButton;
-    }
-
     public ComboBox<String> getLanguageChoise() {
         return languageChoise;
     }
 
-    public CheckBox getCheapCheckBox() {
-        return cheapCheckBox;
+    public TextArea getPreparationsArea() {
+        return preparationsArea;
     }
 
-    public CheckBox getFastCheckBox() {
-        return fastCheckBox;
+    public TextField getNameTextField() {
+        return nameTextField;
     }
 
-    public CheckBox getVeganCheckBox() {
-        return veganCheckBox;
+    public TextField getServingsArea() {
+        return servingsArea;
     }
 }

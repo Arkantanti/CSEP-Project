@@ -263,4 +263,8 @@ public class ShoppingListCtrl {
             });
         }
     }
+
+    public VBox getIngredientListBox() {
+        return ingredientListBox;
+    }
 }

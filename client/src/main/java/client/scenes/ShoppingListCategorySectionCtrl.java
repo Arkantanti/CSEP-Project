@@ -143,4 +143,16 @@ public class ShoppingListCategorySectionCtrl {
         this.items = new ArrayList<>(newItems);
         loadItems();
     }
+
+    public Button getToggleButton() {
+        return toggleButton;
+    }
+
+    public Label getCategoryLabel() {
+        return categoryLabel;
+    }
+
+    public VBox getItemsContainer() {
+        return itemsContainer;
+    }
 }
