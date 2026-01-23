@@ -40,9 +40,6 @@ class ShoppingListCategorySectionCtrlTest {
 
         fxml = mock(MyFXML.class);
         bundle = mock(ResourceBundle.class);
-        onUpdate = mock(Function.class);
-        onAddItem = mock(Function.class);
-        onDeleteItem = mock(Function.class);
     }
 
     @Test
