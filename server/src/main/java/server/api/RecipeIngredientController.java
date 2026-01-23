@@ -1,9 +1,12 @@
 package server.api;
 
+import commons.Recipe;
 import commons.RecipeIngredient;
+import commons.SyncEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.RecipeIngredientRepository;
+import server.websocket.WebSocketHandler;
 
 import java.util.List;
 
@@ -21,14 +24,16 @@ import java.util.List;
 public class RecipeIngredientController {
 
     private final RecipeIngredientRepository repo;
+    private final WebSocketHandler wsHandler;
 
     /**
      * Constructs a new {@code RecipeIngredientController} with the given repository.
      *
      * @param repo the {@link RecipeIngredientRepository} used for database operations
      */
-    public RecipeIngredientController(RecipeIngredientRepository repo) {
+    public RecipeIngredientController(RecipeIngredientRepository repo, WebSocketHandler wsHandler) {
         this.repo = repo;
+        this.wsHandler = wsHandler;
     }
 
     /**
@@ -84,6 +89,9 @@ public class RecipeIngredientController {
         ri.setId(0L);
 
         RecipeIngredient saved = repo.save(ri);
+
+        wsHandler.broadcast(new SyncEvent.RecipeIngredientCreated(saved));
+
         return ResponseEntity.ok(saved);
     }
 
@@ -114,6 +122,9 @@ public class RecipeIngredientController {
         }
         ri.setId(id);
         RecipeIngredient saved = repo.save(ri);
+
+        wsHandler.broadcast(new SyncEvent.RecipeIngredientUpdated(saved));
+
         return ResponseEntity.ok(saved);
     }
 
@@ -135,7 +146,18 @@ public class RecipeIngredientController {
             return ResponseEntity.notFound().build();
         }
 
+        Recipe recipe = null;
+        RecipeIngredient ri = repo.findById(id).orElse(null);
+        if (ri != null) {
+            recipe = ri.getRecipe();
+        }
+
         repo.deleteById(id);
+
+        if (recipe != null) {
+            wsHandler.broadcast(new SyncEvent.RecipeIngredientDeleted(id, recipe.getId()));
+        }
+
         return ResponseEntity.noContent().build();
     }
 
