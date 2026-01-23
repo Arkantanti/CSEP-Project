@@ -64,7 +64,8 @@ public class ShoppingListCtrl {
      * @param printer the printer utility for PDF generation
      */
     @Inject
-    public ShoppingListCtrl(ShoppingListService shoppingListService, MainCtrl mainCtrl, Printer printer) {
+    public ShoppingListCtrl(ShoppingListService shoppingListService,
+                            MainCtrl mainCtrl, Printer printer) {
         this.shoppingListService = shoppingListService;
         this.mainCtrl = mainCtrl;
         this.printer = printer;
@@ -188,9 +189,11 @@ public class ShoppingListCtrl {
      * @return the created ShoppingListElementCtrl/Parent pair
      */
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, bundle,
+        Pair<ShoppingListElementCtrl, Parent> item =
+                fxml.load(ShoppingListElementCtrl.class, bundle,
                 "client", "scenes", "ShoppingListElement.fxml");
-        boolean isTextMode = baseItem == null ? (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
+        boolean isTextMode = baseItem == null ?
+                (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
         item.getKey().initialize(baseItem,
                 (_) -> {                        // onUpdate
                     loadShoppingList();
@@ -251,7 +254,8 @@ public class ShoppingListCtrl {
             return;
         }
         try {
-            String markdown = printer.createShoppingListOutputString(shoppingListService.getShoppingList(), shoppingListService);
+            String markdown = printer.createShoppingListOutputString(
+                    shoppingListService.getShoppingList(), shoppingListService);
             printer.markdownToPDF(path, markdown);
         } catch (IOException e) {
             e.printStackTrace();

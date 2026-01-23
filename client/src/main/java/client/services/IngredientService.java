@@ -42,7 +42,8 @@ public class IngredientService {
         if (ingredient != null) {
             return ingredient;
         }
-        return server.getIngredients().stream().filter(e -> e.getId() == id).findFirst().orElse(null);
+        return server.getIngredients().stream().
+                filter(e -> e.getId() == id).findFirst().orElse(null);
     }
 
     /**

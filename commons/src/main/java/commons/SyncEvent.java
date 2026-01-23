@@ -9,12 +9,16 @@ import commons.RecipeIngredient;
     @JsonSubTypes.Type(value = SyncEvent.RecipeCreated.class, name = "RecipeCreated"),
     @JsonSubTypes.Type(value = SyncEvent.RecipeDeleted.class, name = "RecipeDeleted"),
     @JsonSubTypes.Type(value = SyncEvent.RecipeContentUpdated.class, name = "RecipeContentUpdated"),
-    @JsonSubTypes.Type(value = SyncEvent.RecipeIngredientCreated.class, name = "RecipeIngredientCreated"),
-    @JsonSubTypes.Type(value = SyncEvent.RecipeIngredientDeleted.class, name = "RecipeIngredientDeleted"),
-    @JsonSubTypes.Type(value = SyncEvent.RecipeIngredientUpdated.class, name = "RecipeIngredientUpdated")
+    @JsonSubTypes.Type(value =
+            SyncEvent.RecipeIngredientCreated.class, name = "RecipeIngredientCreated"),
+    @JsonSubTypes.Type(value =
+            SyncEvent.RecipeIngredientDeleted.class, name = "RecipeIngredientDeleted"),
+    @JsonSubTypes.Type(value =
+            SyncEvent.RecipeIngredientUpdated.class, name = "RecipeIngredientUpdated")
 })
 sealed public class SyncEvent permits SyncEvent.RecipeCreated, SyncEvent.RecipeDeleted,
-        SyncEvent.RecipeContentUpdated, SyncEvent.RecipeIngredientCreated, SyncEvent.RecipeIngredientDeleted,
+        SyncEvent.RecipeContentUpdated,
+        SyncEvent.RecipeIngredientCreated, SyncEvent.RecipeIngredientDeleted,
         SyncEvent.RecipeIngredientUpdated{
     private long recipeId;
 

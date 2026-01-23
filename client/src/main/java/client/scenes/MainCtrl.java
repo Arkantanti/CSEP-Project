@@ -23,11 +23,11 @@ import com.google.inject.Inject;
 import commons.Ingredient;
 import commons.Recipe;
 import commons.RecipeIngredient;
-import javafx.fxml.FXML;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.image.ImageView;
+
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -160,7 +160,8 @@ public class MainCtrl {
         if (fxml == null || appViewCtrl == null) {
             throw new IllegalStateException("FXML or AppViewCtrl are null");
         }
-        Pair<IngredientViewCtrl, Parent> ingredientView = fxml.load(IngredientViewCtrl.class, bundle(),
+        Pair<IngredientViewCtrl, Parent> ingredientView =
+                fxml.load(IngredientViewCtrl.class, bundle(),
                 "client", "scenes", "IngredientView.fxml");
         ingredientView.getKey().setIngredient(ingredient, fxml);
         appViewCtrl.setContent(ingredientView.getValue());
@@ -174,7 +175,8 @@ public class MainCtrl {
      */
 
     public void showAddIngredient() {
-        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class, bundle(),
+        Pair<AddIngredientCtrl, Parent> addIngredientView =
+                fxml.load(AddIngredientCtrl.class, bundle(),
                 "client", "scenes", "AddIngredient.fxml");
         addIngredientView.getKey().initialize(false);
         appViewCtrl.setContent(addIngredientView.getValue());
@@ -386,7 +388,8 @@ public class MainCtrl {
      */
     public Ingredient showAddIngredientsNewWindow() {
         ingredientAddStage = new Stage();
-        Pair<AddIngredientCtrl, Parent> addIngredientView = fxml.load(AddIngredientCtrl.class, bundle(),
+        Pair<AddIngredientCtrl, Parent> addIngredientView =
+                fxml.load(AddIngredientCtrl.class, bundle(),
                 "client", "scenes", "AddIngredient.fxml");
         AddIngredientCtrl addIngredientCtrl = addIngredientView.getKey();
         addIngredientCtrl.initialize(true);
@@ -420,9 +423,11 @@ public class MainCtrl {
      * @param scalar a scaling value for the ingredients
      * @param recipeName the name of the recipe
      */
-    public void openShoppingListConfirmation(List<RecipeIngredient> ingredients, double scalar, String recipeName) {
+    public void openShoppingListConfirmation(
+            List<RecipeIngredient> ingredients, double scalar, String recipeName) {
         if (shoppingListConfirmationCtrl == null || shoppingListConfirmationStage == null){
-            Pair<ShoppingListConfirmationCtrl, Parent> shoppingListConfirmation = fxml.load(ShoppingListConfirmationCtrl.class, bundle(),
+            Pair<ShoppingListConfirmationCtrl, Parent> shoppingListConfirmation =
+                    fxml.load(ShoppingListConfirmationCtrl.class, bundle(),
                     "client", "scenes", "ShoppingListConfirmation.fxml");
             shoppingListConfirmationStage = new Stage();
             shoppingListConfirmationStage.setTitle("Shopping List Confirmation");

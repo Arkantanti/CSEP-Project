@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
+
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -275,7 +275,8 @@ public class AppViewCtrl implements Initializable {
                 case RECIPES:
                 default:
                     items = isSearch ? recipeService.searchRecipes(query)
-                            : recipeService.getAllRecipesWithLanguage(engLanguage, polLanguage, dutLanguage);
+                            : recipeService.getAllRecipesWithLanguage(
+                                    engLanguage, polLanguage, dutLanguage);
                     additionButton.setOnAction(e -> mainCtrl.showAddRecipe());
                     break;
             }
@@ -416,6 +417,8 @@ public class AppViewCtrl implements Initializable {
      * @param flagPath the path to the flag's image
      */
     public void applyLanguageIcon(String flagPath) {
-        languageIcon.setImage(new javafx.scene.image.Image(Objects.requireNonNull(getClass().getResourceAsStream(flagPath))));
+        languageIcon.setImage(new
+                javafx.scene.image.Image(Objects.requireNonNull(
+                        getClass().getResourceAsStream(flagPath))));
     }
 }

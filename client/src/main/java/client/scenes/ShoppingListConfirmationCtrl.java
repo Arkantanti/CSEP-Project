@@ -33,7 +33,8 @@ public class ShoppingListConfirmationCtrl {
      * @param shoppingListService the shoppinglistservice used when confirm is pressed
      */
     @Inject
-    public ShoppingListConfirmationCtrl(ShoppingListService shoppingListService, MainCtrl mainCtrl) {
+    public ShoppingListConfirmationCtrl(
+            ShoppingListService shoppingListService, MainCtrl mainCtrl) {
         this.shoppingListService = shoppingListService;
         this.mainCtrl = mainCtrl;
     }
@@ -76,8 +77,10 @@ public class ShoppingListConfirmationCtrl {
      * @param baseItem the item to create for
      * @return the created ShoppingListElementCtrl/Parent pair
      */
-    private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, mainCtrl.getBundle(),
+    private Pair<ShoppingListElementCtrl, Parent>
+        createListElement(ShoppingListItem baseItem) {
+        Pair<ShoppingListElementCtrl, Parent> item =
+                fxml.load(ShoppingListElementCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "ShoppingListElement.fxml");
         item.getKey().initialize(baseItem,
                 (_) -> {                        // onUpdate

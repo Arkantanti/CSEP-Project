@@ -7,11 +7,11 @@ import commons.Allergen;
 import commons.Ingredient;
 import commons.IngredientCategory;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
+
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
+
 import javafx.scene.paint.Color;
 import javafx.util.converter.DoubleStringConverter;
 

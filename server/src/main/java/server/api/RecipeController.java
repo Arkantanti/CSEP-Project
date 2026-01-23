@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import server.database.RecipeRepository;
 import server.websocket.WebSocketHandler;
 
-import java.io.IOException;
+
 import java.util.List;
 import java.util.ArrayList;
 

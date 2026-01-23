@@ -40,16 +40,18 @@ public class RecipeService {
      */
     public List<Recipe> getAllRecipesWithLanguage(boolean english, boolean polish, boolean dutch){
 
-        List<Recipe> recipes = new java.util.ArrayList<>(server.getRecipes().stream().filter((Recipe recipeItem) -> {
-            if (english) {
-                return recipeItem.getLanguage().equals("English");
-            } else if (polish) {
-                return recipeItem.getLanguage().equals("Polish");
-            } else if (dutch) {
-                return recipeItem.getLanguage().equals("Dutch");
-            }
-            return false;
-        })
+        List<Recipe> recipes =
+                new java.util.ArrayList<>(server.getRecipes().stream().filter((Recipe recipeItem)
+                                -> {
+                    if (english) {
+                        return recipeItem.getLanguage().equals("English");
+                    } else if (polish) {
+                        return recipeItem.getLanguage().equals("Polish");
+                    } else if (dutch) {
+                        return recipeItem.getLanguage().equals("Dutch");
+                    }
+                    return false;
+                })
                 .toList());
 
         recipes.sort(Comparator.comparing(Recipe::getName));
