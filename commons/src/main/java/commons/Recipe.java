@@ -28,7 +28,7 @@ public class Recipe implements Showable{
 
     private String name;
     private int servings;
-    private String language;
+    private Language language;
     private boolean cheap;
     private boolean fast;
     private boolean vegan;
@@ -56,7 +56,7 @@ public class Recipe implements Showable{
      * @param fast             whether this recipe is fast
      * @param vegan            whether this recipe is vegan
      */
-    public Recipe(String name, int servings, List<String> preparationSteps, String language,
+    public Recipe(String name, int servings, List<String> preparationSteps, Language language,
                   boolean cheap, boolean fast, boolean vegan) {
         this.name = name;
         this.servings = servings;
@@ -94,7 +94,7 @@ public class Recipe implements Showable{
     public List<RecipeIngredient> getRecipeIngredients() {
         return recipeIngredients;}
 
-    public String getLanguage(){
+    public Language getLanguage(){
         return this.language;
     }
 
@@ -110,6 +110,7 @@ public class Recipe implements Showable{
     public void setCheap(boolean cheap) { this.cheap = cheap; }
     public void setFast(boolean fast) { this.fast = fast; }
     public void setVegan(boolean vegan) { this.vegan = vegan; }
+    public void setLanguage(Language language){this.language = language;}
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
         this.recipeIngredients = recipeIngredients==null

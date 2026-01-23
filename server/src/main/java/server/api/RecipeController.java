@@ -138,7 +138,8 @@ public class RecipeController {
         if (recipe == null
                 || isNullOrEmpty(recipe.getName())
                 || recipe.getServings() < 1
-                || recipe.getPreparationSteps() == null) {
+                || recipe.getPreparationSteps() == null
+                || recipe.getLanguage() == null) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -156,6 +157,7 @@ public class RecipeController {
         recipe.setRecipeIngredients(repo.findById(id).get().getRecipeIngredients());
         recipe.setId(id);
         recipe.setName(capitalize(recipe.getName()));
+        recipe.setLanguage(recipe.getLanguage());
         Recipe saved = repo.save(recipe);
 
         wsHandler.broadcast(new SyncEvent.RecipeContentUpdated(recipe));
