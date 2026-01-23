@@ -10,11 +10,11 @@ import client.services.ShoppingListService;
 import commons.IngredientCategory;
 import commons.Recipe;
 import commons.RecipeIngredient;
-import commons.Unit;
+
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigDecimal;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,7 +27,9 @@ public class Printer {
      * @param recipe {@link Recipe} object which is to be saved in markdown
      * @return String with markdown formatted description of the recipe
      */
-    public String recipePrint(Recipe recipe, List<RecipeIngredient> recipeIngredients, double targetServings) throws IOException {
+    public String recipePrint(
+            Recipe recipe, List<RecipeIngredient>
+                    recipeIngredients, double targetServings) throws IOException {
         StringBuilder output = new StringBuilder();
         output.append("## ").append(recipe.getName()).append("\n\n");
         output.append("\n**Servings:** ").append(targetServings);
@@ -55,7 +57,8 @@ public class Printer {
      * @param shoppingListService the service for getting category/shopping list information
      * @return String with markdown formatted description of the shopping list
      */
-    public String createShoppingListOutputString(List<ShoppingListItem> items, ShoppingListService shoppingListService) {
+    public String createShoppingListOutputString
+    (List<ShoppingListItem> items, ShoppingListService shoppingListService) {
         StringBuilder output = new StringBuilder();
         output.append("## Shopping List\n\n");
 
@@ -70,7 +73,8 @@ public class Printer {
 
             if (!categoryItems.isEmpty()) {
                 String categoryName = category.name();
-                String formattedCategoryName = categoryName.charAt(0) + categoryName.substring(1).toLowerCase();
+                String formattedCategoryName =
+                        categoryName.charAt(0) + categoryName.substring(1).toLowerCase();
                 output.append("### ").append(formattedCategoryName).append("\n\n");
                 for (ShoppingListItem item : categoryItems) {
                     output.append(" - ").append(item.formatItem()).append("\n");

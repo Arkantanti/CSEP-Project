@@ -139,82 +139,128 @@ public class RecipeIngredientCtrl {
     @FXML
     private void onConfirmClicked() {
         Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
+        if (unit == null) return;
 
-        String informalAmount = null;
-        double amount = 0;
-
-        if (unit == Unit.CUSTOM) {
-            informalAmount = amountField.getText();
-        }
-        else{
-            try {
-                amount = Double.parseDouble(amountField.getText());
-            }
-            catch (Exception _) {
-                amount = -1;
-            }
-        }
-
+        double amount = parseAmount(unit);
+        String informalAmount = (unit == Unit.CUSTOM) ? amountField.getText() : null;
         Ingredient ingredient = ingredientComboBox.getSelectionModel().getSelectedItem();
 
-        if ((amount <= 0 && unit != Unit.CUSTOM) ||
-                ((informalAmount == null || informalAmount.isEmpty()) && unit == Unit.CUSTOM)) {
-            amountField.styleProperty().set("-fx-text-box-border: red;");
+        if (!validateInputs(amount, informalAmount, unit, ingredient)) {
             return;
         }
-        else {
+
+        saveIngredient(ingredient, amount, informalAmount, unit);
+        updateUI();
+    }
+
+    /**
+     * Parses the amount field based on the selected unit.
+     */
+    private double parseAmount(Unit unit) {
+        if (unit == Unit.CUSTOM) return 0;
+        try {
+            return Double.parseDouble(amountField.getText());
+        } catch (Exception ignored) {
+            return -1;
+        }
+    }
+
+    /**
+     * Validates the user inputs and updates UI styles for errors.
+     */
+    private boolean validateInputs(double amount, String informalAmount,
+                                   Unit unit, Ingredient ingredient) {
+        boolean valid = true;
+
+        if (!isAmountValid(amount, informalAmount, unit)) {
+            amountField.styleProperty().set("-fx-text-box-border: red;");
+            valid = false;
+        } else {
             amountField.styleProperty().set("-fx-text-box-border: lightgray;");
         }
 
-        if (ingredient == null){
-            ingredientComboBox.styleProperty().set("-fx-border-color: red; -fx-border-radius: 4;");
-            return;
-        }
-        else{
+        if (ingredient == null) {
+            ingredientComboBox.styleProperty().set(
+                    "-fx-border-color: red; -fx-border-radius: 4;");
+            valid = false;
+        } else {
             ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
         }
 
-        if (unit == null) { // user should not be able to set unit as null,
-            return;         // so I will simply not allow that
-        }
+        return valid;
+    }
 
-        // Fix: Split logic between local drafts and persisted recipes
+    /**
+     * Checks if the amount is valid for the given unit.
+     */
+    private boolean isAmountValid(double amount, String informalAmount, Unit unit) {
+        if (unit == Unit.CUSTOM) {
+            return informalAmount != null && !informalAmount.isEmpty();
+        }
+        return amount > 0;
+    }
+
+    /**
+     * Routes the save operation to either local or server storage.
+     */
+    private void saveIngredient(Ingredient ingredient, double amount,
+                                String informalAmount, Unit unit) {
         if (recipe.getId() == 0) {
-            // --- LOCAL UPDATE (No Server Call) ---
-
-            // Ensure the list exists
-            if (recipe.getRecipeIngredients() == null) {
-                recipe.setRecipeIngredients(new ArrayList<>());
-            }
-
-            if (recipeIngredient == null) {
-                // New ingredient
-                recipeIngredient = new RecipeIngredient(recipe, ingredient, informalAmount, amount, unit);
-                recipe.getRecipeIngredients().add(recipeIngredient);
-            } else {
-                // Update existing local ingredient
-                recipeIngredient.setAmount(amount);
-                recipeIngredient.setUnit(unit);
-                recipeIngredient.setInformalUnit(informalAmount);
-                recipeIngredient.setIngredient(ingredient);
-            }
+            saveLocal(ingredient, amount, informalAmount, unit);
         } else {
-            // --- SERVER UPDATE ---
-            if (recipeIngredient == null) {
-                recipeIngredient = serverUtils.addRecipeIngredient(
-                        new RecipeIngredient(recipe, ingredient, informalAmount, amount, unit)
-                );
-            } else {
-                recipeIngredient.setAmount(amount);
-                recipeIngredient.setUnit(unit);
-                recipeIngredient.setInformalUnit(informalAmount);
-                recipeIngredient.setIngredient(ingredient);
-                serverUtils.updateRecipeIngredient(recipeIngredient);
-            }
+            saveServer(ingredient, amount, informalAmount, unit);
+        }
+    }
+
+    /**
+     * Saves the ingredient to the local recipe object (not persisted yet).
+     */
+    private void saveLocal(Ingredient ingredient, double amount,
+                           String informalAmount, Unit unit) {
+        if (recipe.getRecipeIngredients() == null) {
+            recipe.setRecipeIngredients(new ArrayList<>());
         }
 
-        updateIngredientList.run();
+        if (recipeIngredient == null) {
+            recipeIngredient = new RecipeIngredient(recipe, ingredient,
+                    informalAmount, amount, unit);
+            recipe.getRecipeIngredients().add(recipeIngredient);
+        } else {
+            updateData(ingredient, amount, informalAmount, unit);
+        }
+    }
 
+    /**
+     * Saves the ingredient to the server.
+     */
+    private void saveServer(Ingredient ingredient, double amount,
+                            String informalAmount, Unit unit) {
+        if (recipeIngredient == null) {
+            recipeIngredient = serverUtils.addRecipeIngredient(
+                    new RecipeIngredient(recipe, ingredient, informalAmount, amount, unit)
+            );
+        } else {
+            updateData(ingredient, amount, informalAmount, unit);
+            serverUtils.updateRecipeIngredient(recipeIngredient);
+        }
+    }
+
+    /**
+     * Updates the data of the existing recipeIngredient object.
+     */
+    private void updateData(Ingredient ingredient, double amount,
+                            String informalAmount, Unit unit) {
+        recipeIngredient.setAmount(amount);
+        recipeIngredient.setUnit(unit);
+        recipeIngredient.setInformalUnit(informalAmount);
+        recipeIngredient.setIngredient(ingredient);
+    }
+
+    /**
+     * Updates the UI state after a successful save.
+     */
+    private void updateUI() {
+        updateIngredientList.run();
         textLabel.setText(recipeIngredient.formatIngredient());
 
         editView.setVisible(false);

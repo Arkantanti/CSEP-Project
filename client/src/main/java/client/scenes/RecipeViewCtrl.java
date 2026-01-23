@@ -13,11 +13,11 @@ import commons.RecipeIngredient;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
+
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
+
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
@@ -151,6 +151,7 @@ public class RecipeViewCtrl {
                 mainCtrl.getBundle().getString("txt.protein"), nutrients[1]));
         fatLabel.setText(String.format(Locale.US, "%s %.2f g/100g",
                 mainCtrl.getBundle().getString("txt.fat"), nutrients[2]));
+        hboxAllergens.getChildren().clear();
         Set<Allergen> allergens = new HashSet<>();
         ingredients.forEach(ing -> {
             if(ing.getIngredient() != null) {
@@ -243,7 +244,8 @@ public class RecipeViewCtrl {
             }
 
             // Check Tags Change
-            if (recipe.isCheap() != isCheap || recipe.isFast() != isFast || recipe.isVegan() != isVegan) {
+            if (recipe.isCheap() != isCheap ||
+                    recipe.isFast() != isFast || recipe.isVegan() != isVegan) {
                 recipe.setCheap(isCheap);
                 recipe.setFast(isFast);
                 recipe.setVegan(isVegan);
@@ -290,7 +292,8 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * Loads ingredients from the server into the ingredients container using EditableItem components.
+     * Loads ingredients from the server into the
+     * ingredients container using EditableItem components.
      */
     public void loadIngredients() {
         ingredientsContainer.getChildren().clear();
@@ -300,7 +303,8 @@ public class RecipeViewCtrl {
             return;
         }
         for (RecipeIngredient ri : ingredients) {
-            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
+            Pair<RecipeIngredientCtrl, Parent> item =
+                    fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                     "client", "scenes", "RecipeIngredient.fxml");
             RecipeIngredientCtrl ctrl = item.getKey();
             ctrl.initialize(ri, recipe, this::loadIngredients);
@@ -364,7 +368,8 @@ public class RecipeViewCtrl {
         steps.add("");
         int index = steps.size() - 1;
 
-        Pair<EditableItemCtrl, Parent> item = fxml.load(EditableItemCtrl.class, mainCtrl.getBundle(),
+        Pair<EditableItemCtrl, Parent> item =
+                fxml.load(EditableItemCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "EditableItem.fxml");
 
         EditableItemCtrl ctrl = item.getKey();
@@ -390,7 +395,8 @@ public class RecipeViewCtrl {
      */
     @FXML
     private void onAddRecipeIngredient(){
-        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
+        Pair<RecipeIngredientCtrl, Parent> item =
+                fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "RecipeIngredient.fxml");
         item.getKey().initialize(null, recipe, this::loadIngredients);
         ingredientsContainer.getChildren().add(item.getValue());

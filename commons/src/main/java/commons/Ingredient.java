@@ -149,7 +149,8 @@ public class Ingredient implements Showable{
     }
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients){
-        this.recipeIngredients = recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);
+        this.recipeIngredients = recipeIngredients==null
+                ? null : new ArrayList<>(recipeIngredients);
     }
 
     public void setAllergens(Set<Allergen> allergens){

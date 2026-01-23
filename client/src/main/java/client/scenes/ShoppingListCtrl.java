@@ -63,7 +63,8 @@ public class ShoppingListCtrl {
      * @param printer the printer utility for PDF generation
      */
     @Inject
-    public ShoppingListCtrl(ShoppingListService shoppingListService, MainCtrl mainCtrl, Printer printer) {
+    public ShoppingListCtrl(ShoppingListService shoppingListService,
+                            MainCtrl mainCtrl, Printer printer) {
         this.shoppingListService = shoppingListService;
         this.mainCtrl = mainCtrl;
         this.printer = printer;
@@ -141,8 +142,9 @@ public class ShoppingListCtrl {
                 Pair<ShoppingListCategorySectionCtrl, Parent> section = fxml.load(
                         ShoppingListCategorySectionCtrl.class, mainCtrl.getBundle(),
                         "client", "scenes", "ShoppingListCategorySection.fxml");
+                // Replaced '_' with 'ignored' to satisfy Checkstyle parser
                 section.getKey().initialize(category, categoryItems, fxml, mainCtrl.getBundle(),
-                        (_) -> {
+                        (ignored) -> {
                             loadShoppingList();
                             shoppingListService.saveChanges();
                             return null;
@@ -186,12 +188,14 @@ public class ShoppingListCtrl {
      * @return the created ShoppingListElementCtrl/Parent pair
      */
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, mainCtrl.getBundle(),
+        Pair<ShoppingListElementCtrl, Parent> item =
+                fxml.load(ShoppingListElementCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "ShoppingListElement.fxml");
-        boolean isTextMode = baseItem == null ? (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
+        boolean isTextMode = baseItem == null ?
+                (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
         item.getKey().seti18n(mainCtrl.getBundle());
         item.getKey().initialize(baseItem,
-                (_) -> {                        // onUpdate
+                (ignored) -> {                        // onUpdate
                     loadShoppingList();
                     shoppingListService.saveChanges();
                     return null;
@@ -250,7 +254,8 @@ public class ShoppingListCtrl {
             return;
         }
         try {
-            String markdown = printer.createShoppingListOutputString(shoppingListService.getShoppingList(), shoppingListService);
+            String markdown = printer.createShoppingListOutputString(
+                    shoppingListService.getShoppingList(), shoppingListService);
             printer.markdownToPDF(path, markdown);
         } catch (IOException e) {
             e.printStackTrace();

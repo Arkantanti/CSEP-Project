@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Service that repeatedly polls favoritesManager and checks with the server if they still exist through the validate method in the FavoritesManager class.
- * If favorites are deleted by another user, the polling service will take notice of this and notify the user trough an alert.
+ * Service that repeatedly polls favoritesManager and
+ * checks with the server if they still exist
+ * through the validate method in the FavoritesManager class.
+ * If favorites are deleted by another user, the polling service will
+ * take notice of this and notify the user trough an alert.
  */
 public class FavoritesPollingService {
 
@@ -31,7 +34,8 @@ public class FavoritesPollingService {
 
     /**
      * Sets the MainCtrl controller so the thread can refresh UI.
-     * This must be called before starting the polling service, otherwise a NullPointerException will occur.
+     * This must be called before starting the
+     * polling service, otherwise a NullPointerException will occur.
      *
      * @param mainCtrl the main controller
      */
@@ -41,7 +45,8 @@ public class FavoritesPollingService {
 
     /**
      * Starts the polling thread.
-     * The thread checks every POLLING_INERVAL_SECONDS seconds if favorited recipes still exist on the server.
+     * The thread checks every POLLING_INERVAL_SECONDS
+     * seconds if favorited recipes still exist on the server.
      */
     public void startPollingService() {
         if (running) {
@@ -79,7 +84,8 @@ public class FavoritesPollingService {
                 running = false;
                 Thread.currentThread().interrupt();
             } catch (IOException e) {
-                System.err.println("Error validating favorite recipes in the config file: " + e.getMessage());
+                System.err.println("Error validating " +
+                        "favorite recipes in the config file: " + e.getMessage());
             }
         }
     }

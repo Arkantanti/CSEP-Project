@@ -86,7 +86,8 @@ public class ShoppingListService {
                                   double amount,
                                   Unit unit,
                                   String recipeName) {
-        getShoppingList().add(new ShoppingListItem(ingredientId, ingredientName, informalUnit, amount, unit, recipeName));
+        getShoppingList().add(new ShoppingListItem(ingredientId,
+                ingredientName, informalUnit, amount, unit, recipeName));
         saveChanges();
     }
 
@@ -118,7 +119,8 @@ public class ShoppingListService {
      * @param amount the multiplier to multiply them by
      * @param recipeName the name of the recipe these ingredients come from
      */
-    public void addIngredients(List<RecipeIngredient> ingredients, double amount, String recipeName){
+    public void addIngredients(List<RecipeIngredient> ingredients,
+                               double amount, String recipeName){
         for (RecipeIngredient i : ingredients) {
             Ingredient ingredient = i.getIngredient();
             if (ingredient == null) {
