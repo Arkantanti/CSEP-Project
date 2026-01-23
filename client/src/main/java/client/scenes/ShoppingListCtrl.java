@@ -15,7 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
-import java.util.ResourceBundle;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -158,8 +157,7 @@ public class ShoppingListCtrl {
                             shoppingListService.removeItem(itemToRemove);
                             shoppingListService.saveChanges();
                             return null;
-                        },
-                        currentAddMode == AddMode.TEXT);
+                        });
                 ingredientListBox.getChildren().add(section.getValue());
             }
         }
