@@ -53,7 +53,6 @@ public class ShoppingListCtrl {
     private final Printer printer;
     private MyFXML fxml;
 
-    private ResourceBundle bundle;
 
 
     /**
@@ -73,8 +72,7 @@ public class ShoppingListCtrl {
     /**
      * called when the shopping list is opened
      */
-    public void initialize(MyFXML fxml, ResourceBundle bundle) {
-        this.bundle = bundle;
+    public void initialize(MyFXML fxml) {
         this.fxml = fxml;
         setupAddModeButtons();
         updateGroupingButtonStyle();
@@ -141,7 +139,7 @@ public class ShoppingListCtrl {
 
             if (!categoryItems.isEmpty()) {
                 Pair<ShoppingListCategorySectionCtrl, Parent> section = fxml.load(
-                        ShoppingListCategorySectionCtrl.class, bundle,
+                        ShoppingListCategorySectionCtrl.class, mainCtrl.getBundle(),
                         "client", "scenes", "ShoppingListCategorySection.fxml");
                 section.getKey().initialize(category, categoryItems, fxml, mainCtrl.getBundle(),
                         (_) -> {
@@ -188,9 +186,10 @@ public class ShoppingListCtrl {
      * @return the created ShoppingListElementCtrl/Parent pair
      */
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, bundle,
+        Pair<ShoppingListElementCtrl, Parent> item = fxml.load(ShoppingListElementCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "ShoppingListElement.fxml");
         boolean isTextMode = baseItem == null ? (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
+        item.getKey().seti18n(mainCtrl.getBundle());
         item.getKey().initialize(baseItem,
                 (_) -> {                        // onUpdate
                     loadShoppingList();
@@ -235,10 +234,10 @@ public class ShoppingListCtrl {
     private void updateGroupingButtonStyle() {
         if (groupedView) {
             toggleGroupingButton.getStyleClass().add("active");
-            toggleGroupingButton.setText("Grouped");
+            toggleGroupingButton.setText(mainCtrl.getBundle().getString("txt.group"));
         } else {
             toggleGroupingButton.getStyleClass().remove("active");
-            toggleGroupingButton.setText("Group");
+            toggleGroupingButton.setText(mainCtrl.getBundle().getString("txt.group"));
         }
     }
 

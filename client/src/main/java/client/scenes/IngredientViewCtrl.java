@@ -83,6 +83,7 @@ public class  IngredientViewCtrl {
         categoryComboBox.setVisible(false);
         categoryComboBox.setManaged(false);
         categoryComboBox.getItems().setAll(IngredientCategory.values());
+        setupCategoryComboBox();
         List<TextField> fields = List.of(proteinTf,carbsTf,fatTf);
 
         UnaryOperator<TextFormatter.Change> filter = change -> {
@@ -105,7 +106,8 @@ public class  IngredientViewCtrl {
         allergenMenu = new ContextMenu();
 
         for (Allergen a : Allergen.values()) {
-            CheckMenuItem item = new CheckMenuItem(a.getDisplayName());
+            CheckMenuItem item = new CheckMenuItem(tr(a));
+            item.setUserData(a);
 
             item.setOnAction(e -> {
                 if (item.isSelected()) {
@@ -136,22 +138,22 @@ public class  IngredientViewCtrl {
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
 
             for(Allergen allergen : ingredient.getAllergens()) {
-                Label label = new Label(allergen.getDisplayName());
+                Label label = new Label(tr(allergen));
+                label.setUserData(allergen);
                 label.getStyleClass().add("allergen-label");
                 label.setStyle("-fx-background-color:" + allergen.getColor()+";");
                 hboxAllergens.getChildren().addFirst(label);
                 selectedAllergens.add(allergen);
             }
-            allergenMenu.getItems().forEach(item -> {
-                CheckMenuItem c = (CheckMenuItem) item;
-                if (selectedAllergens.stream()
-                        .map(Allergen::getDisplayName).toList().contains(c.getText())) {
-                    c.setSelected(true);
-                }
+            allergenMenu.getItems().forEach(mi -> {
+                CheckMenuItem c = (CheckMenuItem) mi;
+                Allergen a = (Allergen) c.getUserData();
+                c.setSelected(selectedAllergens.contains(a));
             });
 
+
             String categoryName = ingredient.getCategory().name();
-            categoryLabel.setText(categoryName.charAt(0) + categoryName.substring(1).toLowerCase());
+            categoryLabel.setText(mainCtrl.getBundle().getString("cat."+categoryName));
             categoryComboBox.setValue(ingredient.getCategory());
 
         }
@@ -242,12 +244,8 @@ public class  IngredientViewCtrl {
         categoryComboBox.setVisible(false);
         categoryComboBox.setManaged(false);
 
-        if (ingredient != null && ingredient.getCategory() != null) {
-            String categoryName = ingredient.getCategory().name();
-            categoryLabel.setText(categoryName.charAt(0) + categoryName.substring(1).toLowerCase());
-        } else {
-            categoryLabel.setText("Uncategorized");
-        }
+        IngredientCategory c = (ingredient != null) ? ingredient.getCategory() : null;
+        categoryLabel.setText(c == null ? tr(IngredientCategory.UNCATEGORIZED) : tr(c));
 
         // show category label
         categoryLabel.setVisible(true);
@@ -326,7 +324,8 @@ public class  IngredientViewCtrl {
     private void addChip(Allergen a) {
         if (!selectedAllergens.add(a)) return;
 
-        Label label = new Label(a.getDisplayName());
+        Label label = new Label(tr(a));
+        label.setUserData(a);
         label.getStyleClass().add("allergen-label");
         label.setStyle("-fx-background-color:" + a.getColor()+";");
         hboxAllergens.getChildren().addFirst(label);
@@ -343,11 +342,51 @@ public class  IngredientViewCtrl {
 
         hboxAllergens.getChildren().removeIf(node ->
                 node instanceof Label &&
-                        ((Label) node).getText().equals(a.getDisplayName())
+                        a.equals(node.getUserData())
         );
         ingredient.setAllergens(selectedAllergens);
         server.updateIngredient(ingredient);
     }
+
+    /**
+     * helper function for translating Allergens
+     *
+     * @param a enum to be displayed
+     * @return String to display the name of translated Allergen
+     */
+    private String tr(Allergen a) {
+        return mainCtrl.getBundle().getString("allergen." + a.name());
+    }
+
+    /**
+     * helper function for translating IngredientCategory
+     *
+     * @param c enum to be displayed
+     * @return String to display the name of translated IngredientCategory
+     */
+    private String tr(IngredientCategory c) {
+        return mainCtrl.getBundle().getString("cat." + c.name());
+    }
+
+    /**
+     * function initializing Allergens and Categories display depending on the current language
+     */
+    private void setupCategoryComboBox() {
+        categoryComboBox.setButtonCell(new ListCell<>() {
+            @Override protected void updateItem(IngredientCategory item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : tr(item));
+            }
+        });
+        categoryComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override protected void updateItem(IngredientCategory item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : tr(item));
+            }
+        });
+    }
+
+
 
 }
 

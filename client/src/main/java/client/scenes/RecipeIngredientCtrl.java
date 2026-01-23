@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class RecipeIngredientCtrl {
     @FXML private HBox defaultView;
@@ -50,6 +51,8 @@ public class RecipeIngredientCtrl {
         this.recipeIngredient = recipeIngredient;
         this.recipe = recipe;
         this.updateIngredientList = updateIngredientList;
+
+        setupUnitComboBox();
 
         editView.setVisible(false);
         editView.setManaged(false);
@@ -284,4 +287,43 @@ public class RecipeIngredientCtrl {
             ingredientComboBox.getSelectionModel().select(newIngredient);
         }
     }
+
+    /**
+     * Helper method for retrieving current ResourceBundle
+     * @return ResourceBundle with current language settings
+     */
+    private ResourceBundle i18n() { return mainCtrl.getBundle(); }
+
+    /**
+     * helper function for translating Unit
+     *
+     * @param u enum to be displayed
+     * @return String to display the name of translated Unit
+     */
+    private String trUnit(Unit u) {
+        return i18n().getString("unit." + u.name());
+    }
+
+    /**
+     * function initializing Allergens and Categories display depending on the current language
+     */
+    private void setupUnitComboBox() {
+        unitComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Unit item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : trUnit(item));
+            }
+        });
+
+        unitComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Unit item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : trUnit(item));
+            }
+        });
+    }
+
+
 }
