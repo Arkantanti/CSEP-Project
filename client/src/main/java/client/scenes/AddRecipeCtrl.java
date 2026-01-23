@@ -100,7 +100,7 @@ public class AddRecipeCtrl {
                 return;
             }
 
-            if(languageChoise == null){
+            if(languageChoise.getValue() == null){
                 mainCtrl.showError("No language selected", "Choose a valid language");
                 return;
             }

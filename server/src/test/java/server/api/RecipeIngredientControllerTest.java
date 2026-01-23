@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import server.database.*;
+import server.websocket.WebSocketHandler;
 
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,8 @@ class RecipeIngredientControllerTest {
     @BeforeEach
     void setup() {
         repo = new RecipeIngredientRepositoryTest();
-        controller  = new RecipeIngredientController(repo);
+        WebSocketHandler handler = new WebSocketHandler();
+        controller  = new RecipeIngredientController(repo, handler);
         RecipeRepository recipeRepo = new RecipeRepositoryTest();
         IngredientRepository ingredientRepo = new IngredientRepositoryTest();
 

@@ -1,6 +1,7 @@
 package client.scenes;
 
 import commons.Language;
+import client.services.WebsocketService;
 import commons.Recipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 public class MainCtrlTest {
 
@@ -15,7 +17,8 @@ public class MainCtrlTest {
 
     @BeforeEach
     public void setup() {
-        sut = new MainCtrl();
+        WebsocketService ws = mock(WebsocketService.class);
+        sut = new MainCtrl(ws);
     }
 
     @Test
