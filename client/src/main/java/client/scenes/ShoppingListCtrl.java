@@ -159,8 +159,7 @@ public class ShoppingListCtrl {
                             shoppingListService.removeItem(itemToRemove);
                             shoppingListService.saveChanges();
                             return null;
-                        },
-                        currentAddMode == AddMode.TEXT);
+                        });
                 ingredientListBox.getChildren().add(section.getValue());
             }
         }
