@@ -246,6 +246,39 @@ public class AddIngredientCtrl {
         );
         ingredient.setAllergens(selectedAllergens);
     }
+
+    public TextField getNameTextField() {
+        return nameTextField;
+    }
+
+    public Label getNameLabel() {
+        return nameLabel;
+    }
+
+    public TextField getFatTf() {
+        return fatTf;
+    }
+
+    public TextField getProteinTf() {
+        return proteinTf;
+    }
+
+    public TextField getCarbsTf() {
+        return carbsTf;
+    }
+
+    public FlowPane getFpAllergens() {
+        return fpAllergens;
+    }
+
+    public Button getAddAllergenButton() {
+        return addAllergenButton;
+    }
+
+    public ComboBox<IngredientCategory> getCategoryComboBox() {
+        return categoryComboBox;
+    }
+
 }
 
 
