@@ -82,7 +82,8 @@ _(Basic Requirements fully implemented)_
 ### Advanced Features
 
 #### Automated Change Synchronization
-- TODO
+- Auto-sync changes across clients: updates (recipe title, add/delete recipes, and any recipe content changes) propagate automatically so users never need to manually refresh.
+- Implementation: implemented using WebSockets with server-pushed updates (no client polling).
 
 _(Feature implemented fully)_
 
@@ -110,7 +111,10 @@ _(Feature implemented fully for excellent)_
 _(Feature implemented fully for excellent)_
 
 #### Live language switch
-- TODO
+- Runtime language switching: show a clear language indicator (flag/icon) and let users click it to pick from all available languages, translate app labels/buttons to the selected language, available languages: Polish, Dutch, English.
+- Persistence: Remember the user’s last selected UI language after restart.
+- Filtering: allow setting a language per recipe, and let users filter recipes by one or multiple languages they understand, remember this filter after restart.
+- Non-functional requirements: Use JavaFX i18n via localized .properties in resources and FXMLLoader.setResources, support English + Dutch + one extra (can be fictional), limit to left-to-right languages, persist selection + filter in the config file.
 
 _(Feature implemented fully)_
 
@@ -139,6 +143,9 @@ When creating a new recipe, the following constraints apply:
 - At least one ingredient has to be added.
 - At least one preparation step has to be added.
 - Servings must be an integer number greater than 0.
+- A language must be chosen.
+
+When editing the name of an existent recipe or a new one app will automatically capitalize every word to ensure proper sorting and more consistent naming convention. 
 
 When inspecting a recipe, the following two options are available:
 - To clone a recipe and edit it before it is added to the database - "⎅" button next to the recipe name.
@@ -172,6 +179,10 @@ PRODUCE, FRUIT, VEGETABLES, DAIRY, MEAT, FISH, PANTRY, BAKERY, BEVERAGES, SPICES
 To edit the category of an ingredient you have to press the edit button next to the title "✏" - it also allows for editing the ingredient's name. The ingredients are later grouped by those categories in the shopping list - you can use the "group" button to group or ungroup them.
 
 ### Allergens
+Each ingredient can be marked with any number of allergens tags. Allergens available to choose from are:
+GLUTEN, MILK, EGGS, PEANUTS, TREE_NUTS, SOY, FISH, SHELLFISH, SESAME, MUSTARD
+
+To add or remove an allergen from an ingredient use the "+/-" button at the bottom of ingredient view. Recipe views show the summative list of the allergens of all of recipe's ingredients.
 
 ### Language switch
-TODO
+To choose a language use the flag button in the top right corner (available languages are: Polish, English and Dutch). To filter through recipes by language use the 3 checkboxes at the top of the app. The filter through recipes and support synchronization with favorites filtering and searching. By default, all 3 are ticked.   
