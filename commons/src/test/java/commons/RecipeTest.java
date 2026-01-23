@@ -18,9 +18,9 @@ class RecipeTest {
     @BeforeEach
     void setUp() {
         List<String> steps = new ArrayList<>(Arrays.asList("Step 1", "Step 2"));
-        recipe = new Recipe("Cake", 4, steps, "English",false,false,false);
-        recipe2 = new Recipe("Bread", 2, steps, "English", true, true, true);
-        recipeSame = new Recipe("Cake", 4, new ArrayList<>(steps), "English",false,false,false);
+        recipe = new Recipe("Cake", 4, steps, Language.English,false,false,false);
+        recipe2 = new Recipe("Bread", 2, steps, Language.English, true, true, true);
+        recipeSame = new Recipe("Cake", 4, new ArrayList<>(steps), Language.English,false,false,false);
     }
 
     @Test

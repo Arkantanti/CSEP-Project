@@ -4,6 +4,7 @@ import client.MyFXML;
 import client.services.RecipeService;
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
+import commons.Language;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import javafx.fxml.FXML;
@@ -99,6 +100,11 @@ public class AddRecipeCtrl {
                 return;
             }
 
+            if(languageChoise.getValue() == null){
+                mainCtrl.showError("No language selected", "Choose a valid language");
+                return;
+            }
+
             int servings = 1;
             try {
                 servings = Integer.parseInt(servingsArea.getText().trim());
@@ -114,11 +120,14 @@ public class AddRecipeCtrl {
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
 
-            String language = null;
-            if(languageChoise.getValue() == null){
-                language = "english";
-            } else {
-                language = languageChoise.getValue();
+            Language language = null;
+
+            if(languageChoise.getValue().equals("English")){
+                language = Language.English;
+            } else if(languageChoise.getValue().equals("Dutch")){
+                language = Language.Dutch;
+            } else if(languageChoise.getValue().equals("Polish")){
+                language = Language.Polish;
             }
 
             if (isCloneMode) {
@@ -191,9 +200,15 @@ public class AddRecipeCtrl {
                 return;
             }
 
-            String language = languageChoise.getValue();
-            if(language == null){
-                mainCtrl.showError("Input Error", "There was no language selected");
+            Language language;
+            if(languageChoise.getValue().equals("English")){
+                language = Language.English;
+            } else if(languageChoise.getValue().equals("Dutch")){
+                language = Language.Dutch;
+            } else if(languageChoise.getValue().equals("Polish")){
+                language = Language.Polish;
+            } else {
+                mainCtrl.showError("Input Error", "There was no proper language selected");
                 return;
             }
 
@@ -216,6 +231,7 @@ public class AddRecipeCtrl {
                 recipe.setName(name);
                 recipe.setServings(servings);
                 recipe.setPreparationSteps(preparationSteps);
+                recipe.setLanguage(language);
                 recipe = server.updateRecipe(recipe);
             }
 
@@ -305,7 +321,7 @@ public class AddRecipeCtrl {
         fastCheckBox.setSelected(originalRecipe.isFast());
         veganCheckBox.setSelected(originalRecipe.isVegan());
         try{
-            languageChoise.setValue(originalRecipe.getLanguage());
+            languageChoise.setValue(originalRecipe.getLanguage().toString());
         } catch(Exception _){
 
         }
@@ -352,6 +368,10 @@ public class AddRecipeCtrl {
 
         // Get ingredients from the original recipe
         List<RecipeIngredient> originalIngredients = server.getRecipeIngredients(originalRecipe.getId());
+
+        if(languageChoise == null){
+            return;
+        }
 
         if (originalIngredients == null || originalIngredients.isEmpty()) {
             return;

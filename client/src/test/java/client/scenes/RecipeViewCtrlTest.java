@@ -6,6 +6,7 @@ import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
+import commons.Language;
 import commons.Recipe;
 import javafx.event.ActionEvent;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ public class RecipeViewCtrlTest {
 
         RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
-        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"), "English",false,false,false);
+        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"), Language.English,false,false,false);
         recipe.setId(1L);
 
         when(favoritesManager.isFavorite(1L)).thenReturn(false);
@@ -77,7 +78,7 @@ public class RecipeViewCtrlTest {
 
         RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
-        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"), "English",false,false,false);
+        Recipe recipe = new Recipe("Test Recipe", 2, List.of("step1"), Language.English,false,false,false);
         recipe.setId(1L);
 
         when(favoritesManager.isFavorite(1L)).thenReturn(true);
@@ -119,7 +120,7 @@ public class RecipeViewCtrlTest {
         RecipeViewCtrl ctrl = newCtrl(mainCtrl, favoritesManager);
 
         // This must throw BEFORE touching fxml or JavaFX containers
-        Recipe recipe = new Recipe("Test Recipe", 1, null, "English",false,false,false);
+        Recipe recipe = new Recipe("Test Recipe", 1, null, Language.English,false,false,false);
         recipe.setId(1L);
 
         setField(ctrl, "recipe", recipe);
