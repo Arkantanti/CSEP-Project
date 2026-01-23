@@ -148,6 +148,8 @@ public class RecipeViewCtrl {
         carbsLabel.setText(String.format(Locale.US, "Carbs: %.2f g/100g", nutrients[0]));
         proteinLabel.setText(String.format(Locale.US, "Protein: %.2f g/100g", nutrients[1]));
         fatLabel.setText(String.format(Locale.US, "Fat: %.2f g/100g", nutrients[2]));
+
+        hboxAllergens.getChildren().clear();
         Set<Allergen> allergens = new HashSet<>();
         ingredients.forEach(ing -> {
             if(ing.getIngredient() != null) {
