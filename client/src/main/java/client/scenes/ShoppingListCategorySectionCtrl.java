@@ -94,10 +94,11 @@ public class ShoppingListCategorySectionCtrl {
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
         Pair<ShoppingListElementCtrl, Parent> element =
                 fxml.load(ShoppingListElementCtrl.class, bundle,
-                "client", "scenes", "ShoppingListElement.fxml");
+                        "client", "scenes", "ShoppingListElement.fxml");
         boolean isTextMode = baseItem.isTextOnly();
         element.getKey().initialize(baseItem,
-                (Void _) -> {
+                // Replaced '_' with 'ignored'
+                (Void ignored) -> {
                     loadItems();
                     onUpdate.apply(null);
                     return null;

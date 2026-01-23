@@ -144,8 +144,9 @@ public class ShoppingListCtrl {
                 Pair<ShoppingListCategorySectionCtrl, Parent> section = fxml.load(
                         ShoppingListCategorySectionCtrl.class, bundle,
                         "client", "scenes", "ShoppingListCategorySection.fxml");
+                // Replaced '_' with 'ignored' to satisfy Checkstyle parser
                 section.getKey().initialize(category, categoryItems, fxml, mainCtrl.getBundle(),
-                        (_) -> {
+                        (ignored) -> {
                             loadShoppingList();
                             shoppingListService.saveChanges();
                             return null;
@@ -190,11 +191,13 @@ public class ShoppingListCtrl {
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
         Pair<ShoppingListElementCtrl, Parent> item =
                 fxml.load(ShoppingListElementCtrl.class, bundle,
-                "client", "scenes", "ShoppingListElement.fxml");
+                        "client", "scenes", "ShoppingListElement.fxml");
         boolean isTextMode = baseItem == null ?
                 (currentAddMode == AddMode.TEXT) : baseItem.isTextOnly();
+
+        // Replaced '_' with 'ignored' to satisfy Checkstyle parser
         item.getKey().initialize(baseItem,
-                (_) -> {                        // onUpdate
+                (ignored) -> {                        // onUpdate
                     loadShoppingList();
                     shoppingListService.saveChanges();
                     return null;
