@@ -145,7 +145,7 @@ When creating a new recipe, the following constraints apply:
 - Servings must be an integer number greater than 0.
 - A language must be chosen.
 
-When editing the name of an existent recipe or a new one app will automatically capitalize every word to ensure proper sorting and more consistent naming convention. 
+When editing the name of an existent recipe or a new one app will automatically capitalize the name to ensure proper sorting and more consistent naming convention. 
 
 When inspecting a recipe, the following two options are available:
 - To clone a recipe and edit it before it is added to the database - "⎅" button next to the recipe name.
