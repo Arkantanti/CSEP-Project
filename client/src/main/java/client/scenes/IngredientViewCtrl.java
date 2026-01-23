@@ -7,11 +7,11 @@ import commons.Allergen;
 import commons.Ingredient;
 import commons.IngredientCategory;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
+
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
+
 import javafx.scene.paint.Color;
 import javafx.util.converter.DoubleStringConverter;
 
@@ -132,7 +132,8 @@ public class  IngredientViewCtrl {
             fatTf.setText(String.format(Locale.US, "%.2f", ingredient.getFat()));
             proteinTf.setText(String.format(Locale.US, "%.2f", ingredient.getProtein()));
             carbsTf.setText(String.format(Locale.US, "%.2f", ingredient.getCarbs()));
-            kcalLabel.setText(String.format(Locale.US, "%.0f kcal/100g",ingredient.calculateCalories()*100));
+            kcalLabel.setText(String.format(Locale.US,
+                    "%.0f kcal/100g",ingredient.calculateCalories()*100));
             usedCountLabel.setText(String.valueOf(server.recipeCount(ingredient.getId())));
 
             for(Allergen allergen : ingredient.getAllergens()) {
