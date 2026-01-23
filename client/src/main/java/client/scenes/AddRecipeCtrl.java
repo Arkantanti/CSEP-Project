@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.services.RecipeService;
 import com.google.inject.Inject;
 import client.utils.ServerUtils;
 import commons.Recipe;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static commons.Recipe.recipeNameChecker;
+
 public class AddRecipeCtrl {
     @FXML
     private Label nameLabel;
@@ -27,6 +30,8 @@ public class AddRecipeCtrl {
     @FXML
     private Button cancelButton;
     @FXML
+    private ComboBox<String> languageChoise;
+    @FXML
     private CheckBox cheapCheckBox;
     @FXML
     private CheckBox fastCheckBox;
@@ -35,6 +40,7 @@ public class AddRecipeCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final RecipeService recipeService;
 
     private MyFXML fxml;
 
@@ -42,7 +48,6 @@ public class AddRecipeCtrl {
     private TextField nameTextField;
     @FXML
     private TextField servingsArea;
-
     @FXML
     private TextArea preparationsArea;
 
@@ -59,10 +64,11 @@ public class AddRecipeCtrl {
      * @param server the server it is linked to
      */
     @Inject
-    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AddRecipeCtrl(ServerUtils server, MainCtrl mainCtrl, RecipeService recipeService) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
+        this.recipeService = recipeService;
     }
 
     /**
@@ -84,7 +90,14 @@ public class AddRecipeCtrl {
         // If no recipe exists yet, create it from current fields
         if (recipe == null) {
             String name = nameTextField.getText().trim();
-            if (name.isEmpty()) name = "New Recipe";
+            if (name.isEmpty()) {
+                name = "New Recipe";
+            }
+
+            if(recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)){
+                mainCtrl.showError("Name Used.", "This name is already in use.");
+                return;
+            }
 
             int servings = 1;
             try {
@@ -100,14 +113,22 @@ public class AddRecipeCtrl {
             boolean isCheap = cheapCheckBox.isSelected();
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
-            if (isCloneMode) {
-                recipe = new Recipe(name, servings, steps, isCheap, isFast, isVegan);
+
+            String language = null;
+            if(languageChoise.getValue() == null){
+                language = "english";
             } else {
-                recipe = server.add(new Recipe(name, servings, steps, isCheap, isFast, isVegan));
+                language = languageChoise.getValue();
+            }
+
+            if (isCloneMode) {
+                recipe = new Recipe(name, servings, steps, language, isCheap, isFast, isVegan);
+            } else {
+                recipe = server.add(new Recipe(name, servings, steps, language, isCheap, isFast, isVegan));
             }
         }
 
-        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "RecipeIngredient.fxml");
         item.getKey().initialize(null, recipe, this::showIngredients);
 
@@ -128,7 +149,13 @@ public class AddRecipeCtrl {
             boolean isFast = fastCheckBox.isSelected();
             boolean isVegan = veganCheckBox.isSelected();
             if (name.isBlank()) {
-                showError("Input Error", "Recipe name cannot be empty.");
+                mainCtrl.showError("Input Error", "Recipe name cannot be empty.");
+                return;
+            }
+
+            if(recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)){
+                mainCtrl.showError("Used Name",
+                        "This recipe name is already in use, please choose another.");
                 return;
             }
 
@@ -136,11 +163,11 @@ public class AddRecipeCtrl {
             try {
                 servings = Integer.parseInt(servingsArea.getText().trim());
                 if (servings < 1) {
-                    showError("Input Error", "Servings must be at least 1.");
+                    mainCtrl.showError("Input Error", "Servings must be at least 1.");
                     return;
                 }
             } catch (NumberFormatException e) {
-                showError("Input Error", "Servings must be a number.");
+                mainCtrl.showError("Input Error", "Servings must be a number.");
                 return;
             }
 
@@ -148,19 +175,24 @@ public class AddRecipeCtrl {
                     preparationsArea.getText().split("\\r?\\n"));
             if (preparationSteps.isEmpty() ||
                     (preparationSteps.size() == 1 && preparationSteps.get(0).isBlank())) {
-                showError("Input Error", "Preparation steps cannot be empty.");
+                mainCtrl.showError("Input Error", "Preparation steps cannot be empty.");
                 return;
             }
+
+            String language = languageChoise.getValue();
+            if(language == null){
+                mainCtrl.showError("Input Error", "There was no language selected");
+                return;
+            }
+
             isSaved = true;
 
             // Check if a recipe exists before adding the ingredients.
             if (recipe == null) {
                 // If not first create the recipe.
-                recipe = server.add(new Recipe(name, servings,
-                        preparationSteps, isCheap, isFast, isVegan));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, language, isCheap, isFast, isVegan));
             } else if (isCloneMode && recipe.getId() == 0) {
-                recipe = server.add(new Recipe(name, servings,
-                        preparationSteps, isCheap, isFast, isVegan));
+                recipe = server.add(new Recipe(name, servings, preparationSteps, language, isCheap, isFast, isVegan));
                 isCloneMode = false;
             } else {
                 // Update the existing recipe.
@@ -180,94 +212,60 @@ public class AddRecipeCtrl {
             mainCtrl.showRecipe(recipe);
 
         } catch (Exception e) {
-            showError("Error",
-                    "Could not save the recipe. " +
-                            "There might be a problem with your server connection.");
+            mainCtrl.showError("Error",
+                    "Could not save the recipe. There might be a problem with your server connection.");
         }
     }
 
     /**
      * Save all ingredients to the server.
-     * Orchestrator method: complexity = 2 (Base + Catch).
      */
     private void saveAllIngredientsToServer(Recipe targetRecipe) {
         try {
-            List<RecipeIngredient> ingredientsToSave = collectIngredientsFromUI(targetRecipe);
-            syncIngredientsWithServer(targetRecipe, ingredientsToSave);
+            //Collect the ingredients.
+            List<RecipeIngredient> ingredientsToSave = new ArrayList<>();
+
+            for (javafx.scene.Node node : ingredientsContainer.getChildren()) {
+                Object controller = node.getUserData();
+                if (controller instanceof RecipeIngredientCtrl ctrl) {
+                    RecipeIngredient ri = ctrl.getRecipeIngredient();
+
+                    if (ri != null && ri.getIngredient() != null) {
+                        if (ri.getRecipe() == null || ri.getRecipe().getId() != targetRecipe.getId()) {
+                            ri.setRecipe(targetRecipe);
+                        }
+                        ingredientsToSave.add(ri);
+                    }
+                }
+            }
+
+            // Only delete old ingredients if we have new ones to save
+            if (!ingredientsToSave.isEmpty()) {
+                if (targetRecipe.getId() > 0) {
+                    // Delete all existing ingredients to prevent duplicates
+                    List<RecipeIngredient> existing = server.getRecipeIngredients(targetRecipe.getId());
+                    if (existing != null) {
+                        for (RecipeIngredient old : existing) {
+                            server.deleteRecipeIngredient(old.getId());
+                        }
+                    }
+                }
+
+                // Input the recipes again
+                for (RecipeIngredient ingredient : ingredientsToSave) {
+                    RecipeIngredient fresh = new RecipeIngredient(
+                            targetRecipe,
+                            ingredient.getIngredient(),
+                            ingredient.getInformalUnit(),
+                            ingredient.getAmount(),
+                            ingredient.getUnit()
+                    );
+                    server.addRecipeIngredient(fresh);
+                }
+            }
         } catch (Exception e) {
             System.out.println("There was an error in the saving of the ingredients.");
         }
-    }
-
-    /**
-     * Iterates through the UI nodes to collect valid RecipeIngredients.
-     * Complexity = 5 (Base + For + InstanceOf + NullCheck + NullCheck).
-     */
-    private List<RecipeIngredient> collectIngredientsFromUI(Recipe targetRecipe) {
-        List<RecipeIngredient> ingredientsToSave = new ArrayList<>();
-
-        for (javafx.scene.Node node : ingredientsContainer.getChildren()) {
-            if (node.getUserData() instanceof RecipeIngredientCtrl ctrl) {
-                RecipeIngredient ri = ctrl.getRecipeIngredient();
-
-                if (ri != null && ri.getIngredient() != null) {
-                    // We can blindly set the recipe here.
-                    // If it was already set, this is a harmless idempotent operation.
-                    // This removes the complexity of checking IDs before setting.
-                    ri.setRecipe(targetRecipe);
-                    ingredientsToSave.add(ri);
-                }
-            }
-        }
-        return ingredientsToSave;
-    }
-
-    /**
-     * Handles the database deletion and insertion logic.
-     * Complexity = 6 (Base + EmptyCheck + IdCheck + ExistingCheck + ForDelete + ForAdd).
-     */
-    private void syncIngredientsWithServer(Recipe targetRecipe,
-                                           List<RecipeIngredient> ingredientsToSave) {
-        if (ingredientsToSave.isEmpty()) {
-            return;
-        }
-
-        if (targetRecipe.getId() > 0) {
-            // Delete all existing ingredients to prevent duplicates
-            List<RecipeIngredient> existing =
-                    server.getRecipeIngredients(targetRecipe.getId());
-
-            if (existing != null) {
-                for (RecipeIngredient old : existing) {
-                    server.deleteRecipeIngredient(old.getId());
-                }
-            }
-        }
-
-        // Input the recipes again
-        for (RecipeIngredient ingredient : ingredientsToSave) {
-            RecipeIngredient fresh = new RecipeIngredient(
-                    targetRecipe,
-                    ingredient.getIngredient(),
-                    ingredient.getInformalUnit(),
-                    ingredient.getAmount(),
-                    ingredient.getUnit()
-            );
-            server.addRecipeIngredient(fresh);
-        }
-    }
-
-    /**
-     * To show an error for if something goes wrong
-     * @param header The head text of the error
-     * @param content The main text of the error
-     */
-    private void showError(String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 
     /**
@@ -283,23 +281,35 @@ public class AddRecipeCtrl {
         this.isCloneMode = true;
 
         // Set the values that have changed to the clone
-        nameTextField.setText(originalRecipe.getName());
+        nameTextField.setText(originalRecipe.getName() + " - Clone");
         servingsArea.setText(String.valueOf(originalRecipe.getServings()));
         preparationsArea.setText(String.join("\n", originalRecipe.getPreparationSteps()));
         cheapCheckBox.setSelected(originalRecipe.isCheap());
         fastCheckBox.setSelected(originalRecipe.isFast());
         veganCheckBox.setSelected(originalRecipe.isVegan());
+        try{
+            languageChoise.setValue(originalRecipe.getLanguage());
+        } catch(Exception _){
+
+        }
+
 
         this.recipe = new Recipe(
-                originalRecipe.getName(),
+                (originalRecipe.getName() + " - Clone"),
                 originalRecipe.getServings(),
                 new ArrayList<>(originalRecipe.getPreparationSteps()),
+                originalRecipe.getLanguage(),
                 originalRecipe.isCheap(),
                 originalRecipe.isFast(),
                 originalRecipe.isVegan()
         );
         // Load and clone the ingredients
         cloneIngredients(originalRecipe);
+
+        recipe = server.add(this.recipe);
+
+        saveAllIngredientsToServer(recipe);
+        showIngredients();
     }
 
     /**
@@ -324,8 +334,7 @@ public class AddRecipeCtrl {
         if (originalRecipe == null || fxml == null) return;
 
         // Get ingredients from the original recipe
-        List<RecipeIngredient> originalIngredients =
-                server.getRecipeIngredients(originalRecipe.getId());
+        List<RecipeIngredient> originalIngredients = server.getRecipeIngredients(originalRecipe.getId());
 
         if (originalIngredients == null || originalIngredients.isEmpty()) {
             return;
@@ -344,7 +353,7 @@ public class AddRecipeCtrl {
                     originalIngredient.getUnit()
             );
 
-            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                     "client", "scenes", "RecipeIngredient.fxml");
             item.getKey().initialize(clonedIngredient, recipe, this::showIngredients);
             item.getValue().setUserData(item.getKey());
@@ -405,7 +414,7 @@ public class AddRecipeCtrl {
                 //To make sure the ingredients are set on the correct recipe.
                 ri.setRecipe(recipe);
 
-                Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+                Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                         "client", "scenes", "RecipeIngredient.fxml");
                 item.getKey().initialize(ri, recipe, this::showIngredients);
 

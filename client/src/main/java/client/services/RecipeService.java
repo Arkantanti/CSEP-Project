@@ -6,7 +6,7 @@ import commons.Recipe;
 import com.google.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toList;
 
 public class RecipeService {
 
@@ -36,6 +36,28 @@ public class RecipeService {
     }
 
     /**
+     * Gets all recipes related to the language.
+     */
+    public List<Recipe> getAllRecipesWithLanguage(boolean english, boolean polish, boolean dutch){
+
+        List<Recipe> recipes = new java.util.ArrayList<>(server.getRecipes().stream().filter((Recipe recipeItem) -> {
+            if (english) {
+                return recipeItem.getLanguage().equals("English");
+            } else if (polish) {
+                return recipeItem.getLanguage().equals("Polish");
+            } else if (dutch) {
+                return recipeItem.getLanguage().equals("Dutch");
+            }
+            return false;
+        })
+                .toList());
+
+        recipes.sort(Comparator.comparing(Recipe::getName));
+
+        return recipes;
+    }
+
+    /**
      * Searches for recipes, sorted alphabetically by name.
      */
     public List<Recipe> searchRecipes(String query) {
@@ -56,7 +78,7 @@ public class RecipeService {
         return all.stream()
                 .filter(r -> favoritesManager.isFavorite(r.getId()))
                 .sorted(Comparator.comparing(Recipe::getName))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     /**
@@ -69,6 +91,6 @@ public class RecipeService {
         return results.stream()
                 .filter(r -> favoritesManager.isFavorite(r.getId()))
                 .sorted(Comparator.comparing(Recipe::getName))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

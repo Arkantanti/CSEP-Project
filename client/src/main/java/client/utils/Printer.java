@@ -6,6 +6,8 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import client.model.ShoppingListItem;
+import client.services.ShoppingListService;
+import commons.IngredientCategory;
 import commons.Recipe;
 import commons.RecipeIngredient;
 import commons.Unit;
@@ -15,6 +17,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Printer {
@@ -24,20 +27,16 @@ public class Printer {
      * @param recipe {@link Recipe} object which is to be saved in markdown
      * @return String with markdown formatted description of the recipe
      */
-    public String recipePrint(Recipe recipe, List<RecipeIngredient> recipeIngredients) {
+    public String recipePrint(Recipe recipe, List<RecipeIngredient> recipeIngredients, double targetServings) throws IOException {
         StringBuilder output = new StringBuilder();
         output.append("## ").append(recipe.getName()).append("\n\n");
-        output.append("\n**Servings:** ").append(recipe.getServings());
+        output.append("\n**Servings:** ").append(targetServings);
         output.append("\n\n**Ingredients:**");
+
+        double factor = (recipe.getServings() <= 0) ? 1.0 : targetServings / recipe.getServings();
+
         for(RecipeIngredient ing : recipeIngredients) {
-            output.append("\n - ").append(ing.getIngredient().getName());
-            String amount = new BigDecimal(Double.toString(ing.getAmount()))
-                    .stripTrailingZeros()
-                    .toPlainString();
-            output.append(" - ").append(amount.equals("0") ? "" : amount).append(" ");
-            String unit =
-                    ing.getUnit()==Unit.CUSTOM ? ing.getInformalUnit() : ing.getUnit().toString();
-            output.append(unit==null ? "" : unit);
+            output.append("\n - ").append(ing.formatIngredientScaled(factor));
         }
         output.append("\n\n**Preparation steps:**");
         for(int i=1; i<=recipe.getPreparationSteps().size(); i++) {
@@ -53,14 +52,33 @@ public class Printer {
      * Transforms a shopping list into a String with markdown notation.
      *
      * @param items list of shopping list items to be saved in markdown
+     * @param shoppingListService the service for getting category/shopping list information
      * @return String with markdown formatted description of the shopping list
      */
-    public String createShoppingListOutputString(List<ShoppingListItem> items) {
+    public String createShoppingListOutputString(List<ShoppingListItem> items, ShoppingListService shoppingListService) {
         StringBuilder output = new StringBuilder();
         output.append("## Shopping List\n\n");
-        for (ShoppingListItem item : items) {
-            output.append(" - ").append(item.formatItem()).append("\n");
+
+        for (IngredientCategory category : IngredientCategory.values()) {
+            List<ShoppingListItem> categoryItems = new ArrayList<>();
+            for (ShoppingListItem item : items) {
+                IngredientCategory itemCategory = shoppingListService.getCategoryForItem(item);
+                if (itemCategory == category) {
+                    categoryItems.add(item);
+                }
+            }
+
+            if (!categoryItems.isEmpty()) {
+                String categoryName = category.name();
+                String formattedCategoryName = categoryName.charAt(0) + categoryName.substring(1).toLowerCase();
+                output.append("### ").append(formattedCategoryName).append("\n\n");
+                for (ShoppingListItem item : categoryItems) {
+                    output.append(" - ").append(item.formatItem()).append("\n");
+                }
+                output.append("\n");
+            }
         }
+
         return output.toString();
     }
 

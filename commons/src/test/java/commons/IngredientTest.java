@@ -3,6 +3,8 @@ package commons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class IngredientTest {
@@ -12,9 +14,9 @@ class IngredientTest {
 
     @BeforeEach
     void setUp(){
-        ingredient = new Ingredient("fat", 50, 24, 45);
-        ingredient2 = new Ingredient("fly", 50, 24, 45);
-        ingredient3 = new Ingredient("fat", 50, 24, 45);
+        ingredient = new Ingredient("fat", 50, 24, 45, Set.of());
+        ingredient2 = new Ingredient("fly", 50, 24, 45, Set.of());
+        ingredient3 = new Ingredient("fat", 50, 24, 45, Set.of());
     }
 
     @Test
@@ -100,5 +102,11 @@ class IngredientTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertTrue(result.contains("fat"));
+    }
+
+    @Test
+    void calculateCalories_returnsKcalPerGram() {
+        double result = ingredient.calculateCalories();
+        assertEquals(7.26, result, 1e-9);
     }
 }

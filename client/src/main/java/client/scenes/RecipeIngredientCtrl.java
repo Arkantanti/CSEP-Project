@@ -238,10 +238,7 @@ public class RecipeIngredientCtrl {
      */
     public void applyScaleFactor(double factor) {
         if (recipeIngredient == null) return;
-
-        double scaled = recipeIngredient.getAmount() * factor;
-
-        textLabel.setText(recipeIngredient.formatIngredientScaled(scaled));
+        textLabel.setText(recipeIngredient.formatIngredientScaled(factor));
     }
 
     /**

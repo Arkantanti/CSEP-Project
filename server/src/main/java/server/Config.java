@@ -16,11 +16,9 @@ package server;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
-import commons.Ingredient;
-import commons.Recipe;
-import commons.RecipeIngredient;
-import commons.Unit;
+import commons.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -82,25 +80,20 @@ public class Config {
         System.out.println("Loading small dataset...");
 
         // 1. Create Ingredients
-        Ingredient flour = ingredientRepo.save(new Ingredient("Flour", 1.0, 10.0, 76.0));
-        Ingredient sugar = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0));
-        Ingredient egg = ingredientRepo.save(new Ingredient("Egg", 11.0, 13.0, 1.1));
-        Ingredient tomato = ingredientRepo.save(new Ingredient("Tomato", 0.2, 0.9, 3.9));
-        Ingredient bread = ingredientRepo.save(new Ingredient("Bread", 3.2, 9.0, 49.0));
-        Ingredient cheese = ingredientRepo.save(new Ingredient("Cheese", 25.0, 25.0, 1.3));
+        Ingredient flour = ingredientRepo.save(new Ingredient("Flour", 1.0, 10.0, 76.0,IngredientCategory.PANTRY, Set.of(Allergen.GLUTEN)));
+        Ingredient sugar = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0, IngredientCategory.PANTRY,Set.of()));
+        Ingredient egg = ingredientRepo.save(new Ingredient("Egg", 11.0, 13.0, 1.1, IngredientCategory.DAIRY,Set.of(Allergen.EGGS)));
+        Ingredient tomato = ingredientRepo.save(new Ingredient("Tomato", 0.2, 0.9, 3.9, IngredientCategory.VEGETABLES, Set.of()));
+        Ingredient bread = ingredientRepo.save(new Ingredient("Bread", 3.2, 9.0, 49.0, IngredientCategory.BAKERY,Set.of(Allergen.GLUTEN)));
+        Ingredient cheese = ingredientRepo.save(new Ingredient("Cheese", 25.0, 25.0, 1.3, IngredientCategory.DAIRY,Set.of(Allergen.MILK)));
 
         // 2. Create Recipes
         Recipe pancake = recipeRepo.save(new Recipe("Pancakes", 4,
-                List.of("Mix ingredients", "Fry in pan", "Serve hot"),
-                true, true, false));
-
+                List.of("Mix ingredients", "Fry in pan", "Serve hot"), "English", true, true, false));
         Recipe tomatoSoup = recipeRepo.save(new Recipe("Tomato Soup", 2,
-                List.of("Boil Water", "Add Tomato"),
-                true, true, true));
-
+                List.of("Boil Water", "Add Tomato"), "English", true, true, true));
         Recipe grilledCheese = recipeRepo.save(new Recipe("Grilled Cheese", 1,
-                List.of("Toast Bread", "Melt Cheese"),
-                true, true, false));
+                List.of("Toast Bread", "Melt Cheese"), "English", true, true, false));
 
         // 3. Create RecipeIngredients for Pancakes
         recipeIngredientRepo.save(new RecipeIngredient(pancake,
@@ -144,36 +137,36 @@ public class Config {
      */
     private Ingredient[] seedLargeIngredients(IngredientRepository ingredientRepo) {
         Ingredient[] ingredients = new Ingredient[30];
-        ingredients[0] = ingredientRepo.save(new Ingredient("Flour", 10.0, 1.0, 76.0));
-        ingredients[1] = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0));
-        ingredients[2] = ingredientRepo.save(new Ingredient("Egg", 13.0, 11.0, 1.1));
-        ingredients[3] = ingredientRepo.save(new Ingredient("Tomato", 0.9, 0.2, 3.9));
-        ingredients[4] = ingredientRepo.save(new Ingredient("Bread", 9.0, 3.2, 49.0));
-        ingredients[5] = ingredientRepo.save(new Ingredient("Cheese", 25.0, 33.0, 1.3));
-        ingredients[6] = ingredientRepo.save(new Ingredient("Milk", 3.4, 1.0, 5.0));
-        ingredients[7] = ingredientRepo.save(new Ingredient("Butter", 0.9, 81.0, 0.1));
-        ingredients[8] = ingredientRepo.save(new Ingredient("Salt", 0.0, 0.0, 0.0));
-        ingredients[9] = ingredientRepo.save(new Ingredient("Pepper", 11.0, 3.3, 64.0));
-        ingredients[10] = ingredientRepo.save(new Ingredient("Chicken", 31.0, 3.6, 0.0));
-        ingredients[11] = ingredientRepo.save(new Ingredient("Beef", 26.0, 15.0, 0.0));
-        ingredients[12] = ingredientRepo.save(new Ingredient("Pasta", 13.0, 1.5, 75.0));
-        ingredients[13] = ingredientRepo.save(new Ingredient("Rice", 2.7, 0.3, 28.0));
-        ingredients[14] = ingredientRepo.save(new Ingredient("Potato", 2.0, 0.1, 17.0));
-        ingredients[15] = ingredientRepo.save(new Ingredient("Onion", 1.1, 0.1, 9.3));
-        ingredients[16] = ingredientRepo.save(new Ingredient("Garlic", 6.4, 0.5, 33.0));
-        ingredients[17] = ingredientRepo.save(new Ingredient("Carrot", 0.9, 0.2, 10.0));
-        ingredients[18] = ingredientRepo.save(new Ingredient("Lettuce", 1.4, 0.2, 2.9));
-        ingredients[19] = ingredientRepo.save(new Ingredient("Cucumber", 0.7, 0.1, 3.6));
-        ingredients[20] = ingredientRepo.save(new Ingredient("Olive Oil", 0.0, 100.0, 0.0));
-        ingredients[21] = ingredientRepo.save(new Ingredient("Lemon", 1.1, 0.3, 9.3));
-        ingredients[22] = ingredientRepo.save(new Ingredient("Chocolate", 7.5, 30.0, 59.0));
-        ingredients[23] = ingredientRepo.save(new Ingredient("Vanilla Extract", 0.0, 0.0, 13.0));
-        ingredients[24] = ingredientRepo.save(new Ingredient("Bacon", 37.0, 42.0, 1.4));
-        ingredients[25] = ingredientRepo.save(new Ingredient("Mushroom", 3.1, 0.3, 3.3));
-        ingredients[26] = ingredientRepo.save(new Ingredient("Spinach", 2.9, 0.4, 3.6));
-        ingredients[27] = ingredientRepo.save(new Ingredient("Tuna", 30.0, 1.0, 0.0));
-        ingredients[28] = ingredientRepo.save(new Ingredient("Soy Sauce", 8.1, 0.0, 4.9));
-        ingredients[29] = ingredientRepo.save(new Ingredient("Ginger", 1.8, 0.8, 18.0));
+        ingredients[0] = ingredientRepo.save(new Ingredient("Flour", 10.0, 1.0, 76.0, IngredientCategory.PANTRY, Set.of(Allergen.GLUTEN)));
+        ingredients[1] = ingredientRepo.save(new Ingredient("Sugar", 0.0, 0.0, 100.0, IngredientCategory.PANTRY, Set.of()));
+        ingredients[2] = ingredientRepo.save(new Ingredient("Egg", 13.0, 11.0, 1.1, IngredientCategory.DAIRY,Set.of(Allergen.EGGS)));
+        ingredients[3] = ingredientRepo.save(new Ingredient("Tomato", 0.9, 0.2, 3.9, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[4] = ingredientRepo.save(new Ingredient("Bread", 9.0, 3.2, 49.0, IngredientCategory.BAKERY, Set.of(Allergen.GLUTEN)));
+        ingredients[5] = ingredientRepo.save(new Ingredient("Cheese", 25.0, 33.0, 1.3, IngredientCategory.DAIRY, Set.of(Allergen.MILK)));
+        ingredients[6] = ingredientRepo.save(new Ingredient("Milk", 3.4, 1.0, 5.0, IngredientCategory.DAIRY, Set.of(Allergen.MILK)));
+        ingredients[7] = ingredientRepo.save(new Ingredient("Butter", 0.9, 81.0, 0.1, IngredientCategory.DAIRY, Set.of(Allergen.MILK)));
+        ingredients[8] = ingredientRepo.save(new Ingredient("Salt", 0.0, 0.0, 0.0, IngredientCategory.SPICES, Set.of()));
+        ingredients[9] = ingredientRepo.save(new Ingredient("Pepper", 11.0, 3.3, 64.0, IngredientCategory.SPICES, Set.of()));
+        ingredients[10] = ingredientRepo.save(new Ingredient("Chicken", 31.0, 3.6, 0.0, IngredientCategory.MEAT, Set.of()));
+        ingredients[11] = ingredientRepo.save(new Ingredient("Beef", 26.0, 15.0, 0.0, IngredientCategory.MEAT, Set.of()));
+        ingredients[12] = ingredientRepo.save(new Ingredient("Pasta", 13.0, 1.5, 75.0, IngredientCategory.PANTRY, Set.of(Allergen.GLUTEN)));
+        ingredients[13] = ingredientRepo.save(new Ingredient("Rice", 2.7, 0.3, 28.0, IngredientCategory.PANTRY, Set.of()));
+        ingredients[14] = ingredientRepo.save(new Ingredient("Potato", 2.0, 0.1, 17.0, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[15] = ingredientRepo.save(new Ingredient("Onion", 1.1, 0.1, 9.3, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[16] = ingredientRepo.save(new Ingredient("Garlic", 6.4, 0.5, 33.0, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[17] = ingredientRepo.save(new Ingredient("Carrot", 0.9, 0.2, 10.0, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[18] = ingredientRepo.save(new Ingredient("Lettuce", 1.4, 0.2, 2.9, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[19] = ingredientRepo.save(new Ingredient("Cucumber", 0.7, 0.1, 3.6, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[20] = ingredientRepo.save(new Ingredient("Olive Oil", 0.0, 100.0, 0.0, IngredientCategory.PANTRY, Set.of()));
+        ingredients[21] = ingredientRepo.save(new Ingredient("Lemon", 1.1, 0.3, 9.3, IngredientCategory.FRUIT, Set.of()));
+        ingredients[22] = ingredientRepo.save(new Ingredient("Chocolate", 7.5, 30.0, 59.0, IngredientCategory.PANTRY, Set.of(Allergen.MILK, Allergen.SOY)));
+        ingredients[23] = ingredientRepo.save(new Ingredient("Vanilla Extract", 0.0, 0.0, 13.0, IngredientCategory.SPICES, Set.of()));
+        ingredients[24] = ingredientRepo.save(new Ingredient("Bacon", 37.0, 42.0, 1.4, IngredientCategory.MEAT, Set.of()));
+        ingredients[25] = ingredientRepo.save(new Ingredient("Mushroom", 3.1, 0.3, 3.3, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[26] = ingredientRepo.save(new Ingredient("Spinach", 2.9, 0.4, 3.6, IngredientCategory.VEGETABLES, Set.of()));
+        ingredients[27] = ingredientRepo.save(new Ingredient("Tuna", 30.0, 1.0, 0.0, IngredientCategory.FISH, Set.of(Allergen.FISH)));
+        ingredients[28] = ingredientRepo.save(new Ingredient("Soy Sauce", 8.1, 0.0, 4.9, IngredientCategory.CONDIMENTS, Set.of(Allergen.SOY, Allergen.GLUTEN)));
+        ingredients[29] = ingredientRepo.save(new Ingredient("Ginger", 1.8, 0.8, 18.0, IngredientCategory.SPICES, Set.of()));
         return ingredients;
     }
 
@@ -187,68 +180,45 @@ public class Config {
     private Recipe[] seedLargeRecipes(RecipeRepository recipeRepo) {
         Recipe[] recipes = new Recipe[20];
         recipes[0] = recipeRepo.save(new Recipe("Pancakes", 4,
-                List.of("Mix ingredients", "Fry in pan", "Serve hot"), true, true, false));
+                List.of("Mix ingredients", "Fry in pan", "Serve hot"), "English", true, true, false));
         recipes[1] = recipeRepo.save(new Recipe("Tomato Soup", 2,
-                List.of("Boil Water", "Add Tomato"), true, true, true));
+                List.of("Boil Water", "Add Tomato"), "English", true, true, true));
         recipes[2] = recipeRepo.save(new Recipe("Grilled Cheese", 1,
-                List.of("Toast Bread", "Melt Cheese"), true, true, false));
+                List.of("Toast Bread", "Melt Cheese"), "English", true, true, false));
         recipes[3] = recipeRepo.save(new Recipe("Caesar Salad", 2,
-                List.of("Chop lettuce", "Add dressing", "Top with croutons"), false, true, false));
+                List.of("Chop lettuce", "Add dressing", "Top with croutons"), "English", false, true, false));
         recipes[4] = recipeRepo.save(new Recipe("Spaghetti Carbonara", 4,
-                List.of("Boil pasta",
-                        "Fry bacon", "Mix with eggs and cheese",
-                        "Combine and serve"), false, false, false));
+                List.of("Boil pasta", "Fry bacon", "Mix with eggs and cheese", "Combine and serve"), "English", false, false, false));
         recipes[5] = recipeRepo.save(new Recipe("Chicken Stir Fry", 3,
-                List.of("Cut chicken",
-                        "Heat oil in wok", "Stir fry chicken and vegetables",
-                        "Add soy sauce"), false, true, false));
+                List.of("Cut chicken", "Heat oil in wok", "Stir fry chicken and vegetables", "Add soy sauce"), "English", false, true, false));
         recipes[6] = recipeRepo.save(new Recipe("Beef Stew", 6,
-                List.of("Brown beef",
-                        "Add vegetables", "Add broth", "Simmer for 2 hours"), false, false, false));
-        recipes[7] = recipeRepo.save(new Recipe(
-                "Mashed Potatoes", 4,
-                List.of("Boil potatoes",
-                        "Mash with butter and milk",
-                        "Season with salt and pepper"), true, true, false));
+                List.of("Brown beef", "Add vegetables", "Add broth", "Simmer for 2 hours"), "English", false, false, false));
+        recipes[7] = recipeRepo.save(new Recipe("Mashed Potatoes", 4,
+                List.of("Boil potatoes", "Mash with butter and milk", "Season with salt and pepper"), "English", true, true, false));
         recipes[8] = recipeRepo.save(new Recipe("Chocolate Cake", 8,
-                List.of("Mix dry ingredients",
-                        "Add wet ingredients",
-                        "Bake at 180C for 30 minutes"), false, false, false));
+                List.of("Mix dry ingredients", "Add wet ingredients", "Bake at 180C for 30 minutes"), "English", false, false, false));
         recipes[9] = recipeRepo.save(new Recipe("Tuna Salad", 2,
-                List.of("Mix tuna with mayo",
-                        "Add chopped vegetables",
-                        "Serve on lettuce"), true, true, false));
+                List.of("Mix tuna with mayo", "Add chopped vegetables", "Serve on lettuce"), "English", true, true, false));
         recipes[10] = recipeRepo.save(new Recipe("Mushroom Risotto", 4,
-                List.of("Saute mushrooms", "Add rice",
-                        "Gradually add broth",
-                        "Stir continuously"), false, false, false)); // Often has butter/parm
+                List.of("Saute mushrooms", "Add rice", "Gradually add broth", "Stir continuously"), "English", false, false, false));
         recipes[11] = recipeRepo.save(new Recipe("Greek Salad", 4,
-                List.of("Chop vegetables", "Add olives and feta",
-                        "Dress with olive oil and lemon"), true, true, false));
+                List.of("Chop vegetables", "Add olives and feta", "Dress with olive oil and lemon"), "English", true, true, false));
         recipes[12] = recipeRepo.save(new Recipe("Fried Rice", 3,
-                List.of("Cook rice", "Fry with vegetables",
-                        "Add soy sauce and egg"), true, true, false));
+                List.of("Cook rice", "Fry with vegetables", "Add soy sauce and egg"), "English", true, true, false));
         recipes[13] = recipeRepo.save(new Recipe("Eggs Benedict", 2,
-                List.of("Toast bread", "Poach eggs",
-                        "Make hollandaise sauce", "Assemble"), false, false, false));
+                List.of("Toast bread", "Poach eggs", "Make hollandaise sauce", "Assemble"), "English", false, false, false));
         recipes[14] = recipeRepo.save(new Recipe("French Toast", 2,
-                List.of("Whisk eggs and milk", "Dip bread",
-                        "Fry until golden"), true, true, false));
+                List.of("Whisk eggs and milk", "Dip bread", "Fry until golden"), "English", true, true, false));
         recipes[15] = recipeRepo.save(new Recipe("Garlic Bread", 4,
-                List.of("Mix butter with garlic",
-                        "Spread on bread", "Bake until crispy"), true, true, false));
+                List.of("Mix butter with garlic", "Spread on bread", "Bake until crispy"), "English", true, true, false));
         recipes[16] = recipeRepo.save(new Recipe("Chicken Soup", 6,
-                List.of("Boil chicken", "Add vegetables",
-                        "Season and simmer"), true, false, false));
+                List.of("Boil chicken", "Add vegetables", "Season and simmer"), "English", true, false, false));
         recipes[17] = recipeRepo.save(new Recipe("Bacon Wrapped Chicken", 4,
-                List.of("Wrap chicken with bacon", "Season",
-                        "Bake at 200C for 25 minutes"), false, false, false));
+                List.of("Wrap chicken with bacon", "Season", "Bake at 200C for 25 minutes"), "English", false, false, false));
         recipes[18] = recipeRepo.save(new Recipe("Spinach Omelette", 1,
-                List.of("Beat eggs", "Saute spinach",
-                        "Pour eggs and fold"), true, true, false));
+                List.of("Beat eggs", "Saute spinach", "Pour eggs and fold"), "English", true, true, false));
         recipes[19] = recipeRepo.save(new Recipe("Carrot Cake", 10,
-                List.of("Grate carrots", "Mix with batter",
-                        "Bake at 175C for 40 minutes"), false, false, false)); // Eggs usually
+                List.of("Grate carrots", "Mix with batter", "Bake at 175C for 40 minutes"), "English", false, false, false));
         return recipes;
     }
 

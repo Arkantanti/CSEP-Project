@@ -1,6 +1,6 @@
 package client.scenes;
 
-import client.services.ShoppingListService;
+import client.services.IngredientService;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Ingredient;
@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class ShoppingListElementCtrl {
     @FXML
@@ -46,53 +47,65 @@ public class ShoppingListElementCtrl {
     private ShoppingListItem shoppingListItem;
     private boolean isTextMode;
 
-    private Runnable updateIngredientList;
+    private Function<Void, Void> onUpdate;
+    private Function<ShoppingListItem, Void> onDeleteIngredient;
+    private Function<ShoppingListItem, Void> onAddIngredient;
 
     private final ServerUtils serverUtils;
-    private final ShoppingListService shoppingListService;
+    private final IngredientService ingredientService;
 
     /**
      * constructor to be injected
      * @param serverUtils serverutils to load/delete/edit ingredients
-     * @param shoppingListService the shopping list service
      */
     @Inject
-    public ShoppingListElementCtrl(ServerUtils serverUtils,
-                                   ShoppingListService shoppingListService) {
+    public ShoppingListElementCtrl(ServerUtils serverUtils, IngredientService ingredientService) {
         this.serverUtils = serverUtils;
-        this.shoppingListService = shoppingListService;
+        this.ingredientService = ingredientService;
     }
 
     /**
      * initializes the ShoppingElementCtrl for an existing item
      * @param shoppingListItem A shopping list item
-     * @param updateIngredientList a function that is called whenever the list should be updated
+     * @param onUpdate A function that is called whenever (an item in) the list has changed
+     * @param onAddIngredient A function to call when adding a new element to the list
+     * @param onDeleteIngredient A function to call when a specific element should be removed from the list
      */
     public void initialize(ShoppingListItem shoppingListItem,
-                           Runnable updateIngredientList) {
-        initializeInternal(shoppingListItem, updateIngredientList, shoppingListItem.isTextOnly());
+                           Function<Void, Void> onUpdate,
+                           Function<ShoppingListItem, Void> onAddIngredient,
+                           Function<ShoppingListItem, Void> onDeleteIngredient) {
+        initializeInternal(shoppingListItem, onUpdate, onAddIngredient, onDeleteIngredient, shoppingListItem.isTextOnly());
     }
 
     /**
      * initializes the ShoppingElementCtrl for a new item
      * @param shoppingListItem A shopping list item (must be null for new items)
-     * @param updateIngredientList a function that is called whenever the list should be updated
+     * @param onUpdate A function that is called whenever (an item in) the list has changed
+     * @param onAddIngredient A function to call when adding a new element to the list
+     * @param onDeleteIngredient A function to call when a specific element should be removed from the list
      * @param isTextMode true if this should be a text item
      */
     public void initialize(ShoppingListItem shoppingListItem,
-                           Runnable updateIngredientList,
+                           Function<Void, Void> onUpdate,
+                           Function<ShoppingListItem, Void> onAddIngredient,
+                           Function<ShoppingListItem, Void> onDeleteIngredient,
                            boolean isTextMode) {
-        initializeInternal(shoppingListItem, updateIngredientList, isTextMode);
+        initializeInternal(shoppingListItem, onUpdate, onAddIngredient, onDeleteIngredient, isTextMode);
     }
 
     /**
      * Internal initialization method
      */
     private void initializeInternal(ShoppingListItem shoppingListItem,
-                                    Runnable updateIngredientList,
+                                    Function<Void, Void> onUpdate,
+                                    Function<ShoppingListItem, Void> onAddIngredient,
+                                    Function<ShoppingListItem, Void> onDeleteIngredient,
                                     boolean isTextMode) {
         this.shoppingListItem = shoppingListItem;
-        this.updateIngredientList = updateIngredientList;
+        this.onUpdate = onUpdate;
+        this.onAddIngredient = onAddIngredient;
+        this.onDeleteIngredient = onDeleteIngredient;
         this.isTextMode = isTextMode;
 
         defaultView.setVisible(true);
@@ -129,6 +142,8 @@ public class ShoppingListElementCtrl {
                 setText((empty || item == null) ? null : item.getName());
             }
         });
+
+
     }
 
     /**
@@ -147,8 +162,7 @@ public class ShoppingListElementCtrl {
             updateUIForTextMode();
         } else {
             // load data to show
-            if (shoppingListItem.getUnit() != Unit.CUSTOM
-                    || shoppingListItem.getInformalUnit() == null) {
+            if (shoppingListItem.getUnit() != Unit.CUSTOM || shoppingListItem.getInformalUnit() == null) {
                 amountField.setText(String.valueOf(shoppingListItem.getAmount()));
             }
             else {
@@ -157,20 +171,10 @@ public class ShoppingListElementCtrl {
             updateUIForIngredientMode();
 
             // ingredient dropdown
-            List<Ingredient> ingredients = serverUtils.getIngredients();
+            List<Ingredient> ingredients = ingredientService.getAllIngredients();
             ingredientComboBox.getItems().setAll(ingredients);
-            if (shoppingListItem.getIngredientId() != null) {
-                Ingredient matchingIngredient = null;
-                for (Ingredient ing : ingredients) {
-                    if (ing.getId() == shoppingListItem.getIngredientId()) {
-                        matchingIngredient = ing;
-                        break;
-                    }
-                }
-                if (matchingIngredient != null) {
-                    ingredientComboBox.getSelectionModel().select(matchingIngredient);
-                }
-            }
+            Ingredient i = ingredientService.getIngredientById(shoppingListItem.getIngredientId());
+            ingredientComboBox.getSelectionModel().select(i);
 
             // unit dropdown
             unitComboBox.getSelectionModel().select(shoppingListItem.getUnit());
@@ -183,14 +187,13 @@ public class ShoppingListElementCtrl {
     @FXML
     private void onDeleteClicked() {
         if (shoppingListItem != null) {
-            shoppingListService.removeItem(shoppingListItem);
+            onDeleteIngredient.apply(shoppingListItem);
         }
-        this.updateIngredientList.run();
+        this.onUpdate.apply(null);
     }
 
     /**
-     * Called when the user confirms their edits.
-     * Orchestrator method: Complexity = 4.
+     * called when the user confirms their edits
      */
     @FXML
     private void onConfirmClicked() {
@@ -200,95 +203,83 @@ public class ShoppingListElementCtrl {
             return;
         }
 
-        boolean success;
         if (isTextMode) {
+            // Text item
             if (shoppingListItem == null) {
-                shoppingListService.addTextItem(text);
+                onAddIngredient.apply(new ShoppingListItem(text));
             } else {
                 shoppingListItem.setText(text);
-                shoppingListService.saveChanges();
+                onUpdate.apply(null);
             }
             textLabel.setText(text);
-            success = true;
         } else {
-            success = handleIngredientEdit(text);
-        }
-
-        if (success) {
-            editView.setVisible(false);
-            editView.setManaged(false);
-            defaultView.setVisible(true);
-            defaultView.setManaged(true);
-        }
-    }
-
-    /**
-     * Validates ingredient inputs and prepares data for saving.
-     * Complexity = 6.
-     */
-    private boolean handleIngredientEdit(String text) {
-        Ingredient ingredient = ingredientComboBox.getSelectionModel().getSelectedItem();
-        if (ingredient == null) {
-            ingredientComboBox.styleProperty().set(
-                    "-fx-border-color: red; -fx-border-radius: 4;");
-            return false;
-        }
-        ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
-
-        Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
-        if (unit == null) return false;
-
-        double amount = 0;
-        String informalAmount = null;
-        boolean isValid = true;
-
-        if (unit == Unit.CUSTOM) {
-            informalAmount = text;
-            if (text.isBlank()) isValid = false;
-        } else {
-            try {
-                amount = Double.parseDouble(text);
-                if (amount <= 0) isValid = false;
-            } catch (NumberFormatException e) {
-                isValid = false;
+            // Ingredient item
+            Ingredient selectedIngredient = ingredientComboBox.getSelectionModel().getSelectedItem();
+            if (selectedIngredient == null) {
+                ingredientComboBox.styleProperty().set("-fx-border-color: red; -fx-border-radius: 4;");
+                return;
             }
-        }
+            else {
+                ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
+            }
 
-        if (!isValid) {
-            amountField.styleProperty().set("-fx-text-box-border: red;");
-            return false;
-        }
+            Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
+            if (unit == null) {
+                return;
+            }
 
-        amountField.styleProperty().set("-fx-text-box-border: lightgray;");
-        saveIngredientToServer(ingredient, amount, unit, informalAmount);
-        return true;
-    }
+            String informalAmount = null;
+            double amount = 0;
 
-    /**
-     * Persists the valid ingredient data to the service.
-     * Complexity = 2.
-     */
-    private void saveIngredientToServer(Ingredient ingredient, double amount,
-                                        Unit unit, String informalAmount) {
-        if (shoppingListItem == null) {
-            shoppingListService.addIngredientItem(
-                    ingredient.getId(),
-                    ingredient.getName(),
-                    informalAmount,
-                    amount,
-                    unit,
-                    null); // no recipe name when manually adding
-            updateIngredientList.run();
-        } else {
-            shoppingListItem.setIngredientId(ingredient.getId());
-            shoppingListItem.setIngredientName(ingredient.getName());
-            shoppingListItem.setAmount(amount);
-            shoppingListItem.setUnit(unit);
-            shoppingListItem.setInformalUnit(informalAmount);
-            shoppingListItem.setText(null);
-            shoppingListService.saveChanges();
+            if (unit == Unit.CUSTOM) {
+                informalAmount = text;
+            }
+            else{
+                try {
+                    amount = Double.parseDouble(text);
+                }
+                catch (Exception _) {
+                    amount = -1;
+                }
+            }
+
+            if ((amount <= 0 && unit != Unit.CUSTOM) ||
+                    ((informalAmount == null || informalAmount.isEmpty()) && unit == Unit.CUSTOM)) {
+                amountField.styleProperty().set("-fx-text-box-border: red;");
+                return;
+            }
+            else {
+                amountField.styleProperty().set("-fx-text-box-border: lightgray;");
+            }
+
+            if (shoppingListItem == null) {
+                onAddIngredient.apply(new ShoppingListItem(
+                        selectedIngredient.getId(),
+                        selectedIngredient.getName(),
+                        informalAmount,
+                        amount,
+                        unit,
+                        null));
+                // Refresh to get the new item
+                onUpdate.apply(null);
+                return;
+            } else {
+                shoppingListItem.setIngredientId(selectedIngredient.getId());
+                shoppingListItem.setIngredientName(selectedIngredient.getName());
+                shoppingListItem.setAmount(amount);
+                shoppingListItem.setUnit(unit);
+                shoppingListItem.setInformalUnit(informalAmount);
+                shoppingListItem.setText(null); // clear text if it was a text item
+                onUpdate.apply(null);
+            }
             textLabel.setText(shoppingListItem.formatItem());
         }
+
+        editView.setVisible(false);
+        editView.setManaged(false);
+
+        defaultView.setVisible(true);
+        defaultView.setManaged(true);
     }
 
     /**
@@ -297,7 +288,7 @@ public class ShoppingListElementCtrl {
     @FXML
     private void onCancelClicked() {
         if (shoppingListItem == null) {
-            updateIngredientList.run(); // removes the item from the list
+            onUpdate.apply(null); // removes the item from the list
         }
 
         editView.setVisible(false);

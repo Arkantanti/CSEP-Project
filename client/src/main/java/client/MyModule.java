@@ -16,10 +16,11 @@
 package client;
 
 import client.config.Config;
+import client.utils.NutrientsCalc;
 import client.services.ShoppingListService;
+import client.services.WebsocketService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
-
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -49,6 +50,8 @@ public class MyModule implements Module {
         binder.bind(RecipeService.class).in(Scopes.SINGLETON);
         binder.bind(IngredientService.class).in(Scopes.SINGLETON);
         binder.bind(ShoppingListService.class).in(Scopes.SINGLETON);
+        binder.bind(WebsocketService.class).in(Scopes.SINGLETON);
+        binder.bind(NutrientsCalc.class).in(Scopes.SINGLETON);
         binder.bind(Client.class).toInstance(ClientBuilder.newClient(new ClientConfig()));
     }
 }

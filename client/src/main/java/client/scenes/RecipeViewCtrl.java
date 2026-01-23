@@ -1,20 +1,23 @@
 package client.scenes;
 
 import client.MyFXML;
+import client.utils.NutrientsCalc;
+import client.services.RecipeService;
 import client.services.ShoppingListService;
 import client.utils.FavoritesManager;
 import client.utils.Printer;
 import client.utils.ServerUtils;
-import commons.Ingredient;
+import commons.Allergen;
 import commons.Recipe;
-import commons.Unit;
 import commons.RecipeIngredient;
-import commons.Unit;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
@@ -22,50 +25,31 @@ import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static commons.Recipe.recipeNameChecker;
 
 public class RecipeViewCtrl {
 
-    @FXML
-    private Button titleEditButton;
-    @FXML
-    private TextField nameTextField;
-    @FXML
-    private Label nameLabel;
-    @FXML
-    private VBox ingredientsContainer;
-    @FXML
-    private Button ingredientAddButton;
-    @FXML
-    private VBox preparationsContainer;
-    @FXML
-    private Button preparationAddButton;
-    @FXML
-    private Button printButton;
-    @FXML
-    private Button cloneButton;
-    @FXML
-    private Button deleteButton;
-    @FXML
-    private TextField servingsScalingInput;
-    @FXML
-    private Button resetServingsButton;
-    @FXML
-    private Button favoriteButton;
-    @FXML
-    private Label caloriesDisplay;
-    @FXML
-    private CheckBox cheapCheckBox;
-    @FXML
-    private CheckBox fastCheckBox;
-    @FXML
-    private CheckBox veganCheckBox;
+    @FXML private Button titleEditButton;
+    @FXML private TextField nameTextField;
+    @FXML private Label nameLabel;
+    @FXML private VBox ingredientsContainer;
+    @FXML private VBox preparationsContainer;
+    @FXML private Button printButton;
+    @FXML private TextField servingsScalingInput;
+    @FXML private Button favoriteButton;
+    @FXML private Label caloriesDisplay;
+    @FXML private CheckBox cheapCheckBox;
+    @FXML private CheckBox fastCheckBox;
+    @FXML private CheckBox veganCheckBox;
+    @FXML private Label fatLabel;
+    @FXML private Label carbsLabel;
+    @FXML private Label proteinLabel;
+    @FXML private FlowPane hboxAllergens;
 
     private MyFXML fxml;
     private final ServerUtils server;
-    private boolean editing = false;
     private final MainCtrl mainCtrl;
     private final Printer printer;
     private Recipe recipe;
@@ -73,10 +57,13 @@ public class RecipeViewCtrl {
     private final AppViewCtrl appViewCtrl;
     private final FavoritesManager favoritesManager;
     private final ShoppingListService shoppingListService;
+    private final RecipeService recipeService;
+    private final NutrientsCalc nutrientsCalc;
 
     private final List<RecipeIngredientCtrl> ingredientRowCtrls = new ArrayList<>();
     private int baseServings;
     private double targetServings;
+    private boolean editing = false;
 
     /**
      * Constructor for RecipeViewCtrl.
@@ -88,13 +75,17 @@ public class RecipeViewCtrl {
                           MainCtrl mainCtrl,
                           Printer printer,
                           FavoritesManager favoritesManager,
-                          ShoppingListService shoppingListService) {
+                          ShoppingListService shoppingListService,
+                          NutrientsCalc nutrientsCalc,
+                          RecipeService recipeService) {
         this.mainCtrl = mainCtrl;
         this.printer = printer;
         this.server = server;
         this.appViewCtrl = mainCtrl.getAppViewCtrl();
         this.favoritesManager = favoritesManager;
         this.shoppingListService = shoppingListService;
+        this.nutrientsCalc = nutrientsCalc;
+        this.recipeService = recipeService;
     }
 
     /**
@@ -123,6 +114,14 @@ public class RecipeViewCtrl {
      */
     public void setRecipe(Recipe recipe, MyFXML fxml) {
         this.fxml = fxml;
+        loadRecipe(recipe, true);
+    }
+
+    /**
+     * loads a recipe into the RecipeView
+     * @param recipe the recipe to load;
+     */
+    public void loadRecipe(Recipe recipe, boolean reloadIngredientList) {
         this.recipe = recipe;
         if (recipe == null) return;
 
@@ -137,12 +136,34 @@ public class RecipeViewCtrl {
         if (editing) {
             finishEditing();
         }
-        loadIngredients();
+        if (reloadIngredientList) {
+            loadIngredients();
+        }
         loadPreparationSteps(recipe.getPreparationSteps());
         updateFavoriteButton();
         rerenderIngredientsScaled();
         updateCaloriesDisplay();
 
+        double[] nutrients = nutrientsCalc.calculateNutrients(ingredients);
+        carbsLabel.setText(String.format(Locale.US, "Carbs: %.2f g/100g", nutrients[0]));
+        proteinLabel.setText(String.format(Locale.US, "Protein: %.2f g/100g", nutrients[1]));
+        fatLabel.setText(String.format(Locale.US, "Fat: %.2f g/100g", nutrients[2]));
+        Set<Allergen> allergens = new HashSet<>();
+        ingredients.forEach(ing -> {
+            if(ing.getIngredient() != null) {
+                allergens.addAll(ing.getIngredient().getAllergens());
+            }
+        });
+        for(Allergen allergen : allergens) {
+            Label label = new Label(allergen.getDisplayName());
+            label.getStyleClass().add("allergen-label");
+            label.setStyle("-fx-background-color:" + allergen.getColor()+";");
+            hboxAllergens.getChildren().add(label);
+        }
+    }
+
+    public Recipe getRecipe(){
+        return recipe;
     }
 
     /**
@@ -196,6 +217,12 @@ public class RecipeViewCtrl {
      * Shows the label and hides the text field.
      */
     private void finishEditing() {
+        if(recipeNameChecker(recipeService.getAllRecipes(), nameTextField.getText(), this.recipe)){
+            mainCtrl.showError("Used Name",
+                    "This recipe name is already in use, please choose another.");
+            return;
+        }
+
         editing = false;
         String newName = nameTextField.getText();
         boolean isCheap = cheapCheckBox.isSelected();
@@ -207,14 +234,12 @@ public class RecipeViewCtrl {
 
             // Check Title Change
             if (newName != null && !newName.isBlank() && !newName.equals(recipe.getName())) {
-                nameLabel.setText(newName.trim());
                 recipe.setName(newName);
                 changed = true;
             }
 
             // Check Tags Change
-            if (recipe.isCheap() != isCheap
-                    || recipe.isFast() != isFast || recipe.isVegan() != isVegan) {
+            if (recipe.isCheap() != isCheap || recipe.isFast() != isFast || recipe.isVegan() != isVegan) {
                 recipe.setCheap(isCheap);
                 recipe.setFast(isFast);
                 recipe.setVegan(isVegan);
@@ -223,8 +248,18 @@ public class RecipeViewCtrl {
 
             // Only send update to server if something changed
             if (changed) {
-                server.updateRecipe(recipe);
+                // --- FIX: Use the returned object from the server ---
+                Recipe updated = server.updateRecipe(recipe);
+                if (updated != null) {
+                    this.recipe = updated; // Update local reference
+                    nameLabel.setText(updated.getName()); // Display server-side capitalized name
+                }
+                // ----------------------------------------------------
+
                 appViewCtrl.loadRecipes(); // Refresh the list sidebar
+            } else {
+                // If nothing changed, ensure label matches current name
+                nameLabel.setText(recipe.getName());
             }
         }
         setTagsEditable(false);
@@ -251,10 +286,9 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * Loads ingredients from the
-     * server into the ingredients container using EditableItem components.
+     * Loads ingredients from the server into the ingredients container using EditableItem components.
      */
-    private void loadIngredients() {
+    public void loadIngredients() {
         ingredientsContainer.getChildren().clear();
         ingredientRowCtrls.clear();
         this.ingredients = server.getRecipeIngredients(recipe.getId());
@@ -262,7 +296,7 @@ public class RecipeViewCtrl {
             return;
         }
         for (RecipeIngredient ri : ingredients) {
-            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+            Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                     "client", "scenes", "RecipeIngredient.fxml");
             RecipeIngredientCtrl ctrl = item.getKey();
             ctrl.initialize(ri, recipe, this::loadIngredients);
@@ -289,7 +323,7 @@ public class RecipeViewCtrl {
             String step = steps.get(i);
 
             Pair<EditableItemCtrl, Parent> item = fxml.load(
-                    EditableItemCtrl.class,
+                    EditableItemCtrl.class, mainCtrl.getBundle(),
                     "client", "scenes", "EditableItem.fxml"
             );
 
@@ -326,7 +360,7 @@ public class RecipeViewCtrl {
         steps.add("");
         int index = steps.size() - 1;
 
-        Pair<EditableItemCtrl, Parent> item = fxml.load(EditableItemCtrl.class,
+        Pair<EditableItemCtrl, Parent> item = fxml.load(EditableItemCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "EditableItem.fxml");
 
         EditableItemCtrl ctrl = item.getKey();
@@ -352,7 +386,7 @@ public class RecipeViewCtrl {
      */
     @FXML
     private void onAddRecipeIngredient(){
-        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class,
+        Pair<RecipeIngredientCtrl, Parent> item = fxml.load(RecipeIngredientCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "RecipeIngredient.fxml");
         item.getKey().initialize(null, recipe, this::loadIngredients);
         ingredientsContainer.getChildren().add(item.getValue());
@@ -369,7 +403,7 @@ public class RecipeViewCtrl {
             return;
         }
         try {
-            String markdown = printer.recipePrint(recipe, ingredients);
+            String markdown = printer.recipePrint(recipe, ingredients, targetServings);
             printer.markdownToPDF(path, markdown);
         } catch (IOException e) {
             e.printStackTrace();
@@ -456,17 +490,9 @@ public class RecipeViewCtrl {
     }
 
     /**
-     * called when the user presses enter after inputting Target Servings
+     * Fetches the input from Target Services and handles invalid inputs
      */
-    @FXML
-    private void onServingsEnter() {
-        applyServingsFromField();
-    }
-
-    /**
-     * fetches the input from Target Services and handles invalid inputs
-     */
-    private void applyServingsFromField() {
+    public void applyServingsFromField() {
         String text = servingsScalingInput.getText();
         if (text == null || text.isBlank()) return;
 
@@ -489,7 +515,7 @@ public class RecipeViewCtrl {
      * calculates the scaling factor and rerenders it again
      */
     private void rerenderIngredientsScaled() {
-        double factor = (baseServings <= 0) ? 1.0 : (double) targetServings / baseServings;
+        double factor = (baseServings <= 0) ? 1.0 : targetServings / baseServings;
 
         for (RecipeIngredientCtrl ctrl : ingredientRowCtrls) {
             ctrl.applyScaleFactor(factor);
@@ -514,71 +540,19 @@ public class RecipeViewCtrl {
      */
     @FXML
     public void addToShoppingList(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Adding to shopping list");
-        alert.setHeaderText("You are about t" +
-                "o add the ingredients for " + targetServings + " servings of "
-                + recipe.getName() + " to the shopping list.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            this.shoppingListService.addIngredients(
-                    server.getRecipeIngredients(this.recipe.getId()),
-                    targetServings/baseServings, recipe.getName());
-            Alert notif = new Alert(Alert.AlertType.INFORMATION);
-            notif.setTitle("Success");
-            notif.setHeaderText("Success");
-            StringBuilder sb = new StringBuilder("Added:\n");
-            for (RecipeIngredient ri : server.getRecipeIngredients(this.recipe.getId())){
-                sb.append(ri.formatIngredientScaled(ri.getAmount()*targetServings/baseServings));
-                sb.append("\n");
-            }
-            notif.setContentText(sb.toString());
-            notif.show();
-            mainCtrl.reloadShoppingList();
-        }
+        mainCtrl.openShoppingListConfirmation(server.getRecipeIngredients(this.recipe.getId()),
+                targetServings/baseServings, recipe.getName());
     }
-
-    //calories display
 
     /**
      * Updates the calories display based on the database's list of ingredients
      */
     protected void updateCaloriesDisplay(){
-        StringBuilder textToDisplay = new StringBuilder();
-        textToDisplay.append((int) calculateCaloriesForRecipe());
-        textToDisplay.append(" kcal/100g");
-        caloriesDisplay.setText(textToDisplay.toString());
+        String textToDisplay = "Calories: "
+                + (int) nutrientsCalc.calculateCaloriesForRecipe(ingredients) +
+                " kcal/100g";
+        caloriesDisplay.setText(textToDisplay);
     }
-
-    /**
-     * Logic for calculating the amount of calories for this Recipe.
-     * This logic assumes that 1g = 1mL.
-     * @return amount of calories or 0.0 in case of invalid ingredient's mass
-     */
-    private double calculateCaloriesForRecipe(){
-        double totalCalories = 0;
-        double totalMass = 0;
-        for(RecipeIngredient ri: ingredients){
-            if(ri == null) continue;
-            if(ri.getIngredient() == null) continue;
-
-            //String informal = ri.getInformalUnit();
-            if (ri.getUnit() == Unit.CUSTOM) continue;
-
-            double amount = ri.getAmount();
-            Ingredient ingredient = ri.getIngredient();
-            totalCalories +=
-                    ri.getUnit() == Unit.GRAM ?
-                            ingredient.calculateCalories()*amount
-                            : ingredient.calculateCalories()*amount*1000;
-            totalMass += ri.getUnit() == Unit.GRAM ? amount : amount*1000;
-        }
-        if(totalMass <= 0.0) return 0.0;
-        return 100*totalCalories/totalMass;
-    }
-
-
-
 }
 
 

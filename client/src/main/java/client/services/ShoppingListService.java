@@ -4,6 +4,7 @@ import client.config.Config;
 import client.config.ConfigManager;
 import com.google.inject.Inject;
 import commons.Ingredient;
+import commons.IngredientCategory;
 import commons.RecipeIngredient;
 import client.model.ShoppingListItem;
 import commons.Unit;
@@ -91,6 +92,27 @@ public class ShoppingListService {
     }
 
     /**
+     * adds a ShoppingListItem to the shoppingList
+     * @param item the item to add
+     */
+    public void addItem(ShoppingListItem item) {
+        getShoppingList().add(item);
+    }
+
+    /**
+     * Adds a list of items to the shopping list
+     * @param items The list of items to add
+     * @param recipeName the name of the recipe
+     */
+    public void addItems(List<ShoppingListItem> items, String recipeName){
+        for (ShoppingListItem item : items) {
+            item.setRecipeName(recipeName);
+            getShoppingList().add(item);
+        }
+        saveChanges();
+    }
+
+    /**
      * adds a list of ingredients to the shopping list, multiplied by some amount.
      * Each ingredient is added as a separate item with the recipe name included.
      * @param ingredients the list of ingredients to add
@@ -105,13 +127,16 @@ public class ShoppingListService {
                 continue;
             }
 
-            // If ingredient name is null, try to fetch it from the service
+            // get the ingredient ID and name
+            long ingredientId = ingredient.getId();
             String ingredientName = ingredient.getName();
+            
+            // If ingredient name is null, try to fetch it from the service
             if (ingredientName == null || ingredientName.isBlank()) {
                 List<Ingredient> allIngredients = ingredientService.getAllIngredients();
                 if (allIngredients != null) {
                     Ingredient fullIngredient = allIngredients.stream()
-                            .filter(ing -> ing.getId() == ingredient.getId())
+                            .filter(ing -> ing.getId() == ingredientId)
                             .findFirst()
                             .orElse(null);
                     if (fullIngredient != null) {
@@ -123,7 +148,7 @@ public class ShoppingListService {
             if (i.getUnit() == Unit.CUSTOM && i.getInformalUnit() != null) {
                 // For custom units, keep the informal unit as is (amount multiplier doesn't apply)
                 getShoppingList().add(new ShoppingListItem(
-                        ingredient.getId(),
+                        ingredientId,
                         ingredientName,
                         i.getInformalUnit(),
                         i.getAmount(),
@@ -132,7 +157,7 @@ public class ShoppingListService {
             }
             else {
                 getShoppingList().add(new ShoppingListItem(
-                        ingredient.getId(),
+                        ingredientId,
                         ingredientName,
                         i.getInformalUnit(),
                         amount * i.getAmount(),
@@ -164,4 +189,22 @@ public class ShoppingListService {
         saveChanges();
     }
 
+    /**
+     * Gets the category for a shopping list item.
+     * @param item the shopping list item
+     * @return the category of the item
+     */
+    public IngredientCategory getCategoryForItem(ShoppingListItem item) {
+        if (item.isTextOnly() || item.getIngredientId() == null) {
+            return IngredientCategory.UNCATEGORIZED;
+        }
+        
+        // Use the stored ingredient ID to get the ingredient from the server
+        Ingredient ingredient = ingredientService.getIngredientById(item.getIngredientId());
+        
+        if (ingredient == null || ingredient.getCategory() == null) {
+            return IngredientCategory.UNCATEGORIZED;
+        }
+        return ingredient.getCategory();
+    }
 }

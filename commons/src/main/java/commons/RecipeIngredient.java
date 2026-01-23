@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -103,26 +104,17 @@ public class RecipeIngredient {
      * @return the String format of RecipeIngredient
      */
     public String formatIngredient(){
-        return formatIngredientInternal(this.amount);
+        return formatIngredientScaled(1.0);
     }
 
     /**
-     *
-     * when displaying a RecipeIngredient with scaled amount
-     * @param amount the scaled amount to be displayed
-     * @return the String format of RecipeIngredient
-     */
-    public String formatIngredientScaled(double amount){
-        return formatIngredientInternal(amount);
-    }
-
-    /**
-     *  helper function to format recipeIngredient
+     * Helper function to format recipeIngredient.
+     * @param factor double to multiply the amount by.
      * @return a formatted version of the toString. ex: 100 L salt
      */
-    public String formatIngredientInternal(double amount) {
+    public String formatIngredientScaled(double factor) {
         StringBuilder s = new StringBuilder();
-
+        double amount = getAmount()*factor;
         // List politely yoinked from https://en.wikipedia.org/wiki/Metric_prefix
         Dictionary<Integer, String> metricPrefixes = new Hashtable<Integer, String>(){
             {
@@ -168,16 +160,15 @@ public class RecipeIngredient {
             case CUSTOM -> "";
         };
 
-        if (unit != Unit.CUSTOM) {
-            s.append(amount / Math.pow(10, magnitude)).append(" ")
+        if (unit != Unit.CUSTOM || informalUnit == null) {
+            s.append(String.format(Locale.US,"%.2f",amount / Math.pow(10, magnitude))).append(" ")
                     .append(metricPrefixes.get(magnitude)).append(unitChar);
-        }
-        else {
-            if (informalUnit != null) {
+        } else {
+            try {
+                double informalAmount = Double.parseDouble(informalUnit);
+                s.append(String.format(Locale.US,"%.2f",informalAmount*factor));
+            } catch (NumberFormatException e) {
                 s.append(informalUnit);
-            }
-            else {
-                s.append(amount);
             }
         }
         s.append(" ").append(ingredient.getName());
