@@ -41,30 +41,38 @@ public class RecipeService {
      */
     public List<Recipe> getAllRecipesWithLanguage(boolean english, boolean polish, boolean dutch){
 
-        List<Recipe> recipes = new java.util.ArrayList<>(server.getRecipes().stream().filter((Recipe recipeItem) -> {
-            if(english && dutch && polish){
-                return true;
-            }
-            if(english && dutch){
-                return (recipeItem.getLanguage().equals(Language.English) || recipeItem.getLanguage().equals(Language.Dutch));
-            }
-            if(english && polish){
-                return (recipeItem.getLanguage().equals(Language.English) || recipeItem.getLanguage().equals(Language.Polish));
-            }
-            if(dutch && polish){
-                return (recipeItem.getLanguage().equals(Language.Dutch) || recipeItem.getLanguage().equals(Language.Polish));
-            }
-            if (english) {
-                return recipeItem.getLanguage().equals(Language.English);
-            }
-            if (polish) {
-                return recipeItem.getLanguage().equals(Language.Polish);
-            }
-            if (dutch) {
-                return recipeItem.getLanguage().equals(Language.Dutch);
-            }
-            return false;
-        })
+        List<Recipe> recipes =
+                new java.util.
+                        ArrayList<>(server.getRecipes().stream().filter((Recipe recipeItem) -> {
+                            if (english && dutch && polish) {
+                                return true;
+                            }
+                            if (english && dutch) {
+                                return (recipeItem.
+                                        getLanguage().equals(Language.English)
+                                        || recipeItem.getLanguage().equals(Language.Dutch));
+                            }
+                            if (english && polish) {
+                                return (recipeItem.
+                                        getLanguage().equals(Language.English)
+                                        || recipeItem.getLanguage().equals(Language.Polish));
+                            }
+                            if (dutch && polish) {
+                                return (recipeItem.
+                                        getLanguage().equals(Language.Dutch)
+                                        || recipeItem.getLanguage().equals(Language.Polish));
+                            }
+                            if (english) {
+                                return recipeItem.getLanguage().equals(Language.English);
+                            }
+                            if (polish) {
+                                return recipeItem.getLanguage().equals(Language.Polish);
+                            }
+                            if (dutch) {
+                                return recipeItem.getLanguage().equals(Language.Dutch);
+                            }
+                            return false;
+                        })
                 .toList());
 
         recipes.sort(Comparator.comparing(Recipe::getName));
@@ -75,41 +83,50 @@ public class RecipeService {
     /**
      * Searches for recipes, sorted alphabetically by name.
      */
-    public List<Recipe> searchRecipes(String query, boolean english, boolean polish, boolean dutch) {
+    public List<Recipe> searchRecipes(String query,
+                                      boolean english, boolean polish, boolean dutch) {
         List<Recipe> results = server.searchRecipes(query);
-        if (results != null) {
-            results.sort(Comparator.comparing(Recipe::getName));
-
-            return results.stream().filter((Recipe recipeItem) -> {
-                if(english && dutch && polish){
-                    return true;
-                }
-                if(english && dutch){
-                    return (recipeItem.getLanguage().equals(Language.English) || recipeItem.getLanguage().equals(Language.Dutch));
-                }
-                if(english && polish){
-                    return (recipeItem.getLanguage().equals(Language.English) || recipeItem.getLanguage().equals(Language.Polish));
-                }
-                if(dutch && polish){
-                    return (recipeItem.getLanguage().equals(Language.Dutch) || recipeItem.getLanguage().equals(Language.Polish));
-                }
-                if (english) {
-                    return recipeItem.getLanguage().equals(Language.English);
-                }
-                if (polish) {
-                    return recipeItem.getLanguage().equals(Language.Polish);
-                }
-                if (dutch) {
-                    return recipeItem.getLanguage().equals(Language.Dutch);
-                }
-                return false;
-            })
-                    .toList();
-        } else {
+        if (results == null) {
             return null;
         }
 
+        results.sort(Comparator.comparing(Recipe::getName));
+        return filterByLanguage(results, english, polish, dutch);
+    }
 
+    /**
+     * Filters the list of recipes based on the selected languages.
+     * @param results The list of recipes to filter.
+     * @param english Whether to include English recipes.
+     * @param polish Whether to include Polish recipes.
+     * @param dutch Whether to include Dutch recipes.
+     * @return A list of filtered recipes.
+     */
+    private List<Recipe> filterByLanguage(List<Recipe> results,
+                                          boolean english, boolean polish, boolean dutch) {
+        return results.stream()
+                .filter(recipe -> isLanguageAllowed(recipe, english, polish, dutch))
+                .toList();
+    }
+
+    /**
+     * Checks if a specific recipe is allowed based on the language flags.
+     * @param recipe The recipe to check.
+     * @param english Whether English is allowed.
+     * @param polish Whether Polish is allowed.
+     * @param dutch Whether Dutch is allowed.
+     * @return true if the recipe's language matches a selected flag.
+     */
+    private boolean isLanguageAllowed(Recipe recipe,
+                                      boolean english, boolean polish, boolean dutch) {
+        Language lang = recipe.getLanguage();
+        if (lang == null) {
+            return false;
+        }
+
+        return (english && lang == Language.English)
+                || (dutch && lang == Language.Dutch)
+                || (polish && lang == Language.Polish);
     }
 
     /**

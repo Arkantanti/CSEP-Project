@@ -54,16 +54,14 @@ public class ShoppingListCategorySectionCtrl {
      * @param onUpdate callback when items are updated
      * @param onAddItem callback when an item is added
      * @param onDeleteItem callback when an item is deleted
-     * @param isTextMode if the section is in text mode
      */
     public void initialize(IngredientCategory category,
-                          List<ShoppingListItem> items,
-                          MyFXML fxml,
-                          ResourceBundle bundle,
-                          Function<Void, Void> onUpdate,
-                          Function<ShoppingListItem, Void> onAddItem,
-                          Function<ShoppingListItem, Void> onDeleteItem,
-                          boolean isTextMode) {
+                           List<ShoppingListItem> items,
+                           MyFXML fxml,
+                           ResourceBundle bundle,
+                           Function<Void, Void> onUpdate,
+                           Function<ShoppingListItem, Void> onAddItem,
+                           Function<ShoppingListItem, Void> onDeleteItem) {
         this.category = category;
         this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
         this.fxml = fxml;
@@ -94,11 +92,13 @@ public class ShoppingListCategorySectionCtrl {
      * @return the created ShoppingListElementCtrl/Parent pair
      */
     private Pair<ShoppingListElementCtrl, Parent> createListElement(ShoppingListItem baseItem) {
-        Pair<ShoppingListElementCtrl, Parent> element = fxml.load(ShoppingListElementCtrl.class, bundle,
-                "client", "scenes", "ShoppingListElement.fxml");
+        Pair<ShoppingListElementCtrl, Parent> element =
+                fxml.load(ShoppingListElementCtrl.class, bundle,
+                        "client", "scenes", "ShoppingListElement.fxml");
         boolean isTextMode = baseItem.isTextOnly();
         element.getKey().initialize(baseItem,
-                (Void _) -> {
+                // Replaced '_' with 'ignored'
+                (Void ignored) -> {
                     loadItems();
                     onUpdate.apply(null);
                     return null;

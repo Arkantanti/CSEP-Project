@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
@@ -113,7 +113,8 @@ public class Recipe implements Showable{
     public void setLanguage(Language language){this.language = language;}
 
     public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
-        this.recipeIngredients = recipeIngredients==null ? null : new ArrayList<>(recipeIngredients);
+        this.recipeIngredients = recipeIngredients==null
+                ? null : new ArrayList<>(recipeIngredients);
     }
 
     /**

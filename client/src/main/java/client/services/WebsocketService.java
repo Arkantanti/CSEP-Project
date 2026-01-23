@@ -89,28 +89,37 @@ public class WebsocketService implements WebSocket.Listener {
                     }
                     case SyncEvent.RecipeDeleted recipeDeleted -> {
                         appViewCtrl.refreshData();
-                        if (recipeViewCtrl != null && recipeViewCtrl.getRecipe().getId() == recipeDeleted.getRecipeId()) {
+                        if (recipeViewCtrl != null &&
+                                recipeViewCtrl.getRecipe().getId() == recipeDeleted.getRecipeId()) {
                             mainCtrl.showDefaultView();
                         }
                     }
                     case SyncEvent.RecipeContentUpdated recipeContentUpdated -> {
-                        if (recipeViewCtrl != null && recipeViewCtrl.getRecipe().getId() == recipeContentUpdated.getRecipeId()) {
+                        if (recipeViewCtrl != null &&
+                                recipeViewCtrl.getRecipe().getId() ==
+                                        recipeContentUpdated.getRecipeId()) {
                             recipeViewCtrl.loadRecipe(recipeContentUpdated.getRecipe(), false);
                         }
                         appViewCtrl.refreshData();
                     }
                     case SyncEvent.RecipeIngredientCreated ingredientCreated -> {
-                        if (recipeViewCtrl != null && recipeViewCtrl.getRecipe().getId() == ingredientCreated.getRecipeId()) {
+                        if (recipeViewCtrl != null &&
+                                recipeViewCtrl.getRecipe().getId() ==
+                                        ingredientCreated.getRecipeId()) {
                             recipeViewCtrl.loadIngredients();
                         }
                     }
                     case SyncEvent.RecipeIngredientDeleted ingredientDeleted -> {
-                        if (recipeViewCtrl != null && recipeViewCtrl.getRecipe().getId() == ingredientDeleted.getRecipeId()) {
+                        if (recipeViewCtrl != null &&
+                                recipeViewCtrl.getRecipe().getId() ==
+                                        ingredientDeleted.getRecipeId()) {
                             recipeViewCtrl.loadIngredients();
                         }
                     }
                     case SyncEvent.RecipeIngredientUpdated ingredientUpdated -> {
-                        if (recipeViewCtrl != null && recipeViewCtrl.getRecipe().getId() == ingredientUpdated.getRecipeId()) {
+                        if (recipeViewCtrl != null &&
+                                recipeViewCtrl.getRecipe().getId() ==
+                                        ingredientUpdated.getRecipeId()) {
                             recipeViewCtrl.loadIngredients();
                         }
                     }

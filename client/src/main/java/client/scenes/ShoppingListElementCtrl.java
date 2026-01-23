@@ -69,13 +69,15 @@ public class ShoppingListElementCtrl {
      * @param shoppingListItem A shopping list item
      * @param onUpdate A function that is called whenever (an item in) the list has changed
      * @param onAddIngredient A function to call when adding a new element to the list
-     * @param onDeleteIngredient A function to call when a specific element should be removed from the list
+     * @param onDeleteIngredient A function
+     *                           to call when a specific element should be removed from the list
      */
     public void initialize(ShoppingListItem shoppingListItem,
                            Function<Void, Void> onUpdate,
                            Function<ShoppingListItem, Void> onAddIngredient,
                            Function<ShoppingListItem, Void> onDeleteIngredient) {
-        initializeInternal(shoppingListItem, onUpdate, onAddIngredient, onDeleteIngredient, shoppingListItem.isTextOnly());
+        initializeInternal(shoppingListItem, onUpdate,
+                onAddIngredient, onDeleteIngredient, shoppingListItem.isTextOnly());
     }
 
     /**
@@ -83,7 +85,8 @@ public class ShoppingListElementCtrl {
      * @param shoppingListItem A shopping list item (must be null for new items)
      * @param onUpdate A function that is called whenever (an item in) the list has changed
      * @param onAddIngredient A function to call when adding a new element to the list
-     * @param onDeleteIngredient A function to call when a specific element should be removed from the list
+     * @param onDeleteIngredient A function to call
+     *                           when a specific element should be removed from the list
      * @param isTextMode true if this should be a text item
      */
     public void initialize(ShoppingListItem shoppingListItem,
@@ -91,7 +94,8 @@ public class ShoppingListElementCtrl {
                            Function<ShoppingListItem, Void> onAddIngredient,
                            Function<ShoppingListItem, Void> onDeleteIngredient,
                            boolean isTextMode) {
-        initializeInternal(shoppingListItem, onUpdate, onAddIngredient, onDeleteIngredient, isTextMode);
+        initializeInternal(shoppingListItem, onUpdate,
+                onAddIngredient, onDeleteIngredient, isTextMode);
     }
 
     /**
@@ -162,7 +166,8 @@ public class ShoppingListElementCtrl {
             updateUIForTextMode();
         } else {
             // load data to show
-            if (shoppingListItem.getUnit() != Unit.CUSTOM || shoppingListItem.getInformalUnit() == null) {
+            if (shoppingListItem.getUnit() !=
+                    Unit.CUSTOM || shoppingListItem.getInformalUnit() == null) {
                 amountField.setText(String.valueOf(shoppingListItem.getAmount()));
             }
             else {
@@ -204,80 +209,103 @@ public class ShoppingListElementCtrl {
         }
 
         if (isTextMode) {
-            // Text item
-            if (shoppingListItem == null) {
-                onAddIngredient.apply(new ShoppingListItem(text));
-            } else {
-                shoppingListItem.setText(text);
-                onUpdate.apply(null);
-            }
-            textLabel.setText(text);
+            handleTextItem(text);
         } else {
-            // Ingredient item
-            Ingredient selectedIngredient = ingredientComboBox.getSelectionModel().getSelectedItem();
-            if (selectedIngredient == null) {
-                ingredientComboBox.styleProperty().set("-fx-border-color: red; -fx-border-radius: 4;");
-                return;
-            }
-            else {
-                ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
-            }
+            handleIngredientItem(text);
+        }
+    }
 
-            Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
-            if (unit == null) {
-                return;
-            }
+    /**
+     * Handles the confirmation logic when in Text Mode.
+     * @param text The text input from the user.
+     */
+    private void handleTextItem(String text) {
+        if (shoppingListItem == null) {
+            onAddIngredient.apply(new ShoppingListItem(text));
+        } else {
+            shoppingListItem.setText(text);
+            onUpdate.apply(null);
+        }
+        textLabel.setText(text);
+        closeEditView();
+    }
 
-            String informalAmount = null;
-            double amount = 0;
+    /**
+     * Handles the confirmation logic when in Ingredient Mode.
+     * Validates inputs and delegates saving.
+     * @param text The amount input from the user.
+     */
+    private void handleIngredientItem(String text) {
+        Ingredient selectedIngredient = ingredientComboBox.getSelectionModel().getSelectedItem();
+        if (selectedIngredient == null) {
+            ingredientComboBox.styleProperty().set(
+                    "-fx-border-color: red; -fx-border-radius: 4;");
+            return;
+        }
+        ingredientComboBox.styleProperty().set("-fx-border-color: lightgray;");
 
-            if (unit == Unit.CUSTOM) {
-                informalAmount = text;
-            }
-            else{
-                try {
-                    amount = Double.parseDouble(text);
-                }
-                catch (Exception _) {
-                    amount = -1;
-                }
-            }
+        Unit unit = unitComboBox.getSelectionModel().getSelectedItem();
+        if (unit == null) return;
 
-            if ((amount <= 0 && unit != Unit.CUSTOM) ||
-                    ((informalAmount == null || informalAmount.isEmpty()) && unit == Unit.CUSTOM)) {
-                amountField.styleProperty().set("-fx-text-box-border: red;");
-                return;
-            }
-            else {
-                amountField.styleProperty().set("-fx-text-box-border: lightgray;");
-            }
+        double amount = -1;
+        try {
+            if (unit != Unit.CUSTOM) amount = Double.parseDouble(text);
+        } catch (NumberFormatException ignored) {}
 
-            if (shoppingListItem == null) {
-                onAddIngredient.apply(new ShoppingListItem(
-                        selectedIngredient.getId(),
-                        selectedIngredient.getName(),
-                        informalAmount,
-                        amount,
-                        unit,
-                        null));
-                // Refresh to get the new item
-                onUpdate.apply(null);
-                return;
-            } else {
-                shoppingListItem.setIngredientId(selectedIngredient.getId());
-                shoppingListItem.setIngredientName(selectedIngredient.getName());
-                shoppingListItem.setAmount(amount);
-                shoppingListItem.setUnit(unit);
-                shoppingListItem.setInformalUnit(informalAmount);
-                shoppingListItem.setText(null); // clear text if it was a text item
-                onUpdate.apply(null);
-            }
+        if (!validateAmount(amount, unit, text)) {
+            amountField.styleProperty().set("-fx-text-box-border: red;");
+            return;
+        }
+        amountField.styleProperty().set("-fx-text-box-border: lightgray;");
+
+        saveIngredientItem(selectedIngredient, amount, unit, text);
+        closeEditView();
+    }
+
+    /**
+     * Validates the amount based on the selected unit.
+     */
+    private boolean validateAmount(double amount, Unit unit, String text) {
+        if (unit == Unit.CUSTOM) {
+            return text != null && !text.isEmpty();
+        }
+        return amount > 0;
+    }
+
+    /**
+     * Creates a new ingredient item or updates the existing one.
+     */
+    private void saveIngredientItem(Ingredient ingredient, double amount,
+                                    Unit unit, String textInput) {
+        String informalAmount = (unit == Unit.CUSTOM) ? textInput : null;
+
+        if (shoppingListItem == null) {
+            onAddIngredient.apply(new ShoppingListItem(
+                    ingredient.getId(),
+                    ingredient.getName(),
+                    informalAmount,
+                    amount,
+                    unit,
+                    null));
+            onUpdate.apply(null);
+        } else {
+            shoppingListItem.setIngredientId(ingredient.getId());
+            shoppingListItem.setIngredientName(ingredient.getName());
+            shoppingListItem.setAmount(amount);
+            shoppingListItem.setUnit(unit);
+            shoppingListItem.setInformalUnit(informalAmount);
+            shoppingListItem.setText(null);
+            onUpdate.apply(null);
             textLabel.setText(shoppingListItem.formatItem());
         }
+    }
 
+    /**
+     * Hides the edit view and shows the default view.
+     */
+    private void closeEditView() {
         editView.setVisible(false);
         editView.setManaged(false);
-
         defaultView.setVisible(true);
         defaultView.setManaged(true);
     }
