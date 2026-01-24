@@ -37,6 +37,10 @@ public class MyModule implements Module {
 
     private final Config config;
 
+    /**
+     * Constructor for MyModule.
+     * @param config the configuration object
+     */
     public MyModule(Config config) {
         this.config = config;
     }
