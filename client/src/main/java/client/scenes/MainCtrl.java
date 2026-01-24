@@ -31,6 +31,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -38,6 +39,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 /**
@@ -237,7 +239,7 @@ public class MainCtrl {
             shoppingListStage.setResizable(false);
             shoppingListCtrl = shoppingListView.getKey();
 
-            shoppingListCtrl.initialize(fxml, getBundle());
+            shoppingListCtrl.initialize(fxml);
         }
         shoppingListStage.show();
         shoppingListStage.toFront();
@@ -307,6 +309,13 @@ public class MainCtrl {
     public void changeLanguageAndReset(Locale locale, String flagPath) {
         setLocale(locale);
         setFlagPath(flagPath);
+
+        closeAllExcept(primaryStage);
+
+        ingredientAddStage = null;
+        shoppingListStage =null;
+        shoppingListConfirmationStage = null;
+
         showAppView();
         showDefaultView();
     }
@@ -359,6 +368,20 @@ public class MainCtrl {
      */
     public String getFlagPath() {
         return flagPath;
+    }
+
+    /**
+     * Helper function for reseting the display of the app to initial view
+     * @param keep Stages to keep opened when switching language
+     */
+    private void closeAllExcept(Stage... keep) {
+        var keepSet = Set.of(keep);
+
+        for (Window w : Window.getWindows()) {
+            if (w instanceof Stage stage && !keepSet.contains(stage)) {
+                stage.close();
+            }
+        }
     }
 
     /**

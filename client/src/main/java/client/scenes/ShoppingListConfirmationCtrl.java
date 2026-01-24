@@ -83,7 +83,7 @@ public class ShoppingListConfirmationCtrl {
                 fxml.load(ShoppingListElementCtrl.class, mainCtrl.getBundle(),
                 "client", "scenes", "ShoppingListElement.fxml");
         item.getKey().initialize(baseItem,
-                (_) -> {                        // onUpdate
+                (ignored) -> {                        // onUpdate
                     updateListBox();
                     return null;
                 },
