@@ -143,10 +143,12 @@ public class RecipeViewCtrl {
         updateCaloriesDisplay();
 
         double[] nutrients = nutrientsCalc.calculateNutrients(ingredients);
-        carbsLabel.setText(String.format(Locale.US, "Carbs: %.2f g/100g", nutrients[0]));
-        proteinLabel.setText(String.format(Locale.US, "Protein: %.2f g/100g", nutrients[1]));
-        fatLabel.setText(String.format(Locale.US, "Fat: %.2f g/100g", nutrients[2]));
-
+        carbsLabel.setText(String.format(Locale.US, "%s %.2f g/100g",
+                mainCtrl.getBundle().getString("txt.carbs"), nutrients[0]));
+        proteinLabel.setText(String.format(Locale.US, "%s %.2f g/100g",
+                mainCtrl.getBundle().getString("txt.protein"), nutrients[1]));
+        fatLabel.setText(String.format(Locale.US, "%s %.2f g/100g",
+                mainCtrl.getBundle().getString("txt.fat"), nutrients[2]));
         hboxAllergens.getChildren().clear();
         Set<Allergen> allergens = new HashSet<>();
         ingredients.forEach(ing -> {
@@ -155,7 +157,8 @@ public class RecipeViewCtrl {
             }
         });
         for(Allergen allergen : allergens) {
-            Label label = new Label(allergen.getDisplayName());
+            String text = mainCtrl.getBundle().getString("allergen." + allergen.name());
+            Label label = new Label(text);
             label.getStyleClass().add("allergen-label");
             label.setStyle("-fx-background-color:" + allergen.getColor()+";");
             hboxAllergens.getChildren().add(label);
@@ -553,7 +556,7 @@ public class RecipeViewCtrl {
      * Updates the calories display based on the database's list of ingredients
      */
     protected void updateCaloriesDisplay(){
-        String textToDisplay = "Calories: "
+        String textToDisplay = mainCtrl.getBundle().getString("txt.calories")
                 + (int) nutrientsCalc.calculateCaloriesForRecipe(ingredients) +
                 " kcal/100g";
         caloriesDisplay.setText(textToDisplay);
