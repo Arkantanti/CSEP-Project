@@ -97,9 +97,9 @@ public class Config {
         Recipe pancake = recipeRepo.save(new Recipe("Pancakes", 4,
                 List.of("Mix ingredients", "Fry in pan",
                         "Serve hot"), Language.English, true, true, false));
-        Recipe tomatoSoup = recipeRepo.save(new Recipe("Tomato Soup", 2,
+        Recipe tomatoSoup = recipeRepo.save(new Recipe("Tomato soup", 2,
                 List.of("Boil Water", "Add Tomato"), Language.English, true, true, true));
-        Recipe grilledCheese = recipeRepo.save(new Recipe("Grilled Cheese", 1,
+        Recipe grilledCheese = recipeRepo.save(new Recipe("Grilled cheese", 1,
                 List.of("Toast Bread", "Melt Cheese"), Language.English, true, true, false));
 
         // 3. Create RecipeIngredients for Pancakes
