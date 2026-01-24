@@ -35,10 +35,10 @@ import client.scenes.MainCtrl;
 
 public class MyModule implements Module {
 
-    private static Config config;
+    private final Config config;
 
-    public static void setConfig(Config cfg) {
-        config = cfg;
+    public MyModule(Config config) {
+        this.config = config;
     }
 
     @Override

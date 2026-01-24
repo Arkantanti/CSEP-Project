@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
-import static commons.Recipe.recipeNameChecker;
-
 public class RecipeViewCtrl {
 
     @FXML private Button titleEditButton;
@@ -219,7 +217,7 @@ public class RecipeViewCtrl {
      * Shows the label and hides the text field.
      */
     private void finishEditing() {
-        if(recipeNameChecker(recipeService.getAllRecipes(), nameTextField.getText(), this.recipe)){
+        if(recipeService.recipeNameChecker(recipeService.getAllRecipes(), nameTextField.getText(), this.recipe)){
             mainCtrl.showError("Used Name",
                     "This recipe name is already in use, please choose another.");
             return;

@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static commons.Recipe.recipeNameChecker;
-
 public class AddRecipeCtrl {
     @FXML
     private Label nameLabel;
@@ -124,7 +122,7 @@ public class AddRecipeCtrl {
      * @return true if valid.
      */
     private boolean validateRecipe(String name) {
-        if (recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)) {
+        if (recipeService.recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)) {
             mainCtrl.showError("Name Used.", "This name is already in use.");
             return false;
         }
@@ -262,7 +260,7 @@ public class AddRecipeCtrl {
             mainCtrl.showError("Input Error", "Recipe name cannot be empty.");
             return false;
         }
-        if (recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)) {
+        if (recipeService.recipeNameChecker(recipeService.getAllRecipes(), name, this.recipe)) {
             mainCtrl.showError("Used Name",
                     "This recipe name is already in use, please choose another.");
             return false;

@@ -54,9 +54,7 @@ public class Main extends Application {
         Path cfgPath = ConfigManager.getConfigPath(args);
         Config config = ConfigManager.loadOrCreate(cfgPath);
 
-        MyModule.setConfig(config);
-
-        injector = createInjector(new MyModule());
+        injector = createInjector(new MyModule(config));
         fxml = new MyFXML(injector);
         launch();
     }
