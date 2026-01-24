@@ -120,16 +120,4 @@ public class ShoppingListConfirmationCtrl {
         mainCtrl.reloadShoppingList();
         confirmationStage.close();
     }
-
-    public VBox getIngredientListBox() {
-        return ingredientListBox;
-    }
-
-    public List<ShoppingListItem> getItems() {
-        return items;
-    }
-
-    public String getRecipeName() {
-        return recipeName;
-    }
 }

@@ -391,8 +391,4 @@ public class ShoppingListElementCtrl {
         ingredientComboBox.setManaged(true);
         amountField.setPromptText("Enter amount");
     }
-
-    public Label getTextLabel() {
-        return textLabel;
-    }
 }

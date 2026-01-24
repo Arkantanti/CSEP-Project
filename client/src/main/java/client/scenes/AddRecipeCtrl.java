@@ -613,20 +613,4 @@ public class AddRecipeCtrl {
     public Recipe getRecipe(){
         return this.recipe;
     }
-
-    public ComboBox<String> getLanguageChoise() {
-        return languageChoise;
-    }
-
-    public TextArea getPreparationsArea() {
-        return preparationsArea;
-    }
-
-    public TextField getNameTextField() {
-        return nameTextField;
-    }
-
-    public TextField getServingsArea() {
-        return servingsArea;
-    }
 }

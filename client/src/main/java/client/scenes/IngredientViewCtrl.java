@@ -349,38 +349,6 @@ public class  IngredientViewCtrl {
         ingredient.setAllergens(selectedAllergens);
         server.updateIngredient(ingredient);
     }
-
-    public Label getNameLabel() {
-        return nameLabel;
-    }
-
-    public TextField getFatTf() {
-        return fatTf;
-    }
-
-    public TextField getProteinTf() {
-        return proteinTf;
-    }
-
-    public TextField getCarbsTf() {
-        return carbsTf;
-    }
-
-    public Label getUsedCountLabel() {
-        return usedCountLabel;
-    }
-
-    public FlowPane getHboxAllergens() {
-        return hboxAllergens;
-    }
-
-    public Label getCategoryLabel() {
-        return categoryLabel;
-    }
-
-    public ComboBox<IngredientCategory> getCategoryComboBox() {
-        return categoryComboBox;
-    }
 }
 
 
