@@ -1,6 +1,7 @@
 package client.utils;
 
 import client.scenes.MainCtrl;
+import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
@@ -28,6 +29,7 @@ public class FavoritesPollingService {
      *
      * @param favoritesManager the manager for handling favorited recipes
      */
+    @Inject
     public FavoritesPollingService(FavoritesManager favoritesManager) {
         this.favoritesManager = favoritesManager;
     }

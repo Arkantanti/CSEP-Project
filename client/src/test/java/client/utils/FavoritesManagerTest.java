@@ -1,6 +1,7 @@
 package client.utils;
 
 import client.config.Config;
+import client.config.ConfigManager;
 import commons.Recipe;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,12 +17,14 @@ public class FavoritesManagerTest {
 
     private Config config;
     private FavoritesManager manager;
+    private ConfigManager configManager;
 
     @BeforeEach
     void setup() {
         config = mock(Config.class);
+        configManager = mock(ConfigManager.class);
         when(config.getFavoriteRecipesIds()).thenReturn(new ArrayList<>());
-        manager = new FavoritesManager(config, null);
+        manager = new FavoritesManager(config, null, configManager);
     }
 
     @Test

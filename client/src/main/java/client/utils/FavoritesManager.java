@@ -15,17 +15,20 @@ public class FavoritesManager {
 
     private final Config config;
     private final ServerUtils serverUtils;
+    private final ConfigManager configManager;
 
     /**
      * Constructs a new FavoritesManager.
      *
      * @param config the config object containing the user specific configuration
      * @param serverUtils the object for communicating with the server
+     * @param configManager the manager for saving configuration
      */
     @Inject
-    public FavoritesManager(Config config, ServerUtils serverUtils) {
+    public FavoritesManager(Config config, ServerUtils serverUtils, ConfigManager configManager) {
         this.config = config;
         this.serverUtils = serverUtils;
+        this.configManager = configManager;
     }
 
     /**
@@ -39,7 +42,7 @@ public class FavoritesManager {
 
         if (!favorites.contains(recipeId)) {
             favorites.add(recipeId);
-            ConfigManager.save(config);
+            configManager.save(config);
         }
     }
 
@@ -53,7 +56,7 @@ public class FavoritesManager {
         List<Long> favorites = config.getFavoriteRecipesIds();
         if (favorites != null && favorites.contains(recipeId)) {
             favorites.remove(recipeId);
-            ConfigManager.save(config);
+            configManager.save(config);
         }
     }
 
@@ -108,7 +111,7 @@ public class FavoritesManager {
         if (!removedIds.isEmpty()) {
             // Remove the invalid IDs from the LIVE list
             favorites.removeAll(removedIds);
-            ConfigManager.save(config);
+            configManager.save(config);
         }
 
         return removedIds;

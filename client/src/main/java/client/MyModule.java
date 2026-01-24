@@ -26,6 +26,8 @@ import com.google.inject.Module;
 import com.google.inject.Scopes;
 import client.services.IngredientService;
 import client.services.RecipeService;
+import client.config.ConfigManager;
+import client.utils.FavoritesPollingService;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -50,7 +52,9 @@ public class MyModule implements Module {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(Config.class).toInstance(config);
         binder.bind(Printer.class).in(Scopes.SINGLETON);
+        binder.bind(ConfigManager.class).in(Scopes.SINGLETON);
         binder.bind(FavoritesManager.class).in(Scopes.SINGLETON);
+        binder.bind(FavoritesPollingService.class).in(Scopes.SINGLETON);
         binder.bind(RecipeService.class).in(Scopes.SINGLETON);
         binder.bind(IngredientService.class).in(Scopes.SINGLETON);
         binder.bind(ShoppingListService.class).in(Scopes.SINGLETON);
