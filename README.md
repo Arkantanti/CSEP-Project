@@ -115,6 +115,7 @@ _(Feature implemented fully for excellent)_
 - Persistence: Remember the user’s last selected UI language after restart.
 - Filtering: allow setting a language per recipe, and let users filter recipes by one or multiple languages they understand, remember this filter after restart.
 - Non-functional requirements: Use JavaFX i18n via localized .properties in resources and FXMLLoader.setResources, support English + Dutch + one extra (can be fictional), limit to left-to-right languages, persist selection + filter in the config file.
+- Remarks: pdf exports are always in english regardless of the language.
 
 _(Feature implemented fully)_
 
