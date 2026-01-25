@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 
 public class ShoppingListElementCtrl {
@@ -54,6 +55,8 @@ public class ShoppingListElementCtrl {
     private final ServerUtils serverUtils;
     private final IngredientService ingredientService;
 
+    private ResourceBundle i18n;
+
     /**
      * constructor to be injected
      * @param serverUtils serverutils to load/delete/edit ingredients
@@ -62,6 +65,14 @@ public class ShoppingListElementCtrl {
     public ShoppingListElementCtrl(ServerUtils serverUtils, IngredientService ingredientService) {
         this.serverUtils = serverUtils;
         this.ingredientService = ingredientService;
+    }
+
+    /**
+     * Helper function for initializing current ResourceBundle
+     * @param bundle ResourceBundle to be used for language display
+     */
+    public void seti18n(ResourceBundle bundle){
+        this.i18n = bundle;
     }
 
     /**
@@ -125,6 +136,8 @@ public class ShoppingListElementCtrl {
         textLabel.setManaged(true);
 
         setupIngredientComboBox();
+        setupUnitComboBox();
+
     }
 
     /**
@@ -334,10 +347,10 @@ public class ShoppingListElementCtrl {
         amountField.setText("");
 
         if (isTextMode) {
-            amountField.setPromptText("Enter text");
+            amountField.setPromptText(i18n.getString("prmpt.enterText"));
             updateUIForTextMode();
         } else {
-            amountField.setPromptText("Enter amount");
+            amountField.setPromptText(i18n.getString("el.amountInput"));
             unitComboBox.getSelectionModel().select(Unit.GRAM);
             updateUIForIngredientMode();
         }
@@ -378,7 +391,7 @@ public class ShoppingListElementCtrl {
         unitComboBox.setManaged(false);
         ingredientComboBox.setVisible(false);
         ingredientComboBox.setManaged(false);
-        amountField.setPromptText("Enter text");
+        amountField.setPromptText(i18n.getString("prmpt.enterText"));
     }
 
     /**
@@ -389,6 +402,39 @@ public class ShoppingListElementCtrl {
         unitComboBox.setManaged(true);
         ingredientComboBox.setVisible(true);
         ingredientComboBox.setManaged(true);
-        amountField.setPromptText("Enter amount");
+        amountField.setPromptText(i18n.getString("el.amountInput"));
     }
+
+    /**
+     * helper function for translating Unit
+     *
+     * @param u enum to be displayed
+     * @return String to display the name of translated Unit
+     */
+    private String trUnit(Unit u) {
+        return i18n.getString("unit." + u.name());
+    }
+
+    /**
+     * function initializing Allergens and Categories display depending on the current language
+     */
+    private void setupUnitComboBox() {
+        unitComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Unit item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : trUnit(item));
+            }
+        });
+
+        unitComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Unit item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : trUnit(item));
+            }
+        });
+    }
+
+
 }

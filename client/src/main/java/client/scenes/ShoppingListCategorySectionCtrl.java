@@ -71,7 +71,7 @@ public class ShoppingListCategorySectionCtrl {
         this.onDeleteItem = onDeleteItem;
 
         String categoryName = category.name();
-        categoryLabel.setText(categoryName.charAt(0) + categoryName.substring(1).toLowerCase());
+        categoryLabel.setText(bundle.getString("cat."+categoryName));
 
         loadItems();
     }
