@@ -65,7 +65,7 @@ public class ConfigManager {
      * @param config the config to save
      * @throws IOException if writing the file fails
      */
-    public static void save(Config config) throws IOException {
+    public void save(Config config) throws IOException {
         Path path = config.getConfigPath();
         if (path == null) {
             throw new IllegalStateException("Config path is not set");

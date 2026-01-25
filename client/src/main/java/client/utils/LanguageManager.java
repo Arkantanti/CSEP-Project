@@ -12,6 +12,7 @@ import java.util.Map;
 public class LanguageManager {
     private final Config config;
     private final ServerUtils serverUtils;
+    private final ConfigManager configManager;
     private Map<String, Boolean> languagePreference;
 
 
@@ -20,11 +21,13 @@ public class LanguageManager {
      *
      * @param config the config object containing the user specific configuration
      * @param serverUtils the object for communicating with the server
+     * @param configManager the manager for saving configuration
      */
     @Inject
-    public LanguageManager(Config config, ServerUtils serverUtils) {
+    public LanguageManager(Config config, ServerUtils serverUtils, ConfigManager configManager) {
         this.config = config;
         this.serverUtils = serverUtils;
+        this.configManager = configManager;
     }
 
     /**
@@ -53,7 +56,7 @@ public class LanguageManager {
             default -> throw new IllegalArgumentException("Unknown language");
         }
 
-        ConfigManager.save(config);
+        configManager.save(config);
     }
 
     /**

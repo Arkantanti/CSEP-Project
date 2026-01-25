@@ -15,16 +15,19 @@ import java.util.List;
 public class ShoppingListService {
     private final Config config;
     private final IngredientService ingredientService;
+    private final ConfigManager configManager;
 
     /**
      * Injected constructor for ShoppingListService
      * @param config the Config file
      * @param ingredientService the service for fetching ingredients
+     * @param configManager the manager for saving configuration
      */
     @Inject
-    public ShoppingListService(Config config, IngredientService ingredientService) {
+    public ShoppingListService(Config config, IngredientService ingredientService, ConfigManager configManager) {
         this.config = config;
         this.ingredientService = ingredientService;
+        this.configManager = configManager;
     }
 
     /**
@@ -54,7 +57,7 @@ public class ShoppingListService {
      */
     public void saveChanges(){
         try {
-            ConfigManager.save(config);
+            configManager.save(config);
         }
         catch (IOException _) {}
     }

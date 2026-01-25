@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.FavoritesPollingService;
 import commons.Language;
 import client.services.WebsocketService;
 import commons.Recipe;
@@ -18,7 +19,8 @@ public class MainCtrlTest {
     @BeforeEach
     public void setup() {
         WebsocketService ws = mock(WebsocketService.class);
-        sut = new MainCtrl(ws);
+        FavoritesPollingService pollingService = mock(FavoritesPollingService.class);
+        sut = new MainCtrl(ws, pollingService);
     }
 
     @Test

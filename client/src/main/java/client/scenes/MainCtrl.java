@@ -70,10 +70,12 @@ public class MainCtrl {
     /**
      * Injected Constructor
      * @param websocketService the websocket service
+     * @param pollingService the polling service
      */
     @Inject
-    public MainCtrl(WebsocketService websocketService){
+    public MainCtrl(WebsocketService websocketService, FavoritesPollingService pollingService){
         this.websocketService = websocketService;
+        this.pollingService = pollingService;
     }
 
     /**
@@ -99,7 +101,6 @@ public class MainCtrl {
         primaryStage.show();
         showDefaultView();
 
-        pollingService = new FavoritesPollingService(favoritesManager);
         pollingService.setMainCtrl(this);
         pollingService.startPollingService();
 
