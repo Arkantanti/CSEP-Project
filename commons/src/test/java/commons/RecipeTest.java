@@ -116,4 +116,9 @@ class RecipeTest {
         assertTrue(recipe.isFast());
         assertTrue(recipe.isVegan());
     }
+
+    @Test
+    void getLanguage(){
+        assertEquals(Language.English, recipe.getLanguage());
+    }
 }
